@@ -46,7 +46,7 @@ Based on the need we are bound to discover throughout the project, we do not exc
 
 #### User Management
 
-We were planning on providing GitHub as SSO signup and login, but have to evaluate the feasibility of this.
+We were planning on providing GitHub as SSO and login, but have to evaluate the feasibility of this.
 
 ### GenAI
 
@@ -58,7 +58,7 @@ PostgreSQL
 
 ## Project Management
 
-We plan on following the Kanban approach for this project. Issueboards with priorities are the way to go.
+We plan on following the Kanban approach for this project. Issue Boards with priorities are the way to go.
 
 ## K8s
 

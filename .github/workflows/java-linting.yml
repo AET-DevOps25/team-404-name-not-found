@@ -14,6 +14,7 @@ jobs:
         with:
             arguments: check
             save-generated-gradle-jars: false
+            build-root-directory: server/storage
             gradle-version: wrapper
 
       - uses: burrunan/gradle-cache-action@v3
@@ -21,4 +22,5 @@ jobs:
         with:
             arguments: lintGradle
             save-generated-gradle-jars: false
+            build-root-directory: server/storage
             gradle-version: wrapper
