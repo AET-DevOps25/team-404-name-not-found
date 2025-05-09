@@ -20,7 +20,7 @@ architecture-beta
     server:B -- T:ai
 ```
 
-The top-level architecture is fairy simple: we have a frontend system, a backend system, a database containing all the data and the AI for the magic. The Proxy is there to terminate TLS, as well as provide potentially useful middleware functionality such as authentication, circuit breaker pattern implementations and other headers.
+The top-level architecture is fairly simple: we have a frontend system, a backend system, a database containing all the data and the AI for the magic. The Proxy is there to terminate TLS, as well as provide potentially useful middleware functionality such as authentication, circuit breaker pattern implementations and other headers.
 
 ## Frontend
 
