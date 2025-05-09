@@ -4,6 +4,7 @@ plugins {
 	id 'io.spring.dependency-management' version '1.1.7'
 	id 'checkstyle'
 	id 'nebula.lint' version "20.5.8"
+	id 'com.github.spotbugs' version "6.1.11"
 }
 
 group = 'com.example.htmx'
@@ -37,6 +38,7 @@ dependencies {
 	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.junit.platform:junit-platform-launcher'
+	spotbugs 'com.github.spotbugs:spotbugs:4.8.6'
 }
 
 tasks.named('test') {
@@ -56,4 +58,24 @@ tasks.withType(Checkstyle) {
 
 gradleLint {
 	alwaysRun = false
+}
+
+import com.github.spotbugs.snom.Confidence
+import com.github.spotbugs.snom.Effort
+
+spotbugs {
+	effort = Effort.MORE
+    reportLevel = Confidence.valueOf('HIGH')
+	ignoreFailures = false
+    showStackTraces = true
+    showProgress = false
+}
+
+spotbugsMain {
+    reports {
+        html {
+            required = true
+            outputLocation = file("$buildDir/reports/spotbugs/main/spotbugs.html")
+        }
+    }
 }
