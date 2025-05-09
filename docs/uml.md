@@ -28,7 +28,7 @@ TODO: think about the feasibility of even defining multiple services here! Maybe
 
 ## Backend
 
-Here's a slpit of the backend to its components:
+Here's a split of the backend to its components:
 
 ```mermaid
 architecture-beta
