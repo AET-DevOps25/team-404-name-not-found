@@ -13,7 +13,7 @@ jobs:
         id: lint-dockerfiles
         uses: hadolint/hadolint-action@v3.1.0
         with:
-          dockerfile: "*.Dockerfile"
+          dockerfile: "*Dockerfile"
           recursive: true
 
       - name: Update Pull Request
