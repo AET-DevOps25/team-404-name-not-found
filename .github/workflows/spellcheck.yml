@@ -19,7 +19,7 @@ jobs:
         uses: streetsidesoftware/cspell-action@v7
         with:
           files: ${{ inputs.files }}
-          config: './cspell.config.yaml'
+          config: './cspell.config.yml'
 
       - name: Code Spell Check
         uses: crate-ci/typos@v1.32.0
