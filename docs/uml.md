@@ -51,7 +51,7 @@ This is the single contact point for the frontend. It manages all recipe-related
 
 ### Suggestions
 
-This is the service that talks to the AI-service. It will mainly be used to parse inputs in a digestable way for that service
+This is the service that talks to the AI-service. It will mainly be used to parse inputs in a digestible way for that service
 
 ### Storage
 
