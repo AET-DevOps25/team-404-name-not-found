@@ -1,0 +1,48 @@
+# top-most EditorConfig file
+root = true
+
+# Default settings for all files
+[*]
+end_of_line = lf
+charset = utf-8
+indent_style = space
+indent_size = 4
+insert_final_newline = true
+trim_trailing_whitespace = true
+
+# Makefiles use tabs
+[Makefile]
+indent_style = tab
+
+# Shell scripts
+[*.sh]
+indent_style = space
+indent_size = 4
+
+# YAML, JSON, TOML, etc.
+[*.{yml,yaml,json,toml}]
+indent_style = space
+indent_size = 2
+
+# Markdown and text files
+[*.{md,txt}]
+trim_trailing_whitespace = false  # Preserve intentional trailing spaces in Markdown
+
+# Windows batch files
+[*.{bat,cmd}]
+end_of_line = crlf
+
+# Python
+[*.py]
+indent_style = space
+indent_size = 4
+
+# Java / Kotlin
+[*.{java,kt}]
+indent_style = space
+indent_size = 4
+
+# Web files
+[*.{html,css,js,ts}]
+indent_style = space
+indent_size = 2

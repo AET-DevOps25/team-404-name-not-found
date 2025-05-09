@@ -1,0 +1,69 @@
+# === Text files ===
+# Force LF line endings for all text files
+* text=auto eol=lf
+
+# Shell scripts (preserve LF and ensure proper merge behavior)
+*.sh text eol=lf
+*.bash text eol=lf
+*.zsh text eol=lf
+
+# Git should treat these as binary, no line ending normalization
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.pdf binary
+*.zip binary
+*.tar binary
+*.tar.gz binary
+*.tgz binary
+*.gz binary
+*.7z binary
+*.exe binary
+*.dll binary
+
+# === Preserve executable bit ===
+# (handled automatically by Git on Linux, but ensure it’s not lost)
+*.sh eol=lf text executable
+*.py eol=lf text executable
+
+# === Windows-specific ===
+# Warn Windows users not to convert scripts to CRLF
+# (Editor config should back this up, too)
+*.bat text eol=crlf
+*.cmd text eol=crlf
+
+# === Optional: Mark configuration files ===
+*.conf text eol=lf
+*.ini text eol=lf
+*.yaml text eol=lf
+*.yml text eol=lf
+*.toml text eol=lf
+*.json text eol=lf
+
+# === Markdown and documentation ===
+*.md text eol=lf
+*.txt text eol=lf
+
+# === Source code ===
+*.c text eol=lf
+*.cpp text eol=lf
+*.h text eol=lf
+*.java text eol=lf
+*.kt text eol=lf
+*.go text eol=lf
+*.rs text eol=lf
+*.js text eol=lf
+*.ts text eol=lf
+*.html text eol=lf
+*.css text eol=lf
+*.scss text eol=lf
+*.xml text eol=lf
+
+# === Git ignore sanity ===
+.gitattributes text eol=lf
+.gitignore text eol=lf
+.editorconfig text eol=lf
+
+# === Optional: Enforce UTF-8 encoding (if supported by tools) ===
+*.txt text eol=lf working-tree-encoding=UTF-8
