@@ -12,3 +12,5 @@ jobs:
     uses: ./.github/workflows/dockerfile-linter.yml
   k8s_linting:
     uses: ./.github/workflows/k8s-linter.yml
+  java_linting:
+    uses: ./.github/workflows/java-linting.yml

@@ -2,7 +2,8 @@ plugins {
 	id 'java'
 	id 'org.springframework.boot' version '3.4.5'
 	id 'io.spring.dependency-management' version '1.1.7'
-	id 'org.graalvm.buildtools.native' version '0.10.6'
+	id 'checkstyle'
+	id 'nebula.lint' version "20.5.8"
 }
 
 group = 'com.example.htmx'
@@ -26,13 +27,12 @@ repositories {
 
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-actuator'
-	implementation 'org.springframework.boot:spring-boot-starter-hateoas'
 	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'io.github.wimdeblauwe:htmx-spring-boot-thymeleaf:4.0.1'
 	compileOnly 'org.projectlombok:lombok'
-	implementation 'org.postgresql:postgresql'
+	runtimeOnly 'org.postgresql:postgresql'
 	implementation 'io.micrometer:micrometer-registry-prometheus'
 	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
@@ -43,12 +43,17 @@ tasks.named('test') {
 	useJUnitPlatform()
 }
 
-graalvmNative {
-	binaries {
-		main {
-			// --static needs --libc=musl, which is best reached in an alpine-image
-			buildArgs.addAll("--enable-http", "--static", "--libc=musl")
-		}
-	}
+checkstyle {
+    toolVersion = "10.12.4"
 }
 
+tasks.withType(Checkstyle) {
+    reports {
+        sarif.required = true
+		html.required = true
+    }
+}
+
+gradleLint {
+	alwaysRun = false
+}

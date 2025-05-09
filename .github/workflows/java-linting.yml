@@ -1,0 +1,24 @@
+name: Java Linting
+
+on:
+  workflow_call:
+
+jobs:
+  gradle-lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: burrunan/gradle-cache-action@v3
+        name: Check Java files
+        with:
+            arguments: check
+            save-generated-gradle-jars: false
+            gradle-version: wrapper
+
+      - uses: burrunan/gradle-cache-action@v3
+        name: Check build.gradle
+        with:
+            arguments: lintGradle
+            save-generated-gradle-jars: false
+            gradle-version: wrapper
