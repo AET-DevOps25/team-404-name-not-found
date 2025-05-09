@@ -9,7 +9,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: hadolint
+      - name: Lint Dockerfiles
+        id: lint-dockerfiles
         uses: hadolint/hadolint-action@v3.1.0
         with:
           dockerfile: "*.Dockerfile"
@@ -21,7 +22,7 @@ jobs:
         with:
           script: |
             const output = `
-            #### Hadolint: \`${{ steps.hadolint.outcome }}\`
+            #### Hadolint: \`${{ steps.lint-dockerfiles.outcome }}\`
             \`\`\`
             ${process.env.HADOLINT_RESULTS}
             \`\`\`
