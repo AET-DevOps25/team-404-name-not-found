@@ -25,7 +25,6 @@
 # === Preserve executable bit ===
 # (handled automatically by Git on Linux, but ensure it’s not lost)
 *.sh eol=lf text executable
-*.py eol=lf text executable
 
 # === Windows-specific ===
 # Warn Windows users not to convert scripts to CRLF
