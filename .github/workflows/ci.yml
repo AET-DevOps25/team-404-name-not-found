@@ -8,3 +8,5 @@ on:
 jobs:
   spellcheck:
     uses: ./.github/workflows/spellcheck.yml
+  dockerfile_linting:
+    uses: ./.github/workflows/dockerfile-linter.yml

@@ -1,0 +1,16 @@
+name: Dokerfile Linting
+
+on:
+  workflow_call:
+
+jobs:
+  hadolint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Lint Dockerfiles
+        uses: hadolint/hadolint-action@v3.1.0
+        with:
+          dockerfile: "*.Dockerfile"
+          recursive: true
