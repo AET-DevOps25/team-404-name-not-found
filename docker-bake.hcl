@@ -13,7 +13,7 @@ group "default" {
 # this is here for future you: if you think you can extract some config in a common target
 # that is a thing, the inherit keyword would have done the job, but that wouldn't do much here
 # the reason is bc you're too dependent on a matrix-variable and common templates don't take params
-# functions, on the other hand, do, but that wouldn't have been much less writing!
+# functions, on the other hand, do, but that wouldn't have been much less writing!  
 target "server" {
     matrix = {
         "ctx" = [ "storage" ]
