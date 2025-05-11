@@ -14,5 +14,3 @@ jobs:
     uses: ./.github/workflows/k8s-linter.yml
   java:
     uses: ./.github/workflows/java.yml
-  docker:
-    uses: ./.github/workflows/docker.yml

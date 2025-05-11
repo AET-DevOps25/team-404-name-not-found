@@ -1,7 +1,7 @@
 name: Build and Push Docker Images
 
 on:
-  workflow_call:
+  # this workflow is triggered automatically when the listed ones are completed
   workflow_run:
     workflows:
       - "dockerfile-linter"
