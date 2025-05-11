@@ -1,0 +1,44 @@
+name: Java
+
+on:
+  workflow_call:
+
+jobs:
+  java:
+    # the rationale behind putting everything here is to benefit from gradle's caches in the runner
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      # this is here to prevent other jobs from running if the triggering event introduced no changes to the server directory
+      - uses: dorny/paths-filter@v3
+        id: changes
+        with:
+          filters: |
+            server:
+              - 'server/**'
+
+      - if: steps.changes.outputs.server == 'true'
+        uses: burrunan/gradle-cache-action@v3
+        name: Check all Java files
+        with:
+          arguments: check
+          save-generated-gradle-jars: false
+          gradle-version: wrapper
+
+      - if: steps.changes.outputs.server == 'true'
+        uses: burrunan/gradle-cache-action@v3
+        name: Check all build.gradle
+        with:
+          arguments: lintGradle
+          save-generated-gradle-jars: false
+          gradle-version: wrapper
+
+      - if: steps.changes.outputs.server == 'true'
+        uses: burrunan/gradle-cache-action@v3
+        name: Check all build.gradle
+        with:
+          arguments: test
+          save-generated-gradle-jars: false
+          gradle-version: wrapper
