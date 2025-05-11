@@ -1,6 +1,6 @@
 spring:
   application:
-    name: htmx
+    name: storage
   datasource:
     url: jdbc:postgresql://postgres:5432/demo
     username: postgres
