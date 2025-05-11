@@ -1,4 +1,4 @@
-name: Dokerfile Linting
+name: Dockerfile Linting
 
 on:
   workflow_call:
