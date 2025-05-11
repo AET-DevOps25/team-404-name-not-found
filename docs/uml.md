@@ -63,4 +63,22 @@ We decided to go for PostgreSQL. It has great community support, as well as a hu
 
 ## AI
 
-TODO: provide a rough overview of the GenAI service
+```mermaid
+architecture-beta
+    group backend(cloud)[AIService]
+
+    service webserver(server)[Django Webserver] in backend
+    service vectordb(database)[PGVector DB] in backend
+
+    webserver:R -- L:vectordb
+```
+
+## Django Webserver
+Rest entry point for the AI service. 
+It will be responsible for exposing an API to the other services and managing the connection to the vector database.
+Internally embeddings will be generated using LangChain through the OpenAI-Api.
+The same goes for the prompts. Both subject to change depending on the resources provided by the lecture.
+
+
+## PGVector DB
+Vector database to store recipe embeddings. Hosting depends on lecture (s3 direct or in container on vm). 
