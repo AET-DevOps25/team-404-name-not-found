@@ -3,12 +3,11 @@ name: Build and Push Docker Images
 on:
   workflow_call:
 
+permissions: write-all
+
 jobs:
   docker:
     runs-on: ubuntu-latest
-    permissions:
-      actions:
-        write
     steps:
       - name: Checkout
         uses: actions/checkout@v4
