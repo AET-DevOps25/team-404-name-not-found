@@ -24,6 +24,7 @@ jobs:
         name: Check all Java files
         with:
           arguments: check
+          build-root-directory: server
           save-generated-gradle-jars: false
           gradle-version: wrapper
 
@@ -32,6 +33,7 @@ jobs:
         name: Check all build.gradle
         with:
           arguments: lintGradle
+          build-root-directory: server
           save-generated-gradle-jars: false
           gradle-version: wrapper
 
@@ -40,5 +42,6 @@ jobs:
         name: Check all build.gradle
         with:
           arguments: test
+          build-root-directory: server
           save-generated-gradle-jars: false
           gradle-version: wrapper
