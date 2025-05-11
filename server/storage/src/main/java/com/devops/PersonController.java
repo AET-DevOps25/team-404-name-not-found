@@ -1,7 +1,7 @@
-package com.example.htmx;
+package com.devops;
 
-import com.example.htmx.Person;
-import com.example.htmx.PersonService;
+import com.devops.Person;
+import com.devops.PersonService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

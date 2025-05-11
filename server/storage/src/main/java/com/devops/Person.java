@@ -1,4 +1,4 @@
-package com.example.htmx;
+package com.devops;
 
 import jakarta.persistence.*;
 import lombok.*;

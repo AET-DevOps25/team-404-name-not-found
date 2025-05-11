@@ -1,17 +1,19 @@
-package com.example.htmx;
+package com.devops;
 
-import com.example.htmx.Person;
-import com.example.htmx.PersonRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
+
+import com.devops.Person;
+import com.devops.PersonRepository;
+
 import java.util.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-class HtmxApplicationTests {
+class StorageApplicationTests {
 
 	@Mock
 	PersonRepository repo;

@@ -1,8 +1,9 @@
-package com.example.htmx;
+package com.devops;
 
-import com.example.htmx.Person;
-import com.example.htmx.PersonRepository;
 import org.springframework.stereotype.Service;
+
+import com.devops.Person;
+import com.devops.PersonRepository;
 
 import java.util.List;
 import java.util.Optional;
