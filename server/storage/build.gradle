@@ -1,81 +1,10 @@
 plugins {
-	id 'java'
-	id 'org.springframework.boot' version '3.4.5'
-	id 'io.spring.dependency-management' version '1.1.7'
-	id 'checkstyle'
-	id 'nebula.lint' version "20.5.8"
-	id 'com.github.spotbugs' version "6.1.11"
+	id 'spring-boot-conventions'
 }
 
-group = 'com.example.htmx'
-version = '0.0.1-SNAPSHOT'
-
-java {
-	toolchain {
-		languageVersion = JavaLanguageVersion.of(21)
-	}
-}
-
-configurations {
-	compileOnly {
-		extendsFrom annotationProcessor
-	}
-}
-
-repositories {
-	mavenCentral()
-}
+setDescription("The Storage Service")
 
 dependencies {
-	implementation 'org.springframework.boot:spring-boot-starter-actuator'
-	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
-	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-	implementation 'io.github.wimdeblauwe:htmx-spring-boot-thymeleaf:4.0.1'
-	compileOnly 'org.projectlombok:lombok'
 	runtimeOnly 'org.postgresql:postgresql'
-	implementation 'io.micrometer:micrometer-registry-prometheus'
-	annotationProcessor 'org.projectlombok:lombok'
-	testImplementation 'org.springframework.boot:spring-boot-starter-test'
-	testImplementation 'org.junit.platform:junit-platform-launcher'
-	spotbugs 'com.github.spotbugs:spotbugs:4.8.6'
-}
-
-tasks.named('test') {
-	useJUnitPlatform()
-}
-
-checkstyle {
-    toolVersion = "10.12.4"
-}
-
-tasks.withType(Checkstyle) {
-    reports {
-        sarif.required = true
-		html.required = true
-    }
-}
-
-gradleLint {
-	alwaysRun = false
-}
-
-import com.github.spotbugs.snom.Confidence
-import com.github.spotbugs.snom.Effort
-
-spotbugs {
-	effort = Effort.MORE
-    reportLevel = Confidence.valueOf('HIGH')
-	ignoreFailures = false
-    showStackTraces = true
-    showProgress = false
-}
-
-spotbugsMain {
-    reports {
-        html {
-            required = true
-            outputLocation = file("$buildDir/reports/spotbugs/main/spotbugs.html")
-        }
-    }
 }
