@@ -1,12 +1,15 @@
 name: Build and Push Docker Images
 
 on:
+  workflow_call:
   workflow_run:
     workflows:
       - "dockerfile-linter"
       - "java"
+    branches:
+      - "*"
     types:
-      - completed
+      - "completed"
 
 jobs:
   docker:
