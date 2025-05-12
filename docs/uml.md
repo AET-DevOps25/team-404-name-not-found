@@ -11,7 +11,7 @@ architecture-beta
     service client(server)[React] in frontend
     service server(server)[SpringBoot] in backend
     service db(database)[PostgreSQL] in app
-    service ai(server)[LangChain] in app
+    service ai(server)[AIService] in app
     service proxy(internet)[Proxy] in app
 
     proxy:R -- L:client
