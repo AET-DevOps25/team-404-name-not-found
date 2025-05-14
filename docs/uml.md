@@ -6,7 +6,7 @@
 
 ## Use-Cases
 
-```plantuml
+```
 @startuml
 actor User
 
@@ -52,7 +52,7 @@ TODO: think about the feasibility of even defining multiple services here! Maybe
 
 ## Backend
 
-```plantuml
+```
 @startuml
 skinparam classAttributeIconSize 0
 
