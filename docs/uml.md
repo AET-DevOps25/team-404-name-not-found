@@ -1,26 +1,50 @@
 # UMLs
 
-Here are my ideas about the architecture of the project. I am open to discussing changes or making improvements!
+## Architecture
 
-```mermaid
-architecture-beta
-    group app(internet)[System]
-    group backend(cloud)[Backend] in app
-    group frontend(cloud)[Frontend] in app
+![architecture](./UMLClassDiagram.svg)
 
-    service client(server)[React] in frontend
-    service server(server)[SpringBoot] in backend
-    service db(database)[PostgreSQL] in app
-    service ai(server)[AIService] in app
-    service proxy(internet)[Proxy] in app
+## Use-Cases
 
-    proxy:R -- L:client
-    client:R -- L:server
-    server:R -- L:db
-    server:B -- T:ai
+```plantuml
+@startuml
+actor User
+
+package "Phone Scenario" {
+  usecase "Take Picture of Ingredients" as TakePic
+  usecase "Upload Picture of Ingredients" as UploadPic
+  usecase "Get Recipes from Picture" as GetRecipesFromPic
+}
+
+package "Desktop Scenario" {
+  usecase "Input Ingredients Manually" as ManualInput
+  usecase "Manage Past Recipes" as ManageRecipes
+  usecase "Add Items to Shopping List" as ShoppingList
+  usecase "Check Nutritional Values" as NutritionCheck
+}
+
+usecase "View AI-Generated Recipes" as ViewRecipes
+usecase "Save Recipe" as SaveRecipe
+usecase "Alter Recipe" as AlterRecipe
+
+User --> TakePic
+User --> UploadPic
+TakePic --> GetRecipesFromPic
+UploadPic --> GetRecipesFromPic
+GetRecipesFromPic --> ViewRecipes
+
+User --> ManualInput
+ManualInput --> ViewRecipes
+
+User --> ViewRecipes
+User --> SaveRecipe
+User --> AlterRecipe
+
+User --> ManageRecipes
+User --> ShoppingList
+User --> NutritionCheck
+@enduml
 ```
-
-The top-level architecture is fairly simple: we have a frontend system, a backend system, a database containing all the data and the AI for the magic. The Proxy is there to terminate TLS, as well as provide potentially useful middleware functionality such as authentication, circuit breaker pattern implementations and other headers.
 
 ## Frontend
 
@@ -28,34 +52,98 @@ TODO: think about the feasibility of even defining multiple services here! Maybe
 
 ## Backend
 
-Here's a split of the backend to its components:
+```plantuml
+@startuml
+skinparam classAttributeIconSize 0
 
-```mermaid
-architecture-beta
-    group backend(cloud)[Backend]
+' ========== Entities ==========
+class User {
+  - id: UUID
+  - name: String
+  - email: String
+  - passwordHash: String
+  + getSavedRecipes(): List<Recipe>
+  + addToShoppingList(item: Ingredient)
+}
 
-    service recipe(server)[Recipes] in backend
-    service suggestions(server)[Suggestions] in backend
-    service storage(server)[Storage] in backend
+class Recipe {
+  - id: UUID
+  - title: String
+  - instructions: String
+  - ingredients: List<Ingredient>
+  + updateIngredients(List<Ingredient>)
+}
 
-    recipe:R -- L:storage
-    recipe:B -- T:suggestions
-    storage:B -- T:suggestions
+class Ingredient {
+  - id: UUID
+  - name: String
+  - quantity: String
+  - calories: float
+  + getNutritionalInfo(): NutritionalData
+}
+
+class NutritionalData {
+  - calories: float
+  - protein: float
+  - fat: float
+  - carbs: float
+}
+
+class Image {
+  - id: UUID
+  - url: String
+  - uploadedAt: DateTime
+  - processed: Boolean
+}
+
+' ========== Services ==========
+
+class RecipeAIService {
+  + generateRecipesFromImage(image: Image): List<Recipe>
+  + generateRecipesFromIngredients(List<Ingredient>): List<Recipe>
+}
+
+' ========== Controllers ==========
+
+class RecipeController {
+  + getRecipeById(id: UUID): Recipe
+  + saveRecipe(userId: UUID, recipe: Recipe)
+  + alterRecipe(userId: UUID, recipe: Recipe)
+}
+
+class ImageUploadController {
+  + uploadImage(imageFile): Image
+  + getProcessedRecipes(imageId: UUID): List<Recipe>
+}
+
+class UserController {
+  + login(email: String, password: String)
+  + register(name: String, email: String, password: String)
+}
+
+' ========== Relationships ==========
+
+User "1" -- "0..*" Recipe : saves >
+User "1" -- "0..*" Ingredient : has shopping list >
+Recipe "1" -- "1..*" Ingredient
+Ingredient "1" -- "1" NutritionalData
+ImageUploadController --> RecipeAIService
+RecipeController --> RecipeAIService
+
+@enduml
 ```
-
-The 3 components are each responsible for the following:
 
 ### Recipes
 
-This is the single contact point for the frontend. It manages all recipe-related operations and reaches out to the other two services when it comes to generating recipes or storing them
+This is the single contact point for the frontend. It manages all recipe-related operations and reaches out to the other two services when it comes to generating recipes or storing them. In addition, it keeps track of the ingredients a recipe contains and their nutritional values.
 
 ### Suggestions
 
 This is the service that talks to the AI-service. It will mainly be used to parse inputs in a digestible way for that service
 
-### Storage
+### Users
 
-This is the service that talks directly to the DB. Think of it as an ORM with some convenience functions.
+This is the service that manages users. Nothing fancy will transpire here, just mere user registration and login. Passwords will be saved hashed. Maybe a JWT will be enforced per request, maybe not, it is to be decided.
 
 ## Database
 
@@ -74,6 +162,7 @@ architecture-beta
 ```
 
 ## Django Webserver
+
 Rest entry point for the AI service. 
 It will be responsible for exposing an API to the other services and managing the connection to the vector database.
 Internally embeddings will be generated using LangChain through the OpenAI-Api.
@@ -81,4 +170,5 @@ The same goes for the prompts. Both subject to change depending on the resources
 
 
 ## PGVector DB
+
 Vector database to store recipe embeddings. Hosting depends on lecture (s3 direct or in container on vm). 
