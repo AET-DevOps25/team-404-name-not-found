@@ -6,45 +6,7 @@
 
 ## Use-Cases
 
-```
-@startuml
-actor User
-
-package "Phone Scenario" {
-  usecase "Take Picture of Ingredients" as TakePic
-  usecase "Upload Picture of Ingredients" as UploadPic
-  usecase "Get Recipes from Picture" as GetRecipesFromPic
-}
-
-package "Desktop Scenario" {
-  usecase "Input Ingredients Manually" as ManualInput
-  usecase "Manage Past Recipes" as ManageRecipes
-  usecase "Add Items to Shopping List" as ShoppingList
-  usecase "Check Nutritional Values" as NutritionCheck
-}
-
-usecase "View AI-Generated Recipes" as ViewRecipes
-usecase "Save Recipe" as SaveRecipe
-usecase "Alter Recipe" as AlterRecipe
-
-User --> TakePic
-User --> UploadPic
-TakePic --> GetRecipesFromPic
-UploadPic --> GetRecipesFromPic
-GetRecipesFromPic --> ViewRecipes
-
-User --> ManualInput
-ManualInput --> ViewRecipes
-
-User --> ViewRecipes
-User --> SaveRecipe
-User --> AlterRecipe
-
-User --> ManageRecipes
-User --> ShoppingList
-User --> NutritionCheck
-@enduml
-```
+![uc](./uc.png)
 
 ## Frontend
 
@@ -52,86 +14,7 @@ TODO: think about the feasibility of even defining multiple services here! Maybe
 
 ## Backend
 
-```
-@startuml
-skinparam classAttributeIconSize 0
-
-' ========== Entities ==========
-class User {
-  - id: UUID
-  - name: String
-  - email: String
-  - passwordHash: String
-  + getSavedRecipes(): List<Recipe>
-  + addToShoppingList(item: Ingredient)
-}
-
-class Recipe {
-  - id: UUID
-  - title: String
-  - instructions: String
-  - ingredients: List<Ingredient>
-  + updateIngredients(List<Ingredient>)
-}
-
-class Ingredient {
-  - id: UUID
-  - name: String
-  - quantity: String
-  - calories: float
-  + getNutritionalInfo(): NutritionalData
-}
-
-class NutritionalData {
-  - calories: float
-  - protein: float
-  - fat: float
-  - carbs: float
-}
-
-class Image {
-  - id: UUID
-  - url: String
-  - uploadedAt: DateTime
-  - processed: Boolean
-}
-
-' ========== Services ==========
-
-class RecipeAIService {
-  + generateRecipesFromImage(image: Image): List<Recipe>
-  + generateRecipesFromIngredients(List<Ingredient>): List<Recipe>
-}
-
-' ========== Controllers ==========
-
-class RecipeController {
-  + getRecipeById(id: UUID): Recipe
-  + saveRecipe(userId: UUID, recipe: Recipe)
-  + alterRecipe(userId: UUID, recipe: Recipe)
-}
-
-class ImageUploadController {
-  + uploadImage(imageFile): Image
-  + getProcessedRecipes(imageId: UUID): List<Recipe>
-}
-
-class UserController {
-  + login(email: String, password: String)
-  + register(name: String, email: String, password: String)
-}
-
-' ========== Relationships ==========
-
-User "1" -- "0..*" Recipe : saves >
-User "1" -- "0..*" Ingredient : has shopping list >
-Recipe "1" -- "1..*" Ingredient
-Ingredient "1" -- "1" NutritionalData
-ImageUploadController --> RecipeAIService
-RecipeController --> RecipeAIService
-
-@enduml
-```
+![server-classes](./server-classes.png)
 
 ### Recipes
 
