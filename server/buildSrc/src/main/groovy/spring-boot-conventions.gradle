@@ -1,0 +1,75 @@
+plugins {
+	id 'java'
+	id 'org.springframework.boot'
+	id 'io.spring.dependency-management'
+	id 'checkstyle'
+	id 'nebula.lint'
+	id 'com.github.spotbugs'
+}
+
+java {
+	toolchain {
+		languageVersion = JavaLanguageVersion.of(21)
+	}
+}
+
+configurations {
+	compileOnly {
+		extendsFrom annotationProcessor
+	}
+}
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	compileOnly 'org.projectlombok:lombok'
+	runtimeOnly 'org.postgresql:postgresql'
+	annotationProcessor 'org.projectlombok:lombok'
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testImplementation 'org.junit.platform:junit-platform-launcher'
+	spotbugs 'com.github.spotbugs:spotbugs:4.8.6'
+}
+
+tasks.named('test') {
+	useJUnitPlatform()
+}
+
+checkstyle {
+    toolVersion = "10.12.4"
+}
+
+tasks.withType(Checkstyle) {
+    reports {
+        sarif.required = true
+		html.required = true
+    }
+}
+
+gradleLint {
+	alwaysRun = false
+}
+
+// the only working workaround for the spotbugs plugin in multi-project builds
+def classLoader = plugins['com.github.spotbugs'].class.classLoader
+def SpotBugsTask = classLoader.findLoadedClass( 'com.github.spotbugs.snom.SpotBugsTask' )
+def SpotBugsEffort = classLoader.findLoadedClass( 'com.github.spotbugs.snom.Effort' )
+def SpotBugsConfidence = classLoader.findLoadedClass( 'com.github.spotbugs.snom.Confidence' )
+
+spotbugs {
+	effort = SpotBugsEffort.MORE
+    reportLevel = SpotBugsConfidence.HIGH
+	ignoreFailures = false
+    showProgress = false
+}
+
+spotbugsMain {
+    reports {
+        html {
+            required = true
+            outputLocation = file("$buildDir/reports/spotbugs/main/spotbugs.html")
+        }
+    }
+}

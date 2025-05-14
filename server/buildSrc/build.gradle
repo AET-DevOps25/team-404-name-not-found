@@ -1,0 +1,15 @@
+plugins {
+    id 'groovy-gradle-plugin'
+}
+
+repositories {
+    gradlePluginPortal()
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-gradle-plugin:3.4.5'
+    implementation 'io.spring.gradle:dependency-management-plugin:1.1.7'
+    implementation 'com.github.spotbugs:spotbugs:4.8.6'
+    implementation 'com.netflix.nebula:gradle-lint-plugin:20.5.8'
+}

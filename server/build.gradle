@@ -1,0 +1,6 @@
+plugins {
+    id 'base'
+    id 'java'
+    id 'nebula.lint'
+    id 'com.github.spotbugs' version '6.1.11'
+}
