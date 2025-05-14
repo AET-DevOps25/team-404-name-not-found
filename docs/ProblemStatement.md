@@ -1,5 +1,5 @@
 # Problem Statement
-Problem Statement for Assigment 1 for 404notFound from Kristi, Marcel, Franz
+Problem Statement for Assignment 1 for 404notFound from Kristi, Marcel, Franz
 
 ## What is the main functionality?
 The app uses AI to suggest recipes based on available ingredients. Users can input or upload ingredients, receive tailored recipe ideas, and then customize, save, or add them to a shopping list. The goal is to make cooking simpler, more flexible, and more sustainable.
