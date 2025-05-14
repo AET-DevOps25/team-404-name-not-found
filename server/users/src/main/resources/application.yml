@@ -1,8 +1,8 @@
 spring:
   application:
-    name: storage
+    name: users
   datasource:
-    url: jdbc:postgresql://postgres:5432/demo
+    url: jdbc:postgresql://localhost:5432/users
     username: postgres
     password: postgres
   jpa:
@@ -12,12 +12,6 @@ spring:
     properties:
       hibernate.dialect: org.hibernate.dialect.PostgreSQLDialect
 
-management:
-  endpoints:
-    web:
-      exposure:
-        include: health,info,prometheus
-  metrics:
-    export:
-      prometheus:
-        enabled: true
+jwt:
+  secret: my-secret-key-for-jwt-signing
+  expiration: 3600000 # 1 hour
