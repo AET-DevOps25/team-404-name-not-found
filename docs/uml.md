@@ -23,15 +23,6 @@ This is the service that manages users. Nothing fancy will transpire here, just 
 We decided to go for PostgreSQL. It has great community support, as well as a huge database of plugins, such as pg-vector, which facilitates RAG.
 
 ### AI
-```mermaid
-architecture-beta
-    group backend(cloud)[AIService]
-
-    service webserver(server)[Django Webserver] in backend
-    service vectordb(database)[PGVector DB] in backend
-
-    webserver:R -- L:vectordb
-```
 
 #### Django Webserver
 
