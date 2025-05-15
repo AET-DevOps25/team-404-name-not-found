@@ -8,7 +8,7 @@
 ### Server
 #### Ingredients Service
 
-This service manages the ingredients which a user currently has in its fridge. Add provides access to this information and allows adding or removing ingredients.
+This service manages the ingredients which a user currently has in its fridge. Provides access to this information and allows adding or removing ingredients.
 
 #### Recipe Service
 
