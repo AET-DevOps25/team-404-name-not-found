@@ -38,7 +38,7 @@ Vector database to store recipe embeddings. Hosting depends on lecture (s3 direc
 
 ## Analysis Object Model (AOM)
 
-![aom-class-diagramm](./AOMClassDiagram.svg)
+![aom-class-diagram](./AOMClassDiagram.svg)
 *UML class diagram of AOM (Server + GenAI)*
 
 ## Use-Cases
