@@ -6,15 +6,19 @@
 *UML component diagram of top-level architecture*
 
 ### Server
-#### Recipes
+#### Ingredients Service
 
-This is the single contact point for the frontend. It manages all recipe-related operations and reaches out to the other two services when it comes to generating recipes or storing them. In addition, it keeps track of the ingredients a recipe contains and their nutritional values.
+This service manages the ingredients which a user currently has in its fridge. Add provides access to this information and allows adding or removing ingredients.
 
-#### Suggestions
+#### Recipe Service
 
-This is the service that talks to the AI-service. It will mainly be used to parse inputs in a digestible way for that service
+This is the service that talks to the AI-service to generate recipe suggestions. It will mainly be used to provide ingredients in a digestible way for that service.
 
-#### Users
+#### Image Service
+
+This service accepts images of fridges and analyzes them for the available ingredients.
+
+#### User Service
 
 This is the service that manages users. Nothing fancy will transpire here, just mere user registration and login. Passwords will be saved hashed. Maybe a JWT will be enforced per request, maybe not, it is to be decided.
 
