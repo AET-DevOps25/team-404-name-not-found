@@ -8,6 +8,6 @@ Tada, enjoy our amazing updates!
 |      |  Franz  | Idea generation, idea refinement, project planning, problem statement |                                      |                             |
 |      | Marcel  | Idea generation, idea refinement, project planning, problem statement |                                      |                             |
 |  2   | Kristi  |             create UMLs and a functioning CI/CD pipeline              | changing requirements about the UMLs | fix the server related UMLs |
-|      |  Franz  |                                                                       |                                      |                             |
+|      |  Franz  |      Add GenAI microservice to UMLs and create issues for GenAI       |                                      |                             |
 |      | Marcel  |                refactor UMLs to Apollon based diagrams                |                                      |                             |
 |      |         |                                                                       |                                      |                             |
