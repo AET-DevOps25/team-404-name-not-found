@@ -21,6 +21,7 @@ jobs:
               - 'server/**'
               - 'client/**'
               - 'genai/**'
+              - 'docker-bake.hcl'
 
       - if: steps.changes.outputs.services == 'true'
         name: Log in to GHCR
