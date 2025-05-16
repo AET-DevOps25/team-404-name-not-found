@@ -43,6 +43,6 @@ indent_style = space
 indent_size = 4
 
 # Web files
-[*.{html,css,js,ts}]
+[*.{html,css,js,ts,jsx,tsx}]
 indent_style = space
-indent_size = 2
+indent_size = 4
