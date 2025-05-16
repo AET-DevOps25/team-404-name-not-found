@@ -9,7 +9,16 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Lint Dockerfiles
+      # this is here to prevent other jobs from running if the triggering event introduced no changes to Dockerfiles
+      - uses: dorny/paths-filter@v3
+        id: changes
+        with:
+          filters: |
+            dockerfile:
+              - 'Dockerfile**'
+
+      - if: steps.changes.outputs.dockerfile == 'true'
+        name: Lint Dockerfiles
         id: lint-dockerfiles
         uses: hadolint/hadolint-action@v3.1.0
         with:
@@ -18,7 +27,7 @@ jobs:
 
       - name: Update Pull Request
         uses: actions/github-script@v6
-        if: steps.lint-dockerfiles.outcome != 'success'
+        if: steps.lint-dockerfiles.outcome != 'success' && steps.changes.outputs.dockerfile == 'true'
         with:
           script: |
             const output = `
