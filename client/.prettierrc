@@ -1,0 +1,14 @@
+{
+    "semi": true,
+    "singleQuote": false,
+    "trailingComma": "es5",
+    "tabWidth": 4,
+    "overrides": [
+        {
+            "files": ["*.yaml", "*.yml", "*.json", "*.toml"],
+            "options": {
+                "tabWidth": 2
+            }
+        }
+    ]
+}

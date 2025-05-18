@@ -16,6 +16,9 @@ jobs:
   java:
     name: java
     uses: ./.github/workflows/java.yml
+  typescript:
+    name: typescript
+    uses: ./.github/workflows/typescript.yml
   docker:
     needs:
       - dockerfile_linting
