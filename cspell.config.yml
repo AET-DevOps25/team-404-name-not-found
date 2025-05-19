@@ -11,6 +11,7 @@ ignorePaths:
   - dist
   - build
   - coverage
+  - genai/requirements.txt
   - "*.lock"
   - "*.svg"
   - "*.png"
