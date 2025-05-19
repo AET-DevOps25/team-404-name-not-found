@@ -12,7 +12,7 @@ class RecipeService:
         # self.llm = ChatOpenAI(model="gpt-4o", temperature=0.2)
 
     async def get_recipe(self, ingredients: Ingredients) -> str:
-        messages: List = [
+        messages: List[SystemMessage | HumanMessage] = [
             SystemMessage(content=self.system_prompt),
             HumanMessage(content=f"Ingredients: {ingredients.ingredients}"),
         ]
