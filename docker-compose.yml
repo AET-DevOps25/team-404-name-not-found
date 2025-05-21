@@ -1,5 +1,6 @@
 services:
   postgres:
+    container_name: db
     image: postgres:16
     environment:
       POSTGRES_USER: postgres
@@ -15,17 +16,18 @@ services:
     volumes:
       - pgdata:/var/lib/postgresql/data
 
-  # app:
-  #   image: docker.io/library/users:v01
-  #   ports:
-  #     - "8080:8080"
-  #   depends_on:
-  #     postgres:
-  #       condition: service_healthy
-  #   environment:
-  #     SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:5432/users
-  #     SPRING_DATASOURCE_USERNAME: postgres
-  #     SPRING_DATASOURCE_PASSWORD: postgres
+  users:
+    container_name: users
+    image: docker.io/library/users:v04
+    ports:
+      - "8080:8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/users
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: postgres
 
 volumes:
   pgdata:
