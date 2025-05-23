@@ -30,7 +30,16 @@ services:
 
   users:
     container_name: users
-    image: docker.io/library/users:v09
+    image: ghcr.io/aet-devops25/team-404-name-not-found/users:latest
+    build:
+      context: server
+      dockerfile: users/Dockerfile
+    healthcheck:
+      test: ["CMD", "wget", "-q", "--spider", "http://localhost:8080/api/actuator/health"]
+      interval: 10s
+      timeout: 15s
+      retries: 5
+      start_period: 10s
     ports:
       - "8080:8080"
     depends_on:

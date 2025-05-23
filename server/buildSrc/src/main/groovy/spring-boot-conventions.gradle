@@ -34,6 +34,7 @@ dependencies {
 	testImplementation 'org.springframework.security:spring-security-test'
 	spotbugs 'com.github.spotbugs:spotbugs:4.8.6'
 	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.5'
+	implementation 'org.springframework.boot:spring-boot-starter-actuator'
 }
 
 tasks.named('test') {

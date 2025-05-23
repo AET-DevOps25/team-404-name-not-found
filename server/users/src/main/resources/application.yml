@@ -20,3 +20,11 @@ api:
 server:
   servlet:
     context-path: /api
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  health:
+    show-details: always
