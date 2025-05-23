@@ -57,11 +57,9 @@ jobs:
           gradle-version: current
 
       - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v3
+        uses: codecov/codecov-action@v5
         with:
-          paths: |
+          files: |
             ${{ github.workspace }}/**/build/reports/jacoco/test/html/index.html
           token: ${{ secrets.GITHUB_TOKEN }}
-          comment-type: summary
-          update-comment: true
-          title: Coverage Report for the java-based Service
+          fail_ci_if_error: true
