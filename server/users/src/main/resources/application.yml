@@ -2,7 +2,7 @@ spring:
   application:
     name: users
   datasource:
-    url: jdbc:postgresql://localhost:5432/users
+    url: jdbc:postgresql://${DB_HOST:localhost}:5432/users
     username: postgres
     password: postgres
   jpa:
@@ -16,12 +16,7 @@ api:
   security:
     token:
       secret: ${JWT_SECRET:my-most-special-secret-key}
+
 server:
   servlet:
     context-path: /api
-# springdoc:
-#   api-docs:
-#     path: /docs
-#   swagger-ui:
-#     path: /swagger.html
-#     url: /api/docs
