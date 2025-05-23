@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping(value = "/auth", produces = { "application/json" })
+@RequestMapping(value = "/users", produces = { "application/json" })
 public class AuthenticationController {
 
     @Autowired
@@ -35,7 +35,7 @@ public class AuthenticationController {
      * @return ResponseEntity containing authentication token
      */
     @PostMapping(value = "/login", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity login(@RequestBody AuthenticationDTO data) {
+    public ResponseEntity<?> login(@RequestBody AuthenticationDTO data) {
         var credentials = new UsernamePasswordAuthenticationToken(data.email(), data.password());
         var auth = this.authenticationManager.authenticate(credentials);
 
@@ -51,7 +51,7 @@ public class AuthenticationController {
      * @return ResponseEntity indicating success or failure of registration
      */
     @PostMapping(value = "/register", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity register(@RequestBody RegisterDTO data) {
+    public ResponseEntity<?> register(@RequestBody RegisterDTO data) {
         if (this.userRepository.findByEmail(data.email()) != null)
             return ResponseEntity.badRequest().build();
 
