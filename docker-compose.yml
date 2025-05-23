@@ -18,7 +18,7 @@ services:
 
   users:
     container_name: users
-    image: docker.io/library/users:v04
+    image: docker.io/library/users:v08
     ports:
       - "8080:8080"
     depends_on:
