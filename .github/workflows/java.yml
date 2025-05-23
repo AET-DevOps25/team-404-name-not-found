@@ -45,3 +45,18 @@ jobs:
           build-root-directory: server
           save-generated-gradle-jars: false
           gradle-version: current
+
+      - if: steps.changes.outputs.server == 'true'
+        uses: burrunan/gradle-cache-action@v3
+        name: Generate Test Reports
+        with:
+          arguments: jacocoTestReport
+          build-root-directory: server
+          save-generated-gradle-jars: false
+          gradle-version: current
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v3
+        with:
+          files: server/users/build/reports/jacoco/test/html/index.html
+          fail_ci_if_error: true
