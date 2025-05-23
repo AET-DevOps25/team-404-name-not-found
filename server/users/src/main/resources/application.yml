@@ -16,7 +16,12 @@ api:
   security:
     token:
       secret: ${JWT_SECRET:my-most-special-secret-key}
-
 server:
   servlet:
     context-path: /api
+# springdoc:
+#   api-docs:
+#     path: /docs
+#   swagger-ui:
+#     path: /swagger.html
+#     url: /api/docs
