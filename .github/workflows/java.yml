@@ -60,6 +60,6 @@ jobs:
         uses: codecov/codecov-action@v5
         with:
           files: |
-            ${{ github.workspace }}/**/build/reports/jacoco/test/html/index.html
+            ${{ github.workspace }}/server/users/build/reports/jacoco/test/html/index.html
           token: ${{ secrets.GITHUB_TOKEN }}
           fail_ci_if_error: true
