@@ -47,10 +47,10 @@ public class User implements UserDetails {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         List<SimpleGrantedAuthority> roles = new ArrayList<>();
-        roles.add(new SimpleGrantedAuthority("ROLE_USER"));
+        roles.add(new SimpleGrantedAuthority(UserRole.USER.toString()));
 
         if (this.role == UserRole.ADMIN)
-            roles.add(new SimpleGrantedAuthority("ROLES_ADMIN"));
+            roles.add(new SimpleGrantedAuthority(UserRole.ADMIN.toString()));
 
         return roles;
     }
