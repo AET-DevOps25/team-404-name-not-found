@@ -56,9 +56,12 @@ jobs:
           save-generated-gradle-jars: false
           gradle-version: current
 
-      - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v5
+      - if: steps.changes.outputs.server == 'true'
+        name: Add coverage to PR
+        uses: madrapps/jacoco-report@v1.7.2
         with:
-          files: server/users/build/reports/jacoco/test/html/index.html
+          paths: ${{ github.workspace }}/**/server/**/build/reports/jacoco/test/html/index.html
           token: ${{ secrets.GITHUB_TOKEN }}
-          fail_ci_if_error: true
+          title: JaCoCo Test Coverage Report
+          update-comment: true
+          comment-type: summary
