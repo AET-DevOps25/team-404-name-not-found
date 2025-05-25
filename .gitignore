@@ -377,3 +377,10 @@ sketch
 # gitignore template for Vue.js projects
 #
 # Recommended template: Node.gitignore
+
+# do not accidentally push any key and/or cert to git!
+*.pem
+*.key
+terraform/.env
+*.terraform
+*.backup
