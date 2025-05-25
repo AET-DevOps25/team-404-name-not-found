@@ -1,0 +1,6 @@
+key_list:
+  - name: docker
+    uri: "https://download.docker.com/linux/debian"
+    key: "https://download.docker.com/linux/debian/gpg"
+    suite: "{{ ansible_distribution_release | lower }}"
+    component: "stable"

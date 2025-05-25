@@ -8,5 +8,8 @@ init:
 deploy: init
 	terraform apply -input=false --auto-approve
 
+ansible:
+	ansible-playbook -i hosts.ini playbook.yml
+
 teardown:
 	terraform destroy -input=false --auto-approve

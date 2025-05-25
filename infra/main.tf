@@ -6,6 +6,10 @@ provider "aws" {
   region = var.aws_region
 }
 
+provider "local" {
+
+}
+
 data "aws_ami" "debian" {
   most_recent = true
   owners      = ["amazon"]

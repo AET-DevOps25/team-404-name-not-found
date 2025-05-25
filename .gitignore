@@ -381,6 +381,8 @@ sketch
 # do not accidentally push any key and/or cert to git!
 *.pem
 *.key
-terraform/.env
+infra/.env
 *.terraform
 *.backup
+token.yml
+hosts.ini

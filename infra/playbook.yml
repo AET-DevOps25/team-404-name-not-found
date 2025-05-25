@@ -1,0 +1,65 @@
+---
+- name: Basic setup
+  hosts: all
+  become: true
+  gather_facts: true
+  vars:
+    vm_user: admin
+  vars_files:
+    - packages.yml
+    - keys.yml
+    - token.yml
+  tasks:
+    - name: Add repositories
+      ansible.builtin.deb822_repository:
+        name: "{{ item.name }}"
+        types: [deb]
+        uris: "{{ item.uri }}"
+        signed_by: "{{ item.key }}"
+        suites: ["{{ item.suite }}"]
+        components: ["{{ item.component }}"]
+        state: present
+        enabled: true
+      loop: "{{ key_list }}"
+      loop_control:
+        label: "{{ item.name }}"
+
+    - name: Update apt cache
+      ansible.builtin.apt:
+        update_cache: true
+        force_apt_get: true
+
+    - name: Install packages
+      ansible.builtin.apt:
+        name: "{{ packages }}"
+        state: present
+        update_cache: true
+        force_apt_get: true
+
+    - name: Login to CR
+      community.docker.docker_login:
+        registry: "ghcr.io"
+        username: "{{ cr_username }}"
+        password: "{{ token }}"
+        state: present
+
+    - name: Copy compose file to remote
+      ansible.builtin.copy:
+        src: ./docker-compose.yml
+        dest: /home/admin/docker-compose.yml
+        owner: admin
+        group: admin
+        mode: '0644'
+
+    - name: Clean images
+      community.docker.docker_compose_v2:
+        project_src: .
+        state: absent
+        remove_images: local
+        remove_volumes: true
+        remove_orphans: true
+
+    - name: Run application
+      community.docker.docker_compose_v2:
+        project_src: .
+        state: present
