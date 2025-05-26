@@ -28,6 +28,11 @@ jobs:
           echo "::add-mask::${{ github.event.inputs.AWS_SECRET_ACCESS_KEY }}"
           echo "::add-mask::${{ github.event.inputs.AWS_SESSION_TOKEN }}"
 
+      - name: Install Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.12.1
+
       - name: Kill EC2
         env:
           AWS_ACCESS_KEY_ID: ${{ github.event.inputs.AWS_ACCESS_KEY_ID }}
