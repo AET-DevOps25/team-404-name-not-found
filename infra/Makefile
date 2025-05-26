@@ -11,5 +11,5 @@ deploy: init
 ansible:
 	ansible-playbook -i hosts.ini playbook.yml
 
-teardown:
+teardown: init
 	terraform destroy -input=false --auto-approve
