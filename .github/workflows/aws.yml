@@ -43,7 +43,7 @@ jobs:
           terraform_version: 1.12.1
 
       - name: Install Ansible
-        uses: alex-oleshkevich/setup-ansible@1.0.1
+        uses: alex-oleshkevich/setup-ansible@v1.0.1
         with:
           version: "11.6.0"
 
