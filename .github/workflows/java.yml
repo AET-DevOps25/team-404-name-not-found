@@ -64,6 +64,6 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           title: JaCoCo Test Coverage Report
           update-comment: true
-          comment-type: comment
+          comment-type: both
           min-coverage-overall: 5
           min-coverage-changed-files: 5
