@@ -7,6 +7,7 @@ import com.devops.entities.users.User;
 import com.devops.infra.security.TokenService;
 import com.devops.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -53,7 +54,7 @@ public class AuthenticationController {
     @PostMapping(value = "/register", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> register(@RequestBody RegisterDTO data) {
         if (this.userRepository.findByEmail(data.email()) != null)
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.status(HttpStatusCode.valueOf(409)).body("That email already exists!");
 
         String encryptedPassword = new BCryptPasswordEncoder().encode(data.password());
         User user = new User(data.name(), data.email(), encryptedPassword, data.role());
