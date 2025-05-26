@@ -14,7 +14,7 @@ on:
         required: true
 
 jobs:
-  setup-and-run:
+  teardown:
     runs-on: ubuntu-latest
 
     steps:
