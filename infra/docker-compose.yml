@@ -11,29 +11,12 @@ services:
       interval: 5s
       timeout: 5s
       retries: 5
-    ports:
-      - "5432:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
-
-  pgadmin:
-    image: dpage/pgadmin4
-    container_name: pgadmin
-    environment:
-      PGADMIN_DEFAULT_EMAIL: admin@admin.com
-      PGADMIN_DEFAULT_PASSWORD: admin
-    ports:
-      - "5050:80"
-    depends_on:
-      postgres:
-        condition: service_healthy
 
   users:
     container_name: users
     image: ghcr.io/aet-devops25/team-404-name-not-found/users:7-create-users-service
-    build:
-      context: server
-      dockerfile: users/Dockerfile
     healthcheck:
       test: ["CMD", "wget", "-q", "--spider", "http://localhost:8080/api/actuator/health"]
       interval: 10s
