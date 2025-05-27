@@ -12,6 +12,9 @@ on:
       AWS_SESSION_TOKEN:
         description: 'the token for your running session'
         required: true
+      run_id:
+        description: 'ID of the deploy job that spun up the instance'
+        required: true
 
 jobs:
   teardown:
@@ -32,6 +35,15 @@ jobs:
         uses: hashicorp/setup-terraform@v3
         with:
           terraform_version: 1.12.1
+
+      - name: Download Terraform state artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: tfstate
+          path: infra/
+          github-token: ${{ github.token }}
+          repository: kristi-balla/testing-terraform-and-ansible
+          run-id: ${{ inputs.run_id }}
 
       - name: Kill EC2
         env:

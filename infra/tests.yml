@@ -1,0 +1,40 @@
+---
+- name: Integration Tests
+  hosts: all
+  gather_facts: false
+  become: true
+  vars:
+    vm_user: admin
+  environment:
+    ANSIBLE_FORCE_COLOR: "true"
+  tasks:
+    - name: Wait for containers to start
+      ansible.builtin.wait_for:
+        timeout: 25
+
+    - name: Get list of running Docker containers
+      ansible.builtin.command: docker ps -q
+      changed_when: true
+      register: running_containers
+
+    - name: Fail if no containers are running
+      ansible.builtin.fail:
+        msg: "No running Docker containers found."
+      when: running_containers.stdout == ""
+
+    - name: Inspect health status of each container
+      ansible.builtin.command: docker inspect --format {% raw %}'{{.Name}} {{.State.Health.Status}}' {% endraw %} {{ item }}
+      loop: "{{ running_containers.stdout_lines }}"
+      register: container_health
+      failed_when: false # We handle failure logic manually
+      changed_when: false
+
+    - name: Check container health and fail if any unhealthy
+      ansible.builtin.fail:
+        msg: "Container {{ item.stdout.split()[0] }} health is '{{ item.stdout.split()[1] }}'. Expected 'healthy'."
+      loop: "{{ container_health.results }}"
+      loop_control:
+        label: "{{ item.stdout.split()[0] }}"
+      when: >
+        (item.stdout.split()[1] is defined) and
+        (item.stdout.split()[1] != "healthy")

@@ -7,13 +7,16 @@ on:
         description: 'Private key (PEM) for infra/priv.pem'
         required: true
       AWS_ACCESS_KEY_ID:
-        description: 'key id to access your aws instance'
+        description: 'Key id to access your aws instance'
         required: true
       AWS_SECRET_ACCESS_KEY:
-        description: 'secret key'
+        description: 'Secret key'
         required: true
       AWS_SESSION_TOKEN:
-        description: 'the token for your running session'
+        description: 'Token for your running session'
+        required: true
+      GHCR_TOKEN:
+        description: 'Personal Access Token for the GHCR'
         required: true
 
 jobs:
@@ -31,10 +34,11 @@ jobs:
           echo "::add-mask::${{ github.event.inputs.AWS_ACCESS_KEY_ID }}"
           echo "::add-mask::${{ github.event.inputs.AWS_SECRET_ACCESS_KEY }}"
           echo "::add-mask::${{ github.event.inputs.AWS_SESSION_TOKEN }}"
+          echo "::add-mask::${{ github.event.inputs.GHCR_TOKEN }}"
 
       - name: Write private key to infra/priv.pem
         run: |
-          echo "${{ github.event.inputs.private_key }}" > infra/priv.pem
+          printf "%s" "${{ github.event.inputs.private_key }}" > infra/priv.pem
           chmod 400 infra/priv.pem
 
       - name: Install Terraform
@@ -56,8 +60,43 @@ jobs:
           cd infra
           make deploy
 
-      - name: Provision EC2
-        # TODO: you still need to create the local token.yml file for ansible!
+      - name: Upload Terraform state file
+        uses: actions/upload-artifact@v4
+        with:
+          name: tfstate
+          path: infra/terraform.tfstate
+
+      # there also exists ansible.builtin.wait_for_connection, but
+      # it doesn't play nice with gather_facts: true, which i need
+      # for the docker installation
+      - name: Wait for EC2 to be ready
         run: |
           cd infra
+          IP=$(terraform output -raw ip)
+          echo "Waiting for SSH on $IP..."
+          for i in {1..5}; do
+            nc -z -v -w5 $IP 22 && echo "SSH is ready!" && exit 0
+            echo "Retry $i: SSH not up yet"
+            sleep 10
+          done
+          echo "SSH never became available"
+          exit 1
+
+      - name: Debug SSH to EC2
+        run: |
+          cd infra
+          IP=$(terraform output -raw ip)
+          ssh -o StrictHostKeyChecking=no -i priv.pem admin@$IP 'echo connected'
+
+
+      - name: Provision EC2
+        run: |
+          cd infra
+          echo "cr_username: ${{ github.actor }}" >> token.yml
+          echo "token: ${{ github.event.inputs.GHCR_TOKEN }}" >> token.yml
           make ansible
+
+      - name: Integration Tests
+        run: |
+          cd infra
+          make ansible PLAYBOOK=tests.yml
