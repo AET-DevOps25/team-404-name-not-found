@@ -42,7 +42,7 @@ jobs:
           name: tfstate
           path: infra/
           github-token: ${{ github.token }}
-          repository: kristi-balla/testing-terraform-and-ansible
+          repository: ${{ github.repository }}
           run-id: ${{ inputs.run_id }}
 
       - name: Kill EC2
