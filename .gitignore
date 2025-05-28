@@ -378,7 +378,12 @@ sketch
 #
 # Recommended template: Node.gitignore
 
+# do not accidentally push any key and/or cert to git!
 *.pem
+*.key
+infra/.env
+*.terraform
 *.backup
 token.yml
-*.terraform
+hosts.ini
+*.ansible

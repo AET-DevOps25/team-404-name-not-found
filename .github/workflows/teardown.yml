@@ -12,6 +12,9 @@ on:
       AWS_SESSION_TOKEN:
         description: 'the token for your running session'
         required: true
+      run_id:
+        description: 'ID of the deploy job that spun up the instance'
+        required: true
 
 jobs:
   teardown:
@@ -27,6 +30,20 @@ jobs:
           echo "::add-mask::${{ github.event.inputs.AWS_ACCESS_KEY_ID }}"
           echo "::add-mask::${{ github.event.inputs.AWS_SECRET_ACCESS_KEY }}"
           echo "::add-mask::${{ github.event.inputs.AWS_SESSION_TOKEN }}"
+
+      - name: Install Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.12.1
+
+      - name: Download Terraform state artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: tfstate
+          path: infra/
+          github-token: ${{ github.token }}
+          repository: ${{ github.repository }}
+          run-id: ${{ inputs.run_id }}
 
       - name: Kill EC2
         env:
