@@ -386,3 +386,4 @@ infra/.env
 *.backup
 token.yml
 hosts.ini
+*.ansible
