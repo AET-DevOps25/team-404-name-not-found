@@ -1,0 +1,85 @@
+services:
+
+  traefik:
+    image: traefik:v3
+    container_name: traefik
+    command:
+      - "--configFile=/etc/traefik/traefik.yml"
+    ports:
+      - "80:80"
+      - "443:443"
+      - "7070:8080"
+    environment:
+      - HOST=${HOST}
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock"
+      - "./traefik/traefik.yaml:/etc/traefik/traefik.yml"
+      - "./traefik/dynamic.yaml:/etc/traefik/dynamic.yaml"
+    labels:
+      - "traefik.enable=true"
+    networks:
+      - web
+
+  postgres:
+    container_name: db
+    image: postgres:16
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: users
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    networks:
+      - web
+
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+      SCRIPT_NAME: pgadmin
+    ports:
+      - "5050:80"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - web
+
+  users:
+    container_name: users
+    image: ghcr.io/aet-devops25/team-404-name-not-found/users:latest
+    build:
+      context: server
+      dockerfile: users/Dockerfile
+    healthcheck:
+      test: ["CMD", "wget", "-q", "--spider", "http://localhost:8080/api/actuator/health"]
+      interval: 10s
+      timeout: 15s
+      retries: 5
+      start_period: 10s
+    ports:
+      - "8080:8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      DB_HOST: db
+    networks:
+      - web
+
+volumes:
+  pgdata:
+
+networks:
+  web:
+    driver: bridge
+    name: web

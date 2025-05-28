@@ -1,0 +1,48 @@
+http:
+  middlewares:
+    you-shall-not-pass:
+      rateLimit:
+        average: 50
+        burst: 20
+    my-jwt-auth:
+      plugin:
+        jwt:
+          secret: '{{ env "JWT_SECRET" | default "my-most-special-secret-key" }}'
+          require:
+            iss: auth-api
+          headerMap:
+            Subject: sub
+
+  routers:
+    registration:
+      entryPoints:
+        - web
+      service: users
+      rule: Host(`{{ env "HOST" | default "localhost" }}`) && (PathPrefix(`/api/actuator`) || PathPrefix(`/api/users`))
+      middlewares:
+        - you-shall-not-pass
+    backend:
+      entryPoints:
+        - web
+      service: users
+      rule: Host(`{{ env "HOST" | default "localhost" }}`) && PathPrefix(`/api`)
+      middlewares:
+        - you-shall-not-pass
+        - my-jwt-auth
+    pgadmin:
+      entryPoints:
+        - web
+      service: pgadmin
+      rule: Host(`{{ env "HOST" | default "localhost" }}`) && PathPrefix(`/pgadmin`)
+      middlewares:
+        - you-shall-not-pass
+
+  services:
+    users:
+      loadBalancer:
+        servers:
+          - url: "http://users:8080"
+    pgadmin:
+      loadBalancer:
+        servers:
+          - url: "http://pgadmin:5050"
