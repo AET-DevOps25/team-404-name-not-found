@@ -7,6 +7,7 @@ jobs:
   java:
     # the rationale behind putting everything here is to benefit from gradle's caches in the runner
     runs-on: ubuntu-latest
+    permissions: write-all
 
     steps:
       - uses: actions/checkout@v4
@@ -45,3 +46,24 @@ jobs:
           build-root-directory: server
           save-generated-gradle-jars: false
           gradle-version: current
+
+      - if: steps.changes.outputs.server == 'true'
+        uses: burrunan/gradle-cache-action@v3
+        name: Generate Test Reports
+        with:
+          arguments: jacocoTestReport
+          build-root-directory: server
+          save-generated-gradle-jars: false
+          gradle-version: current
+
+      - if: steps.changes.outputs.server == 'true'
+        name: Add coverage to PR
+        uses: madrapps/jacoco-report@v1.7.2
+        with:
+          paths: ${{ github.workspace }}/**/server/**/build/reports/jacoco/test/jacocoTestReport.xml
+          token: ${{ secrets.GITHUB_TOKEN }}
+          title: JaCoCo Test Coverage Report
+          update-comment: true
+          comment-type: both
+          min-coverage-overall: 5
+          min-coverage-changed-files: 5

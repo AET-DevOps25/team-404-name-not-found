@@ -5,6 +5,7 @@ plugins {
 	id 'checkstyle'
 	id 'nebula.lint'
 	id 'com.github.spotbugs'
+	id 'jacoco'
 }
 
 java {
@@ -30,7 +31,10 @@ dependencies {
 	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.junit.platform:junit-platform-launcher'
+	testImplementation 'org.springframework.security:spring-security-test'
 	spotbugs 'com.github.spotbugs:spotbugs:4.8.6'
+	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.5'
+	implementation 'org.springframework.boot:spring-boot-starter-actuator'
 }
 
 tasks.named('test') {
@@ -71,5 +75,17 @@ spotbugsMain {
             required = true
             outputLocation = file("$buildDir/reports/spotbugs/main/spotbugs.html")
         }
+    }
+}
+
+test {
+    finalizedBy jacocoTestReport
+}
+
+jacocoTestReport {
+    dependsOn test
+	reports {
+        xml.required = true
+        html.required = true
     }
 }
