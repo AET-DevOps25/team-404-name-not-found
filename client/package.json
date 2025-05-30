@@ -13,9 +13,6 @@
     "format": "prettier --write ."
   },
   "dependencies": {
-    "@mantine/core": "^8.0.1",
-    "@mantine/form": "^8.0.1",
-    "@mantine/hooks": "^8.0.1",
     "@tabler/icons-react": "^3.33.0",
     "axios": "^1.9.0",
     "react": "^19.1.0",
