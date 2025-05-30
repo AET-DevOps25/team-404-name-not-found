@@ -46,6 +46,6 @@ Vector database to store recipe embeddings. Hosting depends on lecture (s3 direc
 
 ## Use-Cases
 
-![uc](1_uml_files/use_case_diagram.png)
+![uc](1_uml_files/use_case_diagram.svg)
 *UML use case diagram of main use cases*
 
