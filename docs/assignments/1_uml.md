@@ -2,7 +2,7 @@
 
 ## Top-Level Architecture
 
-![architecture](./UMLClassDiagram.svg)
+![architecture](1_uml_files/tla_component_diagram.svg)
 *UML component diagram of top-level architecture*
 
 ### Server
@@ -42,11 +42,11 @@ Vector database to store recipe embeddings. Hosting depends on lecture (s3 direc
 
 ## Analysis Object Model (AOM)
 
-![aom-class-diagram](./AOMClassDiagram.svg)
+![aom-class-diagram](1_uml_files/aom_class_diagram.svg)
 *UML class diagram of AOM (Server + GenAI)*
 
 ## Use-Cases
 
-![uc](./uc.png)
+![uc](1_uml_files/use_case_diagram.png)
 *UML use case diagram of main use cases*
 
