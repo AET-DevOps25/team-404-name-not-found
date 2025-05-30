@@ -1,0 +1,102 @@
+<svg width="1421" height="751" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" fill="#ffffff"><defs><style>
+  text {
+    fill: #212529;
+    font-family: Helvetica Neue, Helvetica, Arial, sans-serif;
+    font-size: 16px;
+  }
+
+  marker, text {
+    fill-opacity: 1;
+  }
+
+  * {
+    overflow: visible;
+  }
+</style></defs><svg x="1035" y="15" width="80" height="140" class="Actor" fill="#ffffff"><g><rect width="100%" height="100%" fill="none"></rect><g stroke="black" stroke-width="2"><circle cx="40" cy="25" r="15" stroke="black" fill="white" class="sc-iGgWBj fYmGgq"></circle><line x1="40" y1="40" x2="40" y2="80" stroke="black" class="sc-imWYAI kESMEa"></line><line x1="10" y1="50" x2="70" y2="50" stroke="black" class="sc-imWYAI kESMEa"></line><line x1="40" y1="80" x2="10" y2="110" stroke="black" class="sc-imWYAI kESMEa"></line><line x1="40" y1="80" x2="70" y2="110" stroke="black" class="sc-imWYAI kESMEa"></line></g><text x="40" y="130" dominant-baseline="middle" text-anchor="middle" font-weight="bold" pointer-events="none">Actor</text></g></svg><svg x="365" y="225" width="520" height="330" class="Phone Scenario" fill="#ffffff"><g><rect width="100%" height="100%" stroke="black" fill="white" class="sc-fqkvVR uHYUy"></rect><text x="50%" y="16" dominant-baseline="middle" text-anchor="middle" font-weight="bold" pointer-events="none">Phone Scenario</text></g></svg><svg x="385" y="285" width="220" height="100" class="Take Picture of Ingredients" fill="#ffffff"><g><ellipse cx="50%" cy="50%" rx="50%" ry="50%" stroke="black" fill="white" class="sc-kAyceB ldFMTf"></ellipse><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" font-weight="bold" pointer-events="none">Take Picture of Ingredients</text></g></svg><svg x="635" y="285" width="240" height="100" class="Upload Picture of Ingredients" fill="#ffffff"><g><ellipse cx="50%" cy="50%" rx="50%" ry="50%" stroke="black" fill="white" class="sc-kAyceB ldFMTf"></ellipse><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" font-weight="bold" pointer-events="none">Upload Picture of Ingredients</text></g></svg><svg x="515" y="445" width="210" height="100" class="Get Recipes from Picture" fill="#ffffff"><g><ellipse cx="50%" cy="50%" rx="50%" ry="50%" stroke="black" fill="white" class="sc-kAyceB ldFMTf"></ellipse><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" font-weight="bold" pointer-events="none">Get Recipes from Picture</text></g></svg><svg x="915" y="225" width="490" height="330" class="Desktop Scenario" fill="#ffffff"><g><rect width="100%" height="100%" stroke="black" fill="white" class="sc-fqkvVR uHYUy"></rect><text x="50%" y="16" dominant-baseline="middle" text-anchor="middle" font-weight="bold" pointer-events="none">Desktop Scenario</text></g></svg><svg x="925" y="435" width="220" height="100" class="Input Ingredients Manually" fill="#ffffff"><g><ellipse cx="50%" cy="50%" rx="50%" ry="50%" stroke="black" fill="white" class="sc-kAyceB ldFMTf"></ellipse><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" font-weight="bold" pointer-events="none">Input Ingredients Manually</text></g></svg><svg x="1175" y="275" width="180" height="100" class="Manage Past Recipes" fill="#ffffff"><g><ellipse cx="50%" cy="50%" rx="50%" ry="50%" stroke="black" fill="white" class="sc-kAyceB ldFMTf"></ellipse><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" font-weight="bold" pointer-events="none">Manage Past Recipes</text></g></svg><svg x="935" y="275" width="230" height="100" class="Add Items to Shopping List" fill="#ffffff"><g><ellipse cx="50%" cy="50%" rx="50%" ry="50%" stroke="black" fill="white" class="sc-kAyceB ldFMTf"></ellipse><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" font-weight="bold" pointer-events="none">Add Items to Shopping List</text></g></svg><svg x="1175" y="415" width="210" height="100" class="Check Nutritional Values" fill="#ffffff"><g><ellipse cx="50%" cy="50%" rx="50%" ry="50%" stroke="black" fill="white" class="sc-kAyceB ldFMTf"></ellipse><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" font-weight="bold" pointer-events="none">Check Nutritional Values</text></g></svg><svg x="15" y="215" width="160" height="100" class="Save Recipe" fill="#ffffff"><g><ellipse cx="50%" cy="50%" rx="50%" ry="50%" stroke="black" fill="white" class="sc-kAyceB ldFMTf"></ellipse><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" font-weight="bold" pointer-events="none">Save Recipe</text></g></svg><svg x="145" y="375" width="160" height="100" class="Alter Recipe" fill="#ffffff"><g><ellipse cx="50%" cy="50%" rx="50%" ry="50%" stroke="black" fill="white" class="sc-kAyceB ldFMTf"></ellipse><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" font-weight="bold" pointer-events="none">Alter Recipe</text></g></svg><svg x="835" y="635" width="230" height="100" class="View AI Generated Recipes" fill="#ffffff"><g><ellipse cx="50%" cy="50%" rx="50%" ry="50%" stroke="black" fill="white" class="sc-kAyceB ldFMTf"></ellipse><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" font-weight="bold" pointer-events="none">View AI Generated Recipes</text></g></svg><svg x="495" y="85" width="540" height="200" class="" fill="#ffffff"><g><path id="textpath-0c67972a-a9eb-49df-9d42-0eadf36e72b9" d="
+        M 540 -10
+        L 0 190
+    "></path><text dominant-baseline="middle" text-anchor="middle" font-weight="bold" pointer-events="none" dy="20px" transform="
+            translate(270, 100)
+            rotate(180)
+            translate(-270, -100)
+          "><textPath xlink:href="#textpath-0c67972a-a9eb-49df-9d42-0eadf36e72b9" startOffset="50%"></textPath></text><polyline points="540 0,0 200" stroke-width="1" stroke="black" fill="none" class="sc-aXZVg eMElBf"></polyline></g></svg><svg x="755" y="85" width="280" height="200" class="" fill="#ffffff"><g><path id="textpath-c7204c69-2ba1-4277-977b-09125f328ac3" d="
+        M 280 -10
+        L 0 190
+    "></path><text dominant-baseline="middle" text-anchor="middle" font-weight="bold" pointer-events="none" dy="20px" transform="
+            translate(140, 100)
+            rotate(180)
+            translate(-140, -100)
+          "><textPath xlink:href="#textpath-c7204c69-2ba1-4277-977b-09125f328ac3" startOffset="50%"></textPath></text><polyline points="280 0,0 200" stroke-width="1" stroke="black" fill="none" class="sc-aXZVg eMElBf"></polyline></g></svg><svg x="495" y="385" width="20" height="110" class="include" fill="#ffffff"><g><g><marker id="marker-841b0f77-0290-4662-b729-12e493ccf94e" viewBox="0 0 30 30" markerWidth="22" markerHeight="30" refX="30" refY="15" orient="auto" markerUnits="strokeWidth"><path d="M0,29 L30,15 L0,1" stroke="black" fill="none" class="sc-gEvEer bFSwyf"></path></marker><path d="
+          M 0 0 L 2.8445824720006727 15.6452035960037
+          M 17.155417527999326 94.3547964039963 L 20 110
+        " stroke-dasharray="7" marker-end="url(#marker-841b0f77-0290-4662-b729-12e493ccf94e)" stroke="black" fill="white" class="sc-gEvEer fkqzOi"></path></g><path id="textpath-841b0f77-0290-4662-b729-12e493ccf94e" d="
+          M 2.8445824720006727 15.6452035960037
+          L 17.155417527999326 94.3547964039963
+        "></path><text dominant-baseline="middle" text-anchor="middle" font-weight="bold" pointer-events="none"><textPath xlink:href="#textpath-841b0f77-0290-4662-b729-12e493ccf94e" startOffset="50%">«include»</textPath></text></g></svg><svg x="725" y="385" width="30" height="110" class="include" fill="#ffffff"><g><g><marker id="marker-8a1b38fe-8a4a-4933-98e2-3daced130304" viewBox="0 0 30 30" markerWidth="22" markerHeight="30" refX="30" refY="15" orient="auto" markerUnits="strokeWidth"><path d="M0,29 L30,15 L0,1" stroke="black" fill="none" class="sc-gEvEer bFSwyf"></path></marker><path d="
+          M 30 0 L 25.524696231684352 16.409447150490713
+          M 4.47530376831565 93.5905528495093 L 0 110
+        " stroke-dasharray="7" marker-end="url(#marker-8a1b38fe-8a4a-4933-98e2-3daced130304)" stroke="black" fill="white" class="sc-gEvEer fkqzOi"></path></g><path id="textpath-8a1b38fe-8a4a-4933-98e2-3daced130304" d="
+          M 25.524696231684352 16.409447150490713
+          L 4.47530376831565 93.5905528495093
+        "></path><text dominant-baseline="middle" text-anchor="middle" font-weight="bold" pointer-events="none" transform="
+              translate(14.999999999999998, 55)
+              rotate(180)
+              translate(-14.999999999999998, -55)
+            "><textPath xlink:href="#textpath-8a1b38fe-8a4a-4933-98e2-3daced130304" startOffset="50%">«include»</textPath></text></g></svg><svg x="1050" y="155" width="25" height="120" class="" fill="#ffffff"><g><path id="textpath-92913163-ccb3-47d0-bc12-4ceacc2b5d3c" d="
+        M 25 -10
+        L 0 110
+    "></path><text dominant-baseline="middle" text-anchor="middle" font-weight="bold" pointer-events="none" dy="20px" transform="
+            translate(12.5, 60)
+            rotate(180)
+            translate(-12.5, -60)
+          "><textPath xlink:href="#textpath-92913163-ccb3-47d0-bc12-4ceacc2b5d3c" startOffset="50%"></textPath></text><polyline points="25 0,0 120" stroke-width="1" stroke="black" fill="none" class="sc-aXZVg eMElBf"></polyline></g></svg><svg x="1075" y="155" width="190" height="120" class="" fill="#ffffff"><g><path id="textpath-a41a763a-cd7e-4658-8d54-0bb43eb56d18" d="
+        M 0 -10
+        L 190 110
+    "></path><text dominant-baseline="middle" text-anchor="middle" font-weight="bold" pointer-events="none" dy="20px"><textPath xlink:href="#textpath-a41a763a-cd7e-4658-8d54-0bb43eb56d18" startOffset="50%"></textPath></text><polyline points="0 0,190 120" stroke-width="1" stroke="black" fill="none" class="sc-aXZVg eMElBf"></polyline></g></svg><svg x="1035" y="155" width="40" height="280" class="" fill="#ffffff"><g><path id="textpath-ffa828e2-7c34-4761-94fd-a7a4cf83bc2a" d="
+        M 40 -10
+        L 0 270
+    "></path><text dominant-baseline="middle" text-anchor="middle" font-weight="bold" pointer-events="none" dy="20px" transform="
+            translate(20, 140)
+            rotate(180)
+            translate(-20, -140)
+          "><textPath xlink:href="#textpath-ffa828e2-7c34-4761-94fd-a7a4cf83bc2a" startOffset="50%"></textPath></text><polyline points="40 0,0 280" stroke-width="1" stroke="black" fill="none" class="sc-aXZVg eMElBf"></polyline></g></svg><svg x="1115" y="85" width="165" height="330" class="" fill="#ffffff"><g><path id="textpath-3c1fbdca-63ae-4911-9466-c38b16d07d76" d="
+        M 0 -10
+        L 165 320
+    "></path><text dominant-baseline="middle" text-anchor="middle" font-weight="bold" pointer-events="none" dy="20px"><textPath xlink:href="#textpath-3c1fbdca-63ae-4911-9466-c38b16d07d76" startOffset="50%"></textPath></text><polyline points="0 0,165 330" stroke-width="1" stroke="black" fill="none" class="sc-aXZVg eMElBf"></polyline></g></svg><svg x="95" y="85" width="940" height="130" class="" fill="#ffffff"><g><path id="textpath-0575e2d4-8c24-470a-8646-c3a0d752a129" d="
+        M 940 -10
+        L 0 120
+    "></path><text dominant-baseline="middle" text-anchor="middle" font-weight="bold" pointer-events="none" dy="20px" transform="
+            translate(470, 65)
+            rotate(180)
+            translate(-470, -65)
+          "><textPath xlink:href="#textpath-0575e2d4-8c24-470a-8646-c3a0d752a129" startOffset="50%"></textPath></text><polyline points="940 0,0 130" stroke-width="1" stroke="black" fill="none" class="sc-aXZVg eMElBf"></polyline></g></svg><svg x="225" y="85" width="810" height="290" class="" fill="#ffffff"><g><path id="textpath-a94b90bf-c58d-4007-96ad-967584c5ce77" d="
+        M 810 -10
+        L 0 280
+    "></path><text dominant-baseline="middle" text-anchor="middle" font-weight="bold" pointer-events="none" dy="20px" transform="
+            translate(405, 145)
+            rotate(180)
+            translate(-405, -145)
+          "><textPath xlink:href="#textpath-a94b90bf-c58d-4007-96ad-967584c5ce77" startOffset="50%"></textPath></text><polyline points="810 0,0 290" stroke-width="1" stroke="black" fill="none" class="sc-aXZVg eMElBf"></polyline></g></svg><svg x="620" y="545" width="215" height="140" class="include" fill="#ffffff"><g><g><marker id="marker-2bfebea8-41f2-4b3e-8c2a-2904f205a653" viewBox="0 0 30 30" markerWidth="22" markerHeight="30" refX="30" refY="15" orient="auto" markerUnits="strokeWidth"><path d="M0,29 L30,15 L0,1" stroke="black" fill="none" class="sc-gEvEer bFSwyf"></path></marker><path d="
+          M 0 0 L 73.98007661170057 48.1730731425027
+          M 141.01992338829945 91.8269268574973 L 215 140
+        " stroke-dasharray="7" marker-end="url(#marker-2bfebea8-41f2-4b3e-8c2a-2904f205a653)" stroke="black" fill="white" class="sc-gEvEer fkqzOi"></path></g><path id="textpath-2bfebea8-41f2-4b3e-8c2a-2904f205a653" d="
+          M 73.98007661170057 48.1730731425027
+          L 141.01992338829945 91.8269268574973
+        "></path><text dominant-baseline="middle" text-anchor="middle" font-weight="bold" pointer-events="none"><textPath xlink:href="#textpath-2bfebea8-41f2-4b3e-8c2a-2904f205a653" startOffset="50%">«include»</textPath></text></g></svg><svg x="950" y="535" width="85" height="100" class="" fill="#ffffff"><g><g><marker id="marker-88cd53d9-d1a1-461b-ac01-0e7fe4e9fb82" viewBox="0 0 30 30" markerWidth="22" markerHeight="30" refX="30" refY="15" orient="auto" markerUnits="strokeWidth"><path d="M0,29 L30,15 L0,1" stroke="black" fill="none" class="sc-gEvEer bFSwyf"></path></marker><path d="
+          M 85 0 L 68.40593680382162 19.522427289621625
+          M 16.594063196178382 80.47757271037838 L 0 100
+        " stroke-dasharray="7" marker-end="url(#marker-88cd53d9-d1a1-461b-ac01-0e7fe4e9fb82)" stroke="black" fill="white" class="sc-gEvEer fkqzOi"></path></g><path id="textpath-88cd53d9-d1a1-461b-ac01-0e7fe4e9fb82" d="
+          M 68.40593680382162 19.522427289621625
+          L 16.594063196178382 80.47757271037838
+        "></path><text dominant-baseline="middle" text-anchor="middle" font-weight="bold" pointer-events="none" transform="
+              translate(42.5, 50)
+              rotate(180)
+              translate(-42.5, -50)
+            "><textPath xlink:href="#textpath-88cd53d9-d1a1-461b-ac01-0e7fe4e9fb82" startOffset="50%">«include»</textPath></text></g></svg><svg x="1065" y="85" width="50" height="600" class="" fill="#ffffff"><g><path id="textpath-d2bda7e4-f684-470c-bc9c-92e3c1a2a20b" d="
+        M 50 -10
+        L 0 590
+    "></path><text dominant-baseline="middle" text-anchor="middle" font-weight="bold" pointer-events="none" dy="20px" transform="
+            translate(25, 300)
+            rotate(180)
+            translate(-25, -300)
+          "><textPath xlink:href="#textpath-d2bda7e4-f684-470c-bc9c-92e3c1a2a20b" startOffset="50%"></textPath></text><polyline points="50 0,0 600" stroke-width="1" stroke="black" fill="none" class="sc-aXZVg eMElBf"></polyline></g></svg></svg>
