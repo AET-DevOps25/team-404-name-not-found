@@ -2,7 +2,7 @@
 
 ## Top-Level Architecture
 
-![architecture](1_uml_files/tla_component_diagram.svg)
+![architecture](1_uml_files/tla_component_diagram.png)
 *UML component diagram of top-level architecture*
 
 ### Server
