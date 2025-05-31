@@ -14,6 +14,14 @@ http:
             Subject: sub
 
   routers:
+    whoami:
+      entryPoints:
+        - web
+      service: users
+      rule: Host(`{{ env "HOST" | default "localhost" }}`) && PathPrefix(`/api/users/whoami`)
+      middlewares:
+        - you-shall-not-pass
+        - my-jwt-auth
     registration:
       entryPoints:
         - web
@@ -29,13 +37,6 @@ http:
       middlewares:
         - you-shall-not-pass
         - my-jwt-auth
-    pgadmin:
-      entryPoints:
-        - web
-      service: pgadmin
-      rule: Host(`{{ env "HOST" | default "localhost" }}`) && PathPrefix(`/pgadmin`)
-      middlewares:
-        - you-shall-not-pass
 
   services:
     users:
