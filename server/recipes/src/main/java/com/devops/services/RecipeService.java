@@ -23,7 +23,7 @@ public class RecipeService {
     }
 
     @Value("${vars.HOST}")
-    private String host;
+    public String host;
 
     public Recipe generateRecipe(List<String> ingredients, String userId) {
         try {
@@ -48,8 +48,8 @@ public class RecipeService {
         }
     }
 
-    public List<Recipe> getRecipesByUser(String userEmail) {
-        return recipeRepository.findAllByUserId(userEmail);
+    public List<Recipe> getRecipesByUser(String userId) {
+        return recipeRepository.findAllByUserId(userId);
     }
 
     public Recipe getRecipeById(String id, String userEmail) {
