@@ -26,13 +26,13 @@ public class RecipeController {
         return ResponseEntity.ok(recipe);
     }
 
-    @PostMapping
+    @PostMapping("/")
     public ResponseEntity<Recipe> saveRecipe(@RequestBody Recipe recipe) {
         Recipe savedRecipe = recipeService.saveRecipe(recipe);
         return ResponseEntity.status(HttpStatus.CREATED).body(savedRecipe);
     }
 
-    @PutMapping
+    @PutMapping("/")
     public ResponseEntity<Recipe> alterRecipe(@RequestBody Recipe recipe) {
         Recipe updatedRecipe = recipeService.alterRecipe(recipe);
         return ResponseEntity.ok(updatedRecipe);
@@ -54,7 +54,7 @@ public class RecipeController {
         return ResponseEntity.ok(recipe);
     }
 
-    @GetMapping
+    @GetMapping("/")
     public ResponseEntity<?> getAllRecipesForUser(@RequestHeader("Subject") String userId) {
         if (userId == null || userId.isEmpty()) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
