@@ -1,5 +1,6 @@
 package com.devops.infra.security;
 
+import com.devops.entities.users.User;
 import com.devops.repositories.UserRepository;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.Optional;
 
 @Component
 public class SecurityFilter extends OncePerRequestFilter {
@@ -29,8 +31,14 @@ public class SecurityFilter extends OncePerRequestFilter {
         var token = this.recoverToken(request);
         if (token != null) {
             var subject = tokenService.validateToken(token);
-            UserDetails user = userRepository.findByEmail(subject);
+            Optional<User> maybeUser = userRepository.findById(subject);
+            if (maybeUser == null || maybeUser.isEmpty()) {
+                response.setStatus(403);
+                response.getWriter().write("Invalid token or user not found");
+                return;
+            }
 
+            User user = maybeUser.get();
             var authentication = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
             SecurityContextHolder.getContext().setAuthentication(authentication);
         }
