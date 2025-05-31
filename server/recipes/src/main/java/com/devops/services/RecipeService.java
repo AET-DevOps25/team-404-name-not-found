@@ -25,7 +25,7 @@ public class RecipeService {
     @Value("${vars.HOST}")
     private String host;
 
-    public Recipe generateRecipe(List<String> ingredients) {
+    public Recipe generateRecipe(List<String> ingredients, String userId) {
         try {
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
@@ -43,8 +43,8 @@ public class RecipeService {
             fallback.setIngredients(ingredients);
             fallback.setDifficulty(Difficulty.EASY);
             fallback.setCookingTime(30);
-            fallback.setUserId("fallback-user-id");
-            return recipeRepository.save(fallback);
+            fallback.setUserId(userId);
+            return fallback;
         }
     }
 

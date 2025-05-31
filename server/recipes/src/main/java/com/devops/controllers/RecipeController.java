@@ -21,9 +21,8 @@ public class RecipeController {
 
     @PostMapping("/ai")
     public ResponseEntity<Recipe> generateRecipe(@RequestBody List<String> ingredients,
-            @RequestHeader("Subject") String userEmail) {
-        // TODO: remove header subject as param
-        Recipe recipe = recipeService.generateRecipe(ingredients);
+            @RequestHeader("Subject") String userId) {
+        Recipe recipe = recipeService.generateRecipe(ingredients, userId);
         return ResponseEntity.ok(recipe);
     }
 
