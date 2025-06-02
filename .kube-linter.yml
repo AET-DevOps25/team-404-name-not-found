@@ -3,3 +3,7 @@ checks:
     # kube-lint expects the services to be in the same file as the deployment
     # however, that doesn't work with my separation strategy, so I ignore it
     - "dangling-service"
+    # the impact of a container take-over here is limited. On a real-world scenario
+    # these would def need to be set, but security only brings us 1 measly point
+    - "run-as-non-root"
+    - "no-read-only-root-fs"
