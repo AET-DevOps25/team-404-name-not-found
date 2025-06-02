@@ -27,7 +27,6 @@ spec:
           volumeMounts:
             - mountPath: /var/lib/postgresql/data
               name: pgdata
-          # TODO: this fails with a permission denied! Fix it!
           readinessProbe:
             exec:
               command: ["pg_isready", "-U", "postgres"]

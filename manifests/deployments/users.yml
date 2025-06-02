@@ -24,8 +24,6 @@ spec:
           env:
             - name: DB_HOST
               value: postgres
-
-          # TODO: this fails with a permission denied! Fix it!
           startupProbe:
             httpGet:
               path: /api/users/health
