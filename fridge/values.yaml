@@ -25,7 +25,7 @@ usersProbe:
   periodSeconds: 10
   failureThreshold: 30
 
-# ofc these values are from me. It is recommended to change them before actually runnig the app
+# ofc these values are from me. It is recommended to change them before actually running the app
 jwks:
   {
     "keys":
