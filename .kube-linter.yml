@@ -1,0 +1,5 @@
+checks:
+  exclude:
+    # kube-lint expects the services to be in the same file as the deployment
+    # however, that doesn't work with my separation strategy, so I ignore it
+    - "dangling-service"
