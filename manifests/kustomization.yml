@@ -1,4 +1,6 @@
 resources:
+  - gtw/envoy.yml
+  - routes/users.yml
   - secrets/ghcr.yml
   - pvc/postgres.yml
   - deployments/postgres.yml
