@@ -1,8 +1,21 @@
 resources:
+  #########################################
+  # basic config and security policies
+  - configs/jwt.yml
+  - security/jwt.yml
+  #########################################
+  # gateway and httproute related manifests
   - gtw/envoy.yml
   - routes/users.yml
+  - routes/whoami.yml
+  #########################################
+  # all secret
   - secrets/ghcr.yml
+  #########################################
+  # PVCs
   - pvc/postgres.yml
+  #########################################
+  # the actual app with deployments and svc
   - deployments/postgres.yml
   - deployments/users.yml
   - services/postgres.yml
