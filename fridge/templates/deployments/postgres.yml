@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: postgres
 spec:
-  replicas: 1
+  replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
       app: postgres
@@ -19,11 +19,11 @@ spec:
             - containerPort: 5432
           env:
             - name: POSTGRES_USER
-              value: postgres
+              value: {{ .Values.postgresUser }}
             - name: POSTGRES_PASSWORD
-              value: postgres
+              value: {{ .Values.postgresPass }}
             - name: POSTGRES_DB
-              value: fridge
+              value: {{ .Values.postgresDB }}
           volumeMounts:
             - mountPath: /var/lib/postgresql/data
               name: pgdata
@@ -34,13 +34,8 @@ spec:
             periodSeconds: 5
             timeoutSeconds: 5
             failureThreshold: 5
-          resources:
-            requests:
-              cpu: 1
-              memory: 100Mi
-            limits:
-              cpu: 2
-              memory: 200Mi
+          resources: 
+{{ toYaml .Values.resources | indent 12 }}            
       volumes:
         - name: pgdata
           persistentVolumeClaim:

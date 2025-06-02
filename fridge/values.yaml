@@ -1,0 +1,26 @@
+# Default values for fridge.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+# default login vars for postgres
+postgresUser: postgres
+postgresPass: postgres
+postgresDB: fridge
+
+replicaCount: 1
+
+resources:
+  requests:
+    cpu: 1
+    memory: 100Mi
+  limits:
+    cpu: 2
+    memory: 500Mi
+
+usersProbe:
+  httpGet:
+    path: /api/users/health
+    port: 8080
+  initialDelaySeconds: 15
+  periodSeconds: 10
+  failureThreshold: 30

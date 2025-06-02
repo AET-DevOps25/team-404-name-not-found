@@ -25,29 +25,10 @@ spec:
             - name: DB_HOST
               value: postgres
           startupProbe:
-            httpGet:
-              path: /api/users/health
-              port: 8080
-            initialDelaySeconds: 15
-            periodSeconds: 10
-            failureThreshold: 30
+{{ toYaml .Values.usersProbe | indent 12 }}
           livenessProbe:
-            httpGet:
-              path: /api/users/health
-              port: 8080
-            initialDelaySeconds: 15
-            periodSeconds: 10
-            failureThreshold: 5
+{{ toYaml .Values.usersProbe | indent 12 }}
           readinessProbe:
-            httpGet:
-              path: /api/users/health
-              port: 8080
-            initialDelaySeconds: 10
-            periodSeconds: 10
+{{ toYaml .Values.usersProbe | indent 12 }}
           resources:
-            requests:
-              cpu: 1
-              memory: 100Mi
-            limits:
-              cpu: 2
-              memory: 500Mi
+{{ toYaml .Values.resources | indent 12}}
