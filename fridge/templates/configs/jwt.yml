@@ -3,6 +3,5 @@ kind: ConfigMap
 metadata:
   name: jwt-local-jwks
 data:
-  # create a local file jwks.json and put the key in there
   jwks: |
-{{ .Files.Get "jwks.json" | indent 4 }}
+{{ toJson .Values.jwks | indent 4 }}

@@ -24,3 +24,26 @@ usersProbe:
   initialDelaySeconds: 15
   periodSeconds: 10
   failureThreshold: 30
+
+# ofc these values are from me. It is recommended to change them before actually runnig the app
+jwks:
+  {
+    "keys":
+      [
+        {
+          "alg": "HS256",
+          "key_ops": ["verify"],
+          "kty": "oct",
+          "k": "yes, pretty key indeed XD",
+        },
+      ],
+  }
+
+dockerConfigJson: |
+  {
+    "auths": {
+        "ghcr.io": {
+            "auth": "hehe lol pls get my creds!"
+        }
+    }
+  }
