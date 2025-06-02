@@ -1,7 +1,7 @@
 apiVersion: gateway.envoyproxy.io/v1alpha1
 kind: SecurityPolicy
 metadata:
-  name: jwt-example
+  name: jwt
 spec:
   targetRef:
     group: gateway.networking.k8s.io
@@ -9,7 +9,11 @@ spec:
     name: whoami
   jwt:
     providers:
-      - name: example
+      - name: jwt
+        issuer: auth-api
+        claimToHeaders:
+          - claim: "sub"
+            header: "Subject"
         localJWKS:
           type: ValueRef
           valueRef:
