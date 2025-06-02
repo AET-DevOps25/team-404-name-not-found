@@ -17,7 +17,8 @@ spec:
         - name: ghcr-pull-secret
       containers:
         - name: users
-          image: ghcr.io/aet-devops25/team-404-name-not-found/users:main
+          image: ghcr.io/aet-devops25/team-404-name-not-found/users:create_recipe_svc
+          imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8080
           env:
@@ -25,6 +26,20 @@ spec:
               value: postgres
 
           # TODO: this fails with a permission denied! Fix it!
+          startupProbe:
+            httpGet:
+              path: /api/users/health
+              port: 8080
+            initialDelaySeconds: 15
+            periodSeconds: 10
+            failureThreshold: 30
+          livenessProbe:
+            httpGet:
+              path: /api/users/health
+              port: 8080
+            initialDelaySeconds: 15
+            periodSeconds: 10
+            failureThreshold: 5
           readinessProbe:
             httpGet:
               path: /api/users/health

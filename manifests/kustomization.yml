@@ -1,0 +1,7 @@
+resources:
+  - secrets/ghcr.yml
+  - pvc/postgres.yml
+  - deployments/postgres.yml
+  - deployments/users.yml
+  - services/postgres.yml
+  - services/users.yml

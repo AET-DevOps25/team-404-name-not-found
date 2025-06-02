@@ -7,12 +7,6 @@ import com.devops.entities.users.User;
 import com.devops.infra.security.TokenService;
 import com.devops.repositories.UserRepository;
 
-import jakarta.servlet.http.HttpServletRequest;
-
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Map;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.MediaType;
@@ -71,5 +65,17 @@ public class AuthenticationController {
         this.userRepository.save(user);
 
         return ResponseEntity.ok().build();
+    }
+
+    /**
+     * An endpoint to prevent abusing the other endpoints for token checking
+     * 
+     * @param subject A Header value being set by the proxy after successful
+     *                validation of the JWT
+     * @return that same header value
+     */
+    @GetMapping("/whoami")
+    public ResponseEntity<?> whoAmI(@RequestHeader("Subject") String subject) {
+        return ResponseEntity.ok(subject);
     }
 }
