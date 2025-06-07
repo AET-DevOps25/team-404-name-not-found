@@ -17,6 +17,5 @@ experimental:
 
 api:
   insecure: true
-
-log:
-  level: DEBUG
+# log:
+# level: DEBUG
