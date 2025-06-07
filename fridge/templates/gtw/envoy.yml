@@ -22,18 +22,18 @@ spec:
     - name: http
       protocol: HTTP
       port: 8080
-      hostname: fridge.local
+      hostname: "{{ .Values.host }}"
       allowedRoutes:
         namespaces:
           from: All
     - name: https
       protocol: HTTPS
       port: 8443
-      hostname: fridge.local
+      hostname: "{{ .Values.host }}"
       allowedRoutes:
         namespaces:
           from: All
       tls:
         mode: Terminate
         certificateRefs:
-        - name: fridge-local
+        - name: {{ replace "." "-" .Values.host }}

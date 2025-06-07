@@ -7,7 +7,7 @@ spec:
     - name: envoy
       sectionName: http
   hostnames:
-    - "fridge.local"
+    - "{{ .Values.host }}"
   rules:
     - filters:
       - type: RequestRedirect

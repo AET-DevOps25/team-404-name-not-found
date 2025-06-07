@@ -7,7 +7,7 @@ spec:
     - name: envoy
       sectionName: https
   hostnames:
-    - "fridge.local"
+    - "{{ .Values.host }}"
   rules:
     - backendRefs:
         - group: ""
