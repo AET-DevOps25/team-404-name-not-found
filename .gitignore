@@ -387,3 +387,5 @@ infra/.env
 token.yml
 hosts.ini
 *.ansible
+*.json
+*/charts

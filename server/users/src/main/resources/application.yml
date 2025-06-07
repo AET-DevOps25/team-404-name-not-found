@@ -2,7 +2,7 @@ spring:
   application:
     name: users
   datasource:
-    url: jdbc:postgresql://${DB_HOST:localhost}:5432/users
+    url: jdbc:postgresql://${DB_HOST:localhost}:5432/fridge
     username: postgres
     password: postgres
   jpa:
@@ -26,5 +26,8 @@ management:
     web:
       exposure:
         include: "*"
+      base-path: /users
+      path-mapping:
+        health: health
   health:
     show-details: always

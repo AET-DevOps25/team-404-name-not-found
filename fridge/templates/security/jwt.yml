@@ -1,0 +1,22 @@
+apiVersion: gateway.envoyproxy.io/v1alpha1
+kind: SecurityPolicy
+metadata:
+  name: jwt
+spec:
+  targetRef:
+    group: gateway.networking.k8s.io
+    kind: HTTPRoute
+    name: whoami
+  jwt:
+    providers:
+      - name: jwt
+        issuer: auth-api
+        claimToHeaders:
+          - claim: "sub"
+            header: "Subject"
+        localJWKS:
+          type: ValueRef
+          valueRef:
+            group: ""
+            kind: ConfigMap
+            name: jwt-local-jwks
