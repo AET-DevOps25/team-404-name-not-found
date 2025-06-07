@@ -5,6 +5,9 @@ metadata:
 spec:
   parentRefs:
     - name: envoy
+      sectionName: https
+  hostnames:
+    - "fridge.local"
   rules:
     - backendRefs:
         - group: ""

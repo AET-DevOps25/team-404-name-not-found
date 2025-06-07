@@ -3,5 +3,4 @@ kind: ConfigMap
 metadata:
   name: jwt-local-jwks
 data:
-  jwks: |
-{{ toJson .Values.jwks | indent 4 }}
+  jwks: {{ toYaml .Values.jwks | indent 2 }}
