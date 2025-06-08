@@ -25,6 +25,8 @@ usersProbe:
   periodSeconds: 10
   failureThreshold: 30
 
+host: fridge.localhost
+
 # ofc these values are from me. It is recommended to change them before actually running the app
 jwks: |
   {

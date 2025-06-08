@@ -6,7 +6,7 @@ services:
     command:
       - "--configFile=/etc/traefik/traefik.yml"
     ports:
-      - "80:80"
+      - "8080:80"
       - "443:443"
       - "7070:8080"
     environment:
@@ -52,7 +52,7 @@ services:
       retries: 5
       start_period: 10s
     ports:
-      - "8080:8080"
+      - "8081:8080"
     depends_on:
       postgres:
         condition: service_healthy
@@ -74,7 +74,7 @@ services:
       retries: 5
       start_period: 10s
     ports:
-      - "8081:8080"
+      - "8082:8080"
     depends_on:
       users:
         condition: service_healthy
