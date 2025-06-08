@@ -16,3 +16,4 @@ ignorePaths:
   - "*.png"
   - "*.jpg"
   - "*.jpeg"
+  - "*.json"
