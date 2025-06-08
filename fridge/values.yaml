@@ -25,7 +25,28 @@ usersProbe:
   periodSeconds: 10
   failureThreshold: 30
 
+recipesProbe:
+  httpGet:
+    path: /api/recipes/health
+    port: 8080
+  initialDelaySeconds: 15
+  periodSeconds: 10
+  failureThreshold: 30
+
 host: fridge.localhost
+
+defaultProvider:
+  - name: jwt
+    issuer: auth-api
+    claimToHeaders:
+      - claim: "sub"
+        header: "Subject"
+    localJWKS:
+      type: ValueRef
+      valueRef:
+        group: ""
+        kind: ConfigMap
+        name: jwt-local-jwks
 
 # ofc these values are from me. It is recommended to change them before actually running the app
 jwks: |
@@ -36,7 +57,7 @@ jwks: |
           "alg": "HS256",
           "key_ops": ["verify"],
           "kty": "oct",
-          "k": "bXktbW9zdC1zcGVjaWFsLXNlY3JldC1rZXk="
+          "k": "TODO: change me"
         }
       ]
   }
@@ -45,7 +66,7 @@ dockerConfigJson: |
   {
     "auths": {
       "ghcr.io": {
-          "auth": "a3Jpc3RpLWJhbGxhOmdocF9kWWZESTUyN2V0MVJ5WndTU0xOSmQ0d29sRENUTG0yV1EyMWw="
+          "auth": "TODO: change me"
       }
     }
   }
