@@ -18,3 +18,5 @@ spec:
         - path:
             type: PathPrefix
             value: /grafana
+
+# TODO: add the custom pre-made dashboards, see the entire application, host it on their cluster

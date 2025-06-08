@@ -388,4 +388,6 @@ token.yml
 hosts.ini
 *.ansible
 *.json
+!jvm.json
+!spring_boot.json
 */charts

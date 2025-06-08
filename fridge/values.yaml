@@ -36,7 +36,7 @@ jwks: |
           "alg": "HS256",
           "key_ops": ["verify"],
           "kty": "oct",
-          "k": "TODO: change me"
+          "k": "bXktbW9zdC1zcGVjaWFsLXNlY3JldC1rZXk="
         }
       ]
   }
@@ -45,7 +45,7 @@ dockerConfigJson: |
   {
     "auths": {
       "ghcr.io": {
-          "auth": "TODO: change me"
+          "auth": "a3Jpc3RpLWJhbGxhOmdocF9kWWZESTUyN2V0MVJ5WndTU0xOSmQ0d29sRENUTG0yV1EyMWw="
       }
     }
   }

@@ -14,6 +14,35 @@ datasources:
         url: http://prometheus-server
         isDefault: true
 
+dashboardProviders:
+  dashboardproviders.yaml:
+    apiVersion: 1
+    providers:
+      - name: "default"
+        orgId: 1
+        folder: ""
+        type: file
+        disableDeletion: false
+        editable: true
+        options:
+          path: /var/lib/grafana/dashboards/default
+
+dashboardsConfigMaps:
+  jvm-grafana-dashboard: "jvm-grafana-dashboard"
+  spring-boot-grafana-dashboard: "spring-boot-grafana-dashboard"
+
+extraConfigmapMounts:
+  - name: jvm-dashboards
+    configMap: jvm-grafana-dashboard
+    mountPath: /var/lib/grafana/dashboards/default/jvm
+    subPath: ""
+    readOnly: true
+  - name: spring-boot-dashboards
+    configMap: spring-boot-grafana-dashboard
+    mountPath: /var/lib/grafana/dashboards/default/springboot
+    subPath: ""
+    readOnly: true
+
 grafana.ini:
   server:
     http_addr: "0.0.0.0"
