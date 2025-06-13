@@ -16,7 +16,7 @@ group "default" {
 # functions, on the other hand, do, but that wouldn't have been much less writing!  
 target "server" {
     matrix = {
-        "ctx" = [ "users" ]
+        "ctx" = [ "users", "recipes" ]
     }
     name = "app-${ctx}"
     dockerfile = "${ctx}/Dockerfile"

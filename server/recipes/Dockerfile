@@ -1,8 +1,6 @@
 FROM gradle:8.14.0-jdk21 AS builder
 WORKDIR /app
 
-RUN echo "hello, world!"
-
 # this is def not the best i've written, but hey, 
 # there's a .dockerignore in the folder!
 COPY . .
