@@ -52,9 +52,9 @@ public class RecipeService {
         return recipeRepository.findAllByUserId(userId);
     }
 
-    public Recipe getRecipeById(String id, String userEmail) {
+    public Recipe getRecipeById(String id, String userId) {
         Recipe recipe = recipeRepository.findById(id).orElse(null);
-        if (recipe != null && !recipe.getUserId().equals(userEmail)) {
+        if (recipe != null && !recipe.getUserId().equals(userId)) {
             // If the recipe exists but doesn't belong to the user, return null
             return null;
         }

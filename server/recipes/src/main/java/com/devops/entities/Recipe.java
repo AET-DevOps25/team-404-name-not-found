@@ -31,7 +31,7 @@ public class Recipe {
     private int cookingTime;
 
     @ElementCollection
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "TEXT")
     private List<String> instructions;
 
     @ElementCollection
@@ -39,5 +39,5 @@ public class Recipe {
     private List<String> ingredients;
 
     @Column(nullable = false)
-    private String userId; // Reference to users.email (TEXT)
+    private String userId;
 }
