@@ -1,21 +1,14 @@
-package com.devops;
+package com.devops.services;
 
 import com.devops.entities.Difficulty;
 import com.devops.entities.Recipe;
 import com.devops.repositories.RecipeRepository;
-import com.devops.services.RecipeService;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
