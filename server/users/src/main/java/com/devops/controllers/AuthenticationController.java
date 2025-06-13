@@ -7,10 +7,6 @@ import com.devops.entities.users.User;
 import com.devops.infra.security.TokenService;
 import com.devops.repositories.UserRepository;
 
-import jakarta.servlet.http.HttpServletRequest;
-
-import java.util.Enumeration;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.MediaType;

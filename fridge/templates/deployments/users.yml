@@ -1,0 +1,35 @@
+# k8s/base/users/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: users
+  namespace: {{ .Values.namespace }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: users
+  template:
+    metadata:
+      labels:
+        app: users
+    spec:
+      imagePullSecrets:
+        - name: ghcr-pull-secret
+      containers:
+        - name: users
+          image: "ghcr.io/aet-devops25/team-404-name-not-found/users:{{ .Values.currentBranch }}"
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8080
+          env:
+            - name: DB_HOST
+              value: postgres
+          startupProbe:
+{{ toYaml .Values.usersProbe | indent 12 }}
+          livenessProbe:
+{{ toYaml .Values.usersProbe | indent 12 }}
+          readinessProbe:
+{{ toYaml .Values.usersProbe | indent 12 }}
+          resources:
+{{ toYaml .Values.resources | indent 12}}
