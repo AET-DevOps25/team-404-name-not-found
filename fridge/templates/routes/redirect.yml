@@ -7,7 +7,7 @@ spec:
   parentRefs:
     - name: envoy
       sectionName: http
-      namespace: {{ .Values.gateway_ns }}
+      namespace: {{ .Values.gatewayNs }}
   hostnames:
     - "{{ .Values.host }}"
   rules:

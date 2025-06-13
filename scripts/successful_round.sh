@@ -2,14 +2,8 @@
 
 set -e
 
-# --- Logging helpers ---
-log() {
-  echo -e "\033[0;32m$1\033[0m"
-}
-
-err() {
-  echo -e "\033[0;31m$1\033[0m" >&2
-}
+log() { echo -e "\033[0;32m$1\033[0m"; }
+err() { echo -e "\033[0;31m$1\033[0m" >&2; }
 
 check_status() {
   if [[ "$1" -ne 200 && "$1" -ne 201 ]]; then
@@ -18,37 +12,39 @@ check_status() {
   fi
 }
 
-# --- Configurable protocol and port ---
 PROTOCOL="${PROTOCOL:-http}"
 PORT="${PORT:-8080}"
 
-# Validate protocol
 if [[ "$PROTOCOL" != "http" && "$PROTOCOL" != "https" ]]; then
   err "❌ Invalid protocol: $PROTOCOL. Must be 'http' or 'https'."
   exit 1
 fi
 
-# Validate port
 if ! [[ "$PORT" =~ ^[0-9]+$ ]]; then
-  err "❌ Invalid port: $PORT. Must be a number."
+  err "❌ Invalid port: $PORT. Must be numeric."
   exit 1
 fi
 
-BASE_URL="$PROTOCOL://localhost:$PORT"
-EXTRA_HEADER=""
-[[ "$PROTOCOL" == "https" ]] && EXTRA_HEADER="-H \"Host: fridge.localhost\""
+# Set base URL and curl options
+if [[ "$PROTOCOL" == "https" ]]; then
+  BASE_URL="https://fridge.localhost:$PORT"
+  CURL_RESOLVE="--resolve fridge.localhost:$PORT:127.0.0.1"
+else
+  BASE_URL="http://localhost:$PORT"
+  CURL_RESOLVE=""
+fi
 
-# --- Register user ---
+# ------------------ BEGIN REQUESTS ------------------
+
 log "Registering user..."
-STATUS=$(curl -s -o /dev/null -w "%{http_code}" -X POST "$BASE_URL/api/users/register" \
-  -H "Content-Type: application/json" $EXTRA_HEADER \
+STATUS=$(curl -k -s -o /dev/null -w "%{http_code}" -X POST "$BASE_URL/api/users/register" \
+  $CURL_RESOLVE -H "Content-Type: application/json" \
   -d '{"name": "alice", "email": "alice@b.c", "password": "password1234", "role": "USER"}')
 check_status "$STATUS"
 
-# --- Login and extract token ---
 log "\nLogging in and extracting token..."
-LOGIN_RESPONSE=$(curl -s -w "\n%{http_code}" -X POST "$BASE_URL/api/users/login" \
-  -H "Content-Type: application/json" $EXTRA_HEADER \
+LOGIN_RESPONSE=$(curl -k -s -w "\n%{http_code}" -X POST "$BASE_URL/api/users/login" \
+  $CURL_RESOLVE -H "Content-Type: application/json" \
   -d '{"email": "alice@b.c", "password": "password1234"}')
 
 AUTH_TOKEN=$(echo "$LOGIN_RESPONSE" | head -n1 | jq -r .token)
@@ -61,21 +57,19 @@ if [[ -z "$AUTH_TOKEN" || "$AUTH_TOKEN" == "null" ]]; then
 fi
 log "✅ Token retrieved successfully."
 
-# --- Generate recipe with AI ---
 log "\nGenerating recipe with AI..."
-AI_RESPONSE=$(curl -s -w "\n%{http_code}" -X POST "$BASE_URL/api/recipes/ai" \
-  -H "Content-Type: application/json" \
-  -H "Authorization: Bearer $AUTH_TOKEN" $EXTRA_HEADER \
+AI_RESPONSE=$(curl -k -s -w "\n%{http_code}" -X POST "$BASE_URL/api/recipes/ai" \
+  $CURL_RESOLVE -H "Content-Type: application/json" \
+  -H "Authorization: Bearer $AUTH_TOKEN" \
   -d '["tomatoes", "beef", "pasta"]')
 
 AI_BODY=$(echo "$AI_RESPONSE" | head -n1)
 STATUS=$(echo "$AI_RESPONSE" | tail -n1)
 check_status "$STATUS"
 
-# --- Get user ID ---
 log "\nGetting current user info..."
-WHOAMI_RESPONSE=$(curl -s -w "\n%{http_code}" -X GET "$BASE_URL/api/users/whoami" \
-  -H "Authorization: Bearer $AUTH_TOKEN" $EXTRA_HEADER)
+WHOAMI_RESPONSE=$(curl -k -s -w "\n%{http_code}" -X GET "$BASE_URL/api/users/whoami" \
+  $CURL_RESOLVE -H "Authorization: Bearer $AUTH_TOKEN")
 
 USER_ID=$(echo "$WHOAMI_RESPONSE" | head -n1)
 STATUS=$(echo "$WHOAMI_RESPONSE" | tail -n1)
@@ -87,19 +81,17 @@ if [[ -z "$USER_ID" || "$USER_ID" == "null" ]]; then
 fi
 log "👤 User ID: $USER_ID"
 
-# --- Save recipe ---
 log "\nSaving recipe..."
 MODIFIED_RECIPE=$(echo "$AI_BODY" | jq --arg userId "$USER_ID" '. + {userId: $userId}')
-STATUS=$(curl -s -o /dev/null -w "%{http_code}" -X POST "$BASE_URL/api/recipes/" \
-  -H "Content-Type: application/json" \
-  -H "Authorization: Bearer $AUTH_TOKEN" $EXTRA_HEADER \
+STATUS=$(curl -k -s -o /dev/null -w "%{http_code}" -X POST "$BASE_URL/api/recipes/" \
+  $CURL_RESOLVE -H "Content-Type: application/json" \
+  -H "Authorization: Bearer $AUTH_TOKEN" \
   -d "$MODIFIED_RECIPE")
 check_status "$STATUS"
 
-# --- Get all recipes ---
 log "\nGetting all recipes for the user..."
-RECIPES_RESPONSE=$(curl -s -w "\n%{http_code}" -X GET "$BASE_URL/api/recipes/" \
-  -H "Authorization: Bearer $AUTH_TOKEN" $EXTRA_HEADER)
+RECIPES_RESPONSE=$(curl -k -s -w "\n%{http_code}" -X GET "$BASE_URL/api/recipes/" \
+  $CURL_RESOLVE -H "Authorization: Bearer $AUTH_TOKEN")
 
 RECIPES_BODY=$(echo "$RECIPES_RESPONSE" | head -n1)
 STATUS=$(echo "$RECIPES_RESPONSE" | tail -n1)
@@ -112,10 +104,9 @@ if [[ -z "$RECIPE_ID" || "$RECIPE_ID" == "null" ]]; then
 fi
 log "🥘 Latest recipe ID: $RECIPE_ID"
 
-# --- Get recipe by ID ---
 log "\nGetting recipe by ID..."
-STATUS=$(curl -s -o /dev/null -w "%{http_code}" -X GET "$BASE_URL/api/recipes/$RECIPE_ID" \
-  -H "Authorization: Bearer $AUTH_TOKEN" $EXTRA_HEADER)
+STATUS=$(curl -k -s -o /dev/null -w "%{http_code}" -X GET "$BASE_URL/api/recipes/$RECIPE_ID" \
+  $CURL_RESOLVE -H "Authorization: Bearer $AUTH_TOKEN")
 check_status "$STATUS"
 
 log "\n✅ All requests completed successfully."

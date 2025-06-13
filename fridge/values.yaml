@@ -3,7 +3,7 @@
 # Declare variables to be passed into your templates.
 
 namespace: team-404-name-not-found
-gateway_ns: envoy-gateway-system
+gatewayNs: default
 currentBranch: main
 
 # default login vars for postgres

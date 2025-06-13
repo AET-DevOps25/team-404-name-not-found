@@ -9,7 +9,7 @@ spec:
       # The decision NOT to put this behind the JWT auth logic is 
       # to make it easier for everyone to access the dashboards
       sectionName: https
-      namespace: {{ .Values.gateway_ns }}
+      namespace: {{ .Values.gatewayNs }}
   hostnames:
     - "{{ .Values.host }}"
   rules:
