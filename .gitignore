@@ -387,3 +387,6 @@ infra/.env
 token.yml
 hosts.ini
 *.ansible
+
+docker_config.json
+jwks.json

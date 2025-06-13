@@ -1,6 +1,6 @@
 spring:
   application:
-    name: users
+    name: recipes
   datasource:
     url: jdbc:postgresql://${DB_HOST:localhost}:5432/fridge
     username: postgres
@@ -12,11 +12,6 @@ spring:
     properties:
       hibernate.dialect: org.hibernate.dialect.PostgreSQLDialect
 
-api:
-  security:
-    token:
-      secret: ${JWT_SECRET:my-most-special-secret-key}
-
 server:
   servlet:
     context-path: /api
@@ -26,8 +21,11 @@ management:
     web:
       exposure:
         include: "*"
-      base-path: /users
+      base-path: /recipes
       path-mapping:
         health: health
   health:
     show-details: always
+
+vars:
+  HOST: ${HOST:localhost}

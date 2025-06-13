@@ -14,34 +14,39 @@ http:
             Subject: sub
 
   routers:
+    whoami:
+      entryPoints:
+        - web
+      service: users
+      rule: Host(`{{ env "HOST" | default "localhost" }}`) && PathPrefix(`/api/users/whoami`)
+      middlewares:
+        - you-shall-not-pass
+        - my-jwt-auth
     registration:
       entryPoints:
         - web
       service: users
-      rule: Host(`{{ env "HOST" | default "localhost" }}`) && (PathPrefix(`/api/actuator`) || PathPrefix(`/api/users`))
+      rule: Host(`{{ env "HOST" | default "localhost" }}`) && PathPrefix(`/api/users`)
       middlewares:
         - you-shall-not-pass
-    backend:
+    recipes:
       entryPoints:
         - web
-      service: users
-      rule: Host(`{{ env "HOST" | default "localhost" }}`) && PathPrefix(`/api`)
+      service: recipes
+      rule: Host(`{{ env "HOST" | default "localhost" }}`) && PathPrefix(`/api/recipes`)
       middlewares:
         - you-shall-not-pass
         - my-jwt-auth
-    pgadmin:
-      entryPoints:
-        - web
-      service: pgadmin
-      rule: Host(`{{ env "HOST" | default "localhost" }}`) && PathPrefix(`/pgadmin`)
-      middlewares:
-        - you-shall-not-pass
 
   services:
     users:
       loadBalancer:
         servers:
           - url: "http://users:8080"
+    recipes:
+      loadBalancer:
+        servers:
+          - url: "http://recipes:8080"
     pgadmin:
       loadBalancer:
         servers:
