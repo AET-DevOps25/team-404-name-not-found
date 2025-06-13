@@ -3,6 +3,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: recipes
+  namespace: {{ .Values.namespace }}
 spec:
   replicas: 1
   selector:
@@ -17,7 +18,7 @@ spec:
         - name: ghcr-pull-secret
       containers:
         - name: recipes
-          image: ghcr.io/aet-devops25/team-404-name-not-found/recipes:add_k8s_backbone
+          image: "ghcr.io/aet-devops25/team-404-name-not-found/recipes:{{ .Values.currentBranch }}"
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8080

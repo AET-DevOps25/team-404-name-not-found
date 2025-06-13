@@ -2,10 +2,12 @@ apiVersion: gateway.networking.k8s.io/v1
 kind: HTTPRoute
 metadata:
   name: redirect
+  namespace: {{ .Values.namespace }}
 spec:
   parentRefs:
     - name: envoy
       sectionName: http
+      namespace: {{ .Values.gateway_ns }}
   hostnames:
     - "{{ .Values.host }}"
   rules:

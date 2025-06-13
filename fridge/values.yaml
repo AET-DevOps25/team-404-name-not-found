@@ -2,6 +2,10 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
+namespace: team-404-name-not-found
+gateway_ns: envoy-gateway-system
+currentBranch: main
+
 # default login vars for postgres
 postgresUser: postgres
 postgresPass: postgres
@@ -57,7 +61,7 @@ jwks: |
           "alg": "HS256",
           "key_ops": ["verify"],
           "kty": "oct",
-          "k": "TODO: change me"
+          "k": "bXktbW9zdC1zcGVjaWFsLXNlY3JldC1rZXk="
         }
       ]
   }
@@ -66,7 +70,7 @@ dockerConfigJson: |
   {
     "auths": {
       "ghcr.io": {
-          "auth": "TODO: change me"
+          "auth": "a3Jpc3RpLWJhbGxhOmdocF9kWWZESTUyN2V0MVJ5WndTU0xOSmQ0d29sRENUTG0yV1EyMWw="
       }
     }
   }

@@ -2,6 +2,7 @@ apiVersion: gateway.envoyproxy.io/v1alpha1
 kind: SecurityPolicy
 metadata:
   name: recipes
+  namespace: {{ .Values.namespace }}
 spec:
   targetRef:
     group: gateway.networking.k8s.io

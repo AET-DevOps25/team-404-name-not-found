@@ -2,6 +2,7 @@ apiVersion: gateway.envoyproxy.io/v1alpha1
 kind: SecurityPolicy
 metadata:
   name: jwt
+  namespace: {{ .Values.namespace }}
 spec:
   targetRef:
     group: gateway.networking.k8s.io
