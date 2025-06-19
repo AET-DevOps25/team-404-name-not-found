@@ -1,10 +1,16 @@
-import React, { useState } from 'react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Refrigerator } from 'lucide-react';
+import React, { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+    Card,
+    CardContent,
+    CardDescription,
+    CardHeader,
+    CardTitle,
+} from "@/components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Refrigerator } from "lucide-react";
 
 interface LoginScreenProps {
     onLogin: () => void;
@@ -31,14 +37,20 @@ const LoginScreen = ({ onLogin }: LoginScreenProps) => {
                     <div className="inline-flex items-center justify-center w-16 h-16 bg-green-600 rounded-full mb-4">
                         <Refrigerator className="w-8 h-8 text-white" />
                     </div>
-                    <h1 className="text-3xl font-bold text-gray-900">What's In My Fridge</h1>
-                    <p className="text-gray-600 mt-2">Turn your ingredients into amazing meals</p>
+                    <h1 className="text-3xl font-bold text-gray-900">
+                        What's In My Fridge
+                    </h1>
+                    <p className="text-gray-600 mt-2">
+                        Turn your ingredients into amazing meals
+                    </p>
                 </div>
 
                 {/* Login/Register Form */}
                 <Card className="shadow-lg border-0 bg-white/80 backdrop-blur-sm">
                     <CardHeader>
-                        <CardTitle className="text-center text-gray-900">Welcome back</CardTitle>
+                        <CardTitle className="text-center text-gray-900">
+                            Welcome back
+                        </CardTitle>
                         <CardDescription className="text-center">
                             Sign in to your account or create a new one
                         </CardDescription>
@@ -47,11 +59,16 @@ const LoginScreen = ({ onLogin }: LoginScreenProps) => {
                         <Tabs defaultValue="login" className="w-full">
                             <TabsList className="grid w-full grid-cols-2">
                                 <TabsTrigger value="login">Login</TabsTrigger>
-                                <TabsTrigger value="register">Register</TabsTrigger>
+                                <TabsTrigger value="register">
+                                    Register
+                                </TabsTrigger>
                             </TabsList>
 
                             <TabsContent value="login">
-                                <form onSubmit={handleSubmit} className="space-y-4 min-h-[240px]">
+                                <form
+                                    onSubmit={handleSubmit}
+                                    className="space-y-4 min-h-[240px]"
+                                >
                                     <div className="space-y-2">
                                         <Label htmlFor="email">Email</Label>
                                         <Input
@@ -63,7 +80,9 @@ const LoginScreen = ({ onLogin }: LoginScreenProps) => {
                                         />
                                     </div>
                                     <div className="space-y-2">
-                                        <Label htmlFor="password">Password</Label>
+                                        <Label htmlFor="password">
+                                            Password
+                                        </Label>
                                         <Input
                                             id="password"
                                             type="password"
@@ -77,13 +96,18 @@ const LoginScreen = ({ onLogin }: LoginScreenProps) => {
                                         className="w-full bg-green-600 hover:bg-green-700 text-white"
                                         disabled={isLoading}
                                     >
-                                        {isLoading ? 'Signing in...' : 'Sign in'}
+                                        {isLoading
+                                            ? "Signing in..."
+                                            : "Sign in"}
                                     </Button>
                                 </form>
                             </TabsContent>
 
                             <TabsContent value="register">
-                                <form onSubmit={handleSubmit} className="space-y-4 min-h-[240px]">
+                                <form
+                                    onSubmit={handleSubmit}
+                                    className="space-y-4 min-h-[240px]"
+                                >
                                     <div className="space-y-2">
                                         <Label htmlFor="name">Name</Label>
                                         <Input
@@ -95,7 +119,9 @@ const LoginScreen = ({ onLogin }: LoginScreenProps) => {
                                         />
                                     </div>
                                     <div className="space-y-2">
-                                        <Label htmlFor="email-register">Email</Label>
+                                        <Label htmlFor="email-register">
+                                            Email
+                                        </Label>
                                         <Input
                                             id="email-register"
                                             type="email"
@@ -105,7 +131,9 @@ const LoginScreen = ({ onLogin }: LoginScreenProps) => {
                                         />
                                     </div>
                                     <div className="space-y-2">
-                                        <Label htmlFor="password-register">Password</Label>
+                                        <Label htmlFor="password-register">
+                                            Password
+                                        </Label>
                                         <Input
                                             id="password-register"
                                             type="password"
@@ -119,7 +147,9 @@ const LoginScreen = ({ onLogin }: LoginScreenProps) => {
                                         className="w-full bg-green-600 hover:bg-green-700 text-white"
                                         disabled={isLoading}
                                     >
-                                        {isLoading ? 'Creating account...' : 'Create account'}
+                                        {isLoading
+                                            ? "Creating account..."
+                                            : "Create account"}
                                     </Button>
                                 </form>
                             </TabsContent>

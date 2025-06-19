@@ -1,4 +1,4 @@
-export type Unit = 'pcs' | 'ml' | 'g' | 'kg' | 'l';
+export type Unit = "pcs" | "ml" | "g" | "kg" | "l";
 
 export interface Ingredient {
     name: string;

@@ -9,8 +9,8 @@
     "preview": "vite preview",
     "lint:eslint": "eslint .",
     "lint:prettier": "prettier . --check",
-    "lint": "npm run lint:eslint; npm run lint:prettier",
-    "format": "prettier --write ."
+    "lint:prettier:fix": "prettier --write .",
+    "lint": "npm run lint:eslint; npm run lint:prettier"
   },
   "dependencies": {
     "@radix-ui/react-label": "^2.1.7",

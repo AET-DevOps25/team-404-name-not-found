@@ -6,8 +6,8 @@ export interface Recipe {
     description: string;
     image: string;
     cookTime: number;
-    difficulty: 'Easy' | 'Medium' | 'Hard';
+    difficulty: "Easy" | "Medium" | "Hard";
     ingredients: Ingredient[];
     instructions: string[];
-    availabilityScore: 'red' | 'yellow' | 'green';
+    availabilityScore: "red" | "yellow" | "green";
 }

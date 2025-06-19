@@ -11,7 +11,8 @@ interface DashboardProps {
 
 const Dashboard = ({ onLogout }: DashboardProps) => {
     // @ts-ignore
-    const [ingredients, setIngredients] = useState<RenderableIngredient[]>(dummyIngredients);
+    const [ingredients, setIngredients] =
+        useState<RenderableIngredient[]>(dummyIngredients);
 
     return (
         <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
@@ -22,16 +23,16 @@ const Dashboard = ({ onLogout }: DashboardProps) => {
                         <div className="flex items-center">
                             <div className="flex items-center">
                                 <Refrigerator className="w-8 h-8 text-green-600 mr-3" />
-                                <h1 className="text-2xl font-bold text-gray-900 dark:text-white">What's In My
-                                    Fridge</h1>
+                                <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
+                                    What's In My Fridge
+                                </h1>
                             </div>
                         </div>
                         <div className="flex items-center space-x-4">
                             <Button
                                 variant="outline"
                                 size="sm"
-                                onClick={() => {
-                                }} // TODO: Show add ingredient modal
+                                onClick={() => {}} // TODO: Show add ingredient modal
                                 className="border-green-200 text-green-700 hover:bg-green-50 dark:border-green-700 dark:text-green-400 dark:hover:bg-green-900"
                             >
                                 <Plus className="w-4 h-4 mr-2" />
@@ -40,8 +41,7 @@ const Dashboard = ({ onLogout }: DashboardProps) => {
                             <Button
                                 variant="outline"
                                 size="sm"
-                                onClick={() => {
-                                }} // TODO: Show camera modal/view
+                                onClick={() => {}} // TODO: Show camera modal/view
                                 className="border-orange-200 text-orange-700 hover:bg-orange-50 dark:border-orange-700 dark:text-orange-400 dark:hover:bg-orange-900"
                             >
                                 <Camera className="w-4 h-4 mr-2" />
@@ -67,7 +67,9 @@ const Dashboard = ({ onLogout }: DashboardProps) => {
                     {/* Ingredients Section - 2/3 width */}
                     <div className="flex-1">
                         <div className="mb-6">
-                            <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Your Ingredients</h2>
+                            <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
+                                Your Ingredients
+                            </h2>
                         </div>
                         <IngredientGrid
                             ingredients={ingredients}
@@ -79,7 +81,9 @@ const Dashboard = ({ onLogout }: DashboardProps) => {
                     {/* Recipes Sidebar - 1/3 width */}
                     <div className="w-96">
                         <div className="flex items-center justify-between mb-6">
-                            <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Recipe Suggestions</h2>
+                            <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
+                                Recipe Suggestions
+                            </h2>
                             <Button
                                 variant="outline"
                                 size="sm"

@@ -1,17 +1,19 @@
 import { useState, useEffect, useContext, type PropsWithChildren } from "react";
 import axios from "axios";
 import type User from "./User.ts";
-import{ AuthContext } from "./AuthContext.ts";
+import { AuthContext } from "./AuthContext.ts";
 
 const AUTH_LOCALSTORAGE_ITEM_NAME: string = "token";
 const AUTH_HEADER_NAME: string = "Authorization";
-
 
 export const AuthProvider = ({ children }: PropsWithChildren) => {
     const [user, setUser] = useState<User | null>(null);
 
     const login = async (email: string, password: string) => {
-        const res = await axios.post<{ token: string }>("/auth/login", { email, password });
+        const res = await axios.post<{ token: string }>("/auth/login", {
+            email,
+            password,
+        });
         const token = res.data.token;
 
         localStorage.setItem(AUTH_LOCALSTORAGE_ITEM_NAME, token);
