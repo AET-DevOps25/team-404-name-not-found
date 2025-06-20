@@ -11,8 +11,7 @@ interface DashboardProps {
 
 const Dashboard = ({ onLogout }: DashboardProps) => {
     // @ts-ignore
-    const [ingredients, setIngredients] =
-        useState<RenderableIngredient[]>(dummyIngredients);
+    const [ingredients, setIngredients] = useState<RenderableIngredient[]>(dummyIngredients);
 
     return (
         <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
@@ -67,9 +66,7 @@ const Dashboard = ({ onLogout }: DashboardProps) => {
                     {/* Ingredients Section - 2/3 width */}
                     <div className="flex-1">
                         <div className="mb-6">
-                            <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
-                                Your Ingredients
-                            </h2>
+                            <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Your Ingredients</h2>
                         </div>
                         <IngredientGrid
                             ingredients={ingredients}
@@ -81,9 +78,7 @@ const Dashboard = ({ onLogout }: DashboardProps) => {
                     {/* Recipes Sidebar - 1/3 width */}
                     <div className="w-96">
                         <div className="flex items-center justify-between mb-6">
-                            <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
-                                Recipe Suggestions
-                            </h2>
+                            <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Recipe Suggestions</h2>
                             <Button
                                 variant="outline"
                                 size="sm"

@@ -11,31 +11,21 @@ interface IngredientGridProps {
     onDelete: (id: string) => void;
 }
 
-const IngredientGrid = ({
-    ingredients,
-    onEdit,
-    onDelete,
-}: IngredientGridProps) => {
+const IngredientGrid = ({ ingredients, onEdit, onDelete }: IngredientGridProps) => {
     const [hoveredId, setHoveredId] = useState<string | null>(null);
 
     const getQuantityColor = (quantity: number, unit: string) => {
         if (quantity === 0) return "bg-red-100 text-red-800";
-        if (quantity < 5 && unit === "pcs")
-            return "bg-yellow-100 text-yellow-800";
-        if (quantity < 100 && (unit === "ml" || unit === "g"))
-            return "bg-yellow-100 text-yellow-800";
+        if (quantity < 5 && unit === "pcs") return "bg-yellow-100 text-yellow-800";
+        if (quantity < 100 && (unit === "ml" || unit === "g")) return "bg-yellow-100 text-yellow-800";
         return "bg-green-100 text-green-800";
     };
 
     if (ingredients.length === 0) {
         return (
             <div className="text-center py-12">
-                <div className="text-gray-400 text-lg mb-2">
-                    Your fridge is empty!
-                </div>
-                <p className="text-gray-500">
-                    Add some ingredients to get started with recipes.
-                </p>
+                <div className="text-gray-400 text-lg mb-2">Your fridge is empty!</div>
+                <p className="text-gray-500">Add some ingredients to get started with recipes.</p>
             </div>
         );
     }
@@ -77,9 +67,7 @@ const IngredientGrid = ({
                         )}
                     </div>
                     <CardContent className="p-4">
-                        <h3 className="font-semibold text-gray-900 mb-2 truncate">
-                            {ingredient.name}
-                        </h3>
+                        <h3 className="font-semibold text-gray-900 mb-2 truncate">{ingredient.name}</h3>
                         <Badge
                             variant="outline"
                             className={`${getQuantityColor(ingredient.quantity, ingredient.unit)} border-0`}

@@ -17,7 +17,5 @@
 - `npm run dev` – Starts the Vite development server
 - `npm run build` – Compiles TypeScript and builds the project with Vite
 - `npm run preview` – Serves the built project for local preview
-- `npm run lint:eslint` – Runs ESLint on the project
-- `npm run lint:prettier` – Checks code formatting with Prettier
-- `npm run lint:prettier:fix` – Fixes formatting issues using Prettier
-- `npm run lint` – Runs both ESLint and Prettier checks
+- `npm run lint` – Runs ESLint + Prettier on the project
+- `npm run lint:fix` – Fixes formatting issues using Prettier
