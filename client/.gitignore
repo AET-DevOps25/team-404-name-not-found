@@ -22,3 +22,6 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# this lib is created by shadcn and shouldnt be ignored
+!lib/
