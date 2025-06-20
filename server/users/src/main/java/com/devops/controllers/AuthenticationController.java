@@ -4,6 +4,7 @@ import com.devops.entities.users.dtos.AuthenticationDTO;
 import com.devops.entities.users.dtos.LoginResponseDTO;
 import com.devops.entities.users.dtos.RegisterDTO;
 import com.devops.entities.users.User;
+import com.devops.entities.users.UserRole;
 import com.devops.infra.security.TokenService;
 import com.devops.repositories.UserRepository;
 
@@ -42,8 +43,10 @@ public class AuthenticationController {
 
     @Autowired
     private AuthenticationManager authenticationManager;
+
     @Autowired
     private UserRepository userRepository;
+
     @Autowired
     private TokenService tokenService;
 
@@ -77,6 +80,35 @@ public class AuthenticationController {
 
     private final RestTemplate restTemplate = new RestTemplate();
 
+    private MultiValueMap<String, String> createParams(String clientId, String clientSecret, String redirectUri,
+            String code) {
+        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+        params.add("client_id", clientId);
+        params.add("client_secret", clientSecret);
+        params.add("code", code);
+        params.add("redirect_uri", redirectUri);
+
+        return params;
+    }
+
+    private String fetchUserToken(Map userInfo) {
+        String githubId = String.valueOf(userInfo.get("id"));
+        String name = (String) userInfo.getOrDefault("name", userInfo.get("login"));
+        String email = (String) userInfo.get("email");
+
+        // Persist user based on GitHub ID
+        User user = userRepository.findById(githubId).orElseGet(() -> {
+            User newUser = new User();
+            newUser.setId(githubId); // GitHub ID becomes primary key
+            newUser.setName(name);
+            newUser.setEmail(email);
+            newUser.setPassword(null); // No password — GitHub only
+            newUser.setRole(UserRole.USER);
+            return userRepository.save(newUser);
+        });
+        return tokenService.generateToken(user);
+    }
+
     @GetMapping("/callback")
     public ResponseEntity<?> callback(@RequestParam String code) {
         System.out.println("GitHub reached out to the callback!");
@@ -85,11 +117,7 @@ public class AuthenticationController {
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
         headers.setAccept(List.of(MediaType.APPLICATION_JSON));
 
-        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
-        params.add("client_id", clientId);
-        params.add("client_secret", clientSecret);
-        params.add("code", code);
-        params.add("redirect_uri", redirectUri);
+        MultiValueMap<String, String> params = createParams(clientId, clientSecret, redirectUri, code);
 
         HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(params, headers);
 
@@ -121,9 +149,27 @@ public class AuthenticationController {
         }
 
         Map userInfo = userResponse.getBody();
+        String jwt = fetchUserToken(userInfo);
+        return ResponseEntity.ok(Map.of("token", jwt));
+    }
 
-        // 3. Return user info for now
-        return ResponseEntity.ok(userInfo);
+    @GetMapping("/auth")
+    public ResponseEntity<?> validateToken(
+            @RequestHeader(value = "Authorization", required = false) String authHeader) {
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            return ResponseEntity.status(401).body("Missing or invalid Authorization header");
+        }
+
+        String token = authHeader.substring(7);
+        String userId = tokenService.validateToken(token);
+
+        if (userId.isEmpty()) {
+            return ResponseEntity.status(401).body("Invalid or expired token");
+        }
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("X-User-Id", userId);
+        return new ResponseEntity<>(headers, HttpStatus.OK);
     }
 
     /**
@@ -134,7 +180,7 @@ public class AuthenticationController {
      * @return that same header value
      */
     @GetMapping("/whoami")
-    public ResponseEntity<?> whoAmI(@RequestHeader("Subject") String subject) {
+    public ResponseEntity<?> whoAmI(@RequestHeader("X-User-Id") String subject) {
         return ResponseEntity.ok(subject);
     }
 }

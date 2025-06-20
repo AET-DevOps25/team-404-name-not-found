@@ -18,11 +18,13 @@ public class TokenService {
     @Value("${api.security.token.secret}")
     private String secret;
 
+    private static final String ISSUER = "fridge-auth-api";
+
     public String generateToken(User user) {
         try {
             Algorithm algorithm = Algorithm.HMAC256(this.secret);
             return JWT.create()
-                    .withIssuer("auth-api")
+                    .withIssuer(ISSUER)
                     .withSubject(user.getId())
                     .withExpiresAt(generateExpirationDate())
                     .sign(algorithm);
@@ -36,7 +38,7 @@ public class TokenService {
         try {
             Algorithm algorithm = Algorithm.HMAC256(this.secret);
             return JWT.require(algorithm)
-                    .withIssuer("auth-api")
+                    .withIssuer(ISSUER)
                     .build()
                     .verify(token)
                     .getSubject();
