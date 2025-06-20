@@ -21,7 +21,7 @@ public class RecipeController {
 
     @PostMapping("/ai")
     public ResponseEntity<Recipe> generateRecipe(@RequestBody List<String> ingredients,
-            @RequestHeader("Subject") String userId) {
+            @RequestHeader("X-User-Id") String userId) {
         Recipe recipe = recipeService.generateRecipe(ingredients, userId);
         return ResponseEntity.ok(recipe);
     }
@@ -39,7 +39,7 @@ public class RecipeController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> getRecipeById(@PathVariable String id, @RequestHeader("Subject") String userId) {
+    public ResponseEntity<?> getRecipeById(@PathVariable String id, @RequestHeader("X-User-Id") String userId) {
         if (id == null || id.isEmpty()) {
             return ResponseEntity.badRequest().build();
         }
@@ -55,7 +55,7 @@ public class RecipeController {
     }
 
     @GetMapping("/")
-    public ResponseEntity<?> getAllRecipesForUser(@RequestHeader("Subject") String userId) {
+    public ResponseEntity<?> getAllRecipesForUser(@RequestHeader("X-User-Id") String userId) {
         if (userId == null || userId.isEmpty()) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("The proxy should have set the user email in the Subject header");
@@ -65,7 +65,7 @@ public class RecipeController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteRecipe(@PathVariable String id, @RequestHeader("Subject") String userId) {
+    public ResponseEntity<?> deleteRecipe(@PathVariable String id, @RequestHeader("X-User-Id") String userId) {
         if (id == null || id.isEmpty()) {
             return ResponseEntity.badRequest().build();
         }

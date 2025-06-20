@@ -13,6 +13,8 @@ services:
     depends_on:
       users:
         condition: service_healthy
+      recipes:
+        condition: service_healthy
     networks:
       - web
 
@@ -57,27 +59,27 @@ services:
     networks:
       - web
 
-  # recipes:
-  #   container_name: recipes
-  #   image: ghcr.io/aet-devops25/team-404-name-not-found/recipes:main
-  #   build:
-  #     context: server
-  #     dockerfile: recipes/Dockerfile
-  #   healthcheck:
-  #     test: ["CMD", "wget", "-q", "--spider", "http://localhost:8080/api/recipes/health"]
-  #     interval: 10s
-  #     timeout: 15s
-  #     retries: 5
-  #     start_period: 10s
-  #   ports:
-  #     - "8082:8080"
-  #   depends_on:
-  #     users:
-  #       condition: service_healthy
-  #   environment:
-  #     DB_HOST: db
-  #   networks:
-  #     - web
+  recipes:
+    container_name: recipes
+    image: ghcr.io/aet-devops25/team-404-name-not-found/recipes:main
+    build:
+      context: server
+      dockerfile: recipes/Dockerfile
+    healthcheck:
+      test: ["CMD", "wget", "-q", "--spider", "http://localhost:8080/api/recipes/health"]
+      interval: 10s
+      timeout: 15s
+      retries: 5
+      start_period: 10s
+    ports:
+      - "8082:8080"
+    depends_on:
+      users:
+        condition: service_healthy
+    environment:
+      DB_HOST: db
+    networks:
+      - web
 
 volumes:
   pgdata:

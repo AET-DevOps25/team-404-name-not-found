@@ -168,7 +168,7 @@ public class AuthenticationController {
         }
 
         HttpHeaders headers = new HttpHeaders();
-        headers.add("Subject", userId);
+        headers.add("X-User-Id", userId);
         return new ResponseEntity<>(headers, HttpStatus.OK);
     }
 
@@ -180,7 +180,7 @@ public class AuthenticationController {
      * @return that same header value
      */
     @GetMapping("/whoami")
-    public ResponseEntity<?> whoAmI(@RequestHeader("Subject") String subject) {
+    public ResponseEntity<?> whoAmI(@RequestHeader("X-User-Id") String subject) {
         return ResponseEntity.ok(subject);
     }
 }
