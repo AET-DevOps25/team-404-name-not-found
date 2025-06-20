@@ -1,22 +1,32 @@
-apiVersion: gateway.networking.k8s.io/v1
-kind: HTTPRoute
+apiVersion: networking.k8s.io/v1
+kind: Ingress
 metadata:
   name: users
   namespace: {{ .Values.namespace }}
+  annotations:
+    cert-manager.io/cluster-issuer: selfsigned
+    cert-manager.io/common-name: "404-name-not-found"
+    cert-manager.io/subject-organizations: devops
+    cert-manager.io/subject-countries: DE
+    cert-manager.io/subject-provinces: Bavaria
+    cert-manager.io/subject-localities: Munich
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/backend-protocol: "HTTP"
 spec:
-  parentRefs:
-    - name: envoy
-      sectionName: https
-      namespace: {{ .Values.gatewayNs }}
-  hostnames:
-    - "{{ .Values.host }}"
+  ingressClassName: nginx
+  tls:
+    - hosts:
+        - "{{ .Values.host }}"
+      secretName: {{ replace "." "-" .Values.host }}
   rules:
-    - backendRefs:
-        - group: ""
-          kind: Service
-          name: users
-          port: 8080
-      matches:
-        - path:
-            type: PathPrefix
-            value: /api/users
+    - host: "{{ .Values.host }}"
+      http:
+        paths:
+          - path: /api/users
+            pathType: Prefix
+            backend:
+              service:
+                name: users
+                port:
+                  number: 8080

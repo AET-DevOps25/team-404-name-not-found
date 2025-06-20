@@ -1,22 +1,18 @@
 services:
 
-  traefik:
-    image: traefik:v3
-    container_name: traefik
-    command:
-      - "--configFile=/etc/traefik/traefik.yml"
+  nginx:
+    image: nginx:stable
+    container_name: nginx
     ports:
-      - "8080:80"
       - "443:443"
-      - "7070:8080"
-    environment:
-      - HOST=${HOST}
+      - "80:80"
     volumes:
-      - "/var/run/docker.sock:/var/run/docker.sock"
-      - "./traefik/traefik.yaml:/etc/traefik/traefik.yml"
-      - "./traefik/dynamic.yaml:/etc/traefik/dynamic.yaml"
-    labels:
-      - "traefik.enable=true"
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
+      - ./nginx/fridge.localhost.crt:/etc/nginx/certs/fridge.localhost.crt
+      - ./nginx/fridge.localhost.key:/etc/nginx/certs/fridge.localhost.key
+    depends_on:
+      users:
+        condition: service_healthy
     networks:
       - web
 
@@ -61,27 +57,27 @@ services:
     networks:
       - web
 
-  recipes:
-    container_name: recipes
-    image: ghcr.io/aet-devops25/team-404-name-not-found/recipes:main
-    build:
-      context: server
-      dockerfile: recipes/Dockerfile
-    healthcheck:
-      test: ["CMD", "wget", "-q", "--spider", "http://localhost:8080/api/recipes/health"]
-      interval: 10s
-      timeout: 15s
-      retries: 5
-      start_period: 10s
-    ports:
-      - "8082:8080"
-    depends_on:
-      users:
-        condition: service_healthy
-    environment:
-      DB_HOST: db
-    networks:
-      - web
+  # recipes:
+  #   container_name: recipes
+  #   image: ghcr.io/aet-devops25/team-404-name-not-found/recipes:main
+  #   build:
+  #     context: server
+  #     dockerfile: recipes/Dockerfile
+  #   healthcheck:
+  #     test: ["CMD", "wget", "-q", "--spider", "http://localhost:8080/api/recipes/health"]
+  #     interval: 10s
+  #     timeout: 15s
+  #     retries: 5
+  #     start_period: 10s
+  #   ports:
+  #     - "8082:8080"
+  #   depends_on:
+  #     users:
+  #       condition: service_healthy
+  #   environment:
+  #     DB_HOST: db
+  #   networks:
+  #     - web
 
 volumes:
   pgdata:
