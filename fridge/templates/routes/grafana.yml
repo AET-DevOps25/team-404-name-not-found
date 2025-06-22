@@ -1,24 +1,35 @@
-apiVersion: gateway.networking.k8s.io/v1
-kind: HTTPRoute
+apiVersion: networking.k8s.io/v1
+kind: Ingress
 metadata:
   name: grafana
   namespace: {{ .Values.namespace }}
+  annotations:
+    ###############################################
+    # cert-manager
+    cert-manager.io/cluster-issuer: selfsigned
+    cert-manager.io/common-name: "404-name-not-found"
+    cert-manager.io/subject-organizations: devops
+    cert-manager.io/subject-countries: DE
+    cert-manager.io/subject-provinces: Bavaria
+    cert-manager.io/subject-localities: Munich
+    ##############################################
+    # nginx
+    nginx.ingress.kubernetes.io/auth-url: "https://{{ .Values.host }}/api/users/auth"
+    nginx.ingress.kubernetes.io/auth-response-headers: "X-User-Id"
 spec:
-  parentRefs:
-    - name: envoy
-      # The decision NOT to put this behind the JWT auth logic is 
-      # to make it easier for everyone to access the dashboards
-      sectionName: https
-      namespace: {{ .Values.gatewayNs }}
-  hostnames:
-    - "{{ .Values.host }}"
+  ingressClassName: nginx
+  tls:
+    - hosts:
+        - "{{ .Values.host }}"
+      secretName: {{ replace "." "-" .Values.host }}
   rules:
-    - backendRefs:
-        - group: ""
-          kind: Service
-          name: grafana
-          port: 80
-      matches:
-        - path:
-            type: PathPrefix
-            value: /grafana
+    - host: "{{ .Values.host }}"
+      http:
+        paths:
+          - path: /grafana
+            pathType: Prefix
+            backend:
+              service:
+                name: grafana
+                port:
+                  number: 80

@@ -4,15 +4,14 @@ metadata:
   name: users
   namespace: {{ .Values.namespace }}
   annotations:
+    ###############################################
+    # cert-manager
     cert-manager.io/cluster-issuer: selfsigned
     cert-manager.io/common-name: "404-name-not-found"
     cert-manager.io/subject-organizations: devops
     cert-manager.io/subject-countries: DE
     cert-manager.io/subject-provinces: Bavaria
     cert-manager.io/subject-localities: Munich
-    nginx.ingress.kubernetes.io/ssl-redirect: "true"
-    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
-    nginx.ingress.kubernetes.io/backend-protocol: "HTTP"
 spec:
   ingressClassName: nginx
   tls:
