@@ -1,0 +1,55 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: grafana
+  namespace: {{ .Values.namespace }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: grafana
+  template:
+    metadata:
+      labels:
+        app: grafana
+    spec:
+      containers:
+        - name: grafana
+          image: grafana/grafana:10.4.1
+          ports:
+            - containerPort: 3000
+          env:
+            - name: GF_SECURITY_ADMIN_USER
+              value: "admin"
+            - name: GF_SECURITY_ADMIN_PASSWORD
+              value: "admin"
+            - name: GF_SERVER_DOMAIN
+              value: "{{ .Values.host }}"
+            - name: GF_SERVER_ROOT_URL
+              value: "https://{{ .Values.host }}/grafana"
+            - name: GF_SERVER_SERVE_FROM_SUB_PATH
+              value: "true"
+          volumeMounts:
+            - name: datasource-volume
+              mountPath: /etc/grafana/provisioning/datasources
+            - name: dashboards-provider
+              mountPath: /etc/grafana/provisioning/dashboards
+            - name: jvm-dashboards
+              mountPath: /var/lib/grafana/dashboards/default/jvm
+              readOnly: true
+            - name: springboot-dashboards
+              mountPath: /var/lib/grafana/dashboards/default/springboot
+              readOnly: true
+      volumes:
+        - name: datasource-volume
+          configMap:
+            name: grafana-datasources
+        - name: dashboards-provider
+          configMap:
+            name: grafana-dashboard-provider
+        - name: jvm-dashboards
+          configMap:
+            name: jvm-grafana-dashboard
+        - name: springboot-dashboards
+          configMap:
+            name: spring-boot-grafana-dashboard

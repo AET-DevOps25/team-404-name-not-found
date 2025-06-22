@@ -13,8 +13,3 @@ scrape_configs:
     static_configs:
       - targets:
           - "recipes:8080"
-  # - job_name: "envoy"
-  #   metrics_path: "/stats/prometheus"
-  #   static_configs:
-  #     - targets:
-  #         - "<envoy-gateway>:19000"
