@@ -3,8 +3,7 @@
 # Declare variables to be passed into your templates.
 
 namespace: team-404-name-not-found
-gatewayNs: default
-currentBranch: main
+currentBranch: deploy-aet-cluster
 
 # default login vars for postgres
 postgresUser: postgres
@@ -37,7 +36,7 @@ recipesProbe:
   periodSeconds: 10
   failureThreshold: 30
 
-host: fridge.localhost
+host: fridge.example
 
 defaultProvider:
   - name: jwt

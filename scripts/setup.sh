@@ -2,6 +2,8 @@
 
 kubectl create ns team-404-name-not-found
 
+minikube addons enable ingress
+
 helm repo add jetstack https://charts.jetstack.io --force-update
 
 kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.17.2/cert-manager.crds.yaml

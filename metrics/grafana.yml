@@ -47,7 +47,7 @@ grafana.ini:
   server:
     http_addr: "0.0.0.0"
     http_port: "3000"
-    domain: "fridge.localhost"
+    domain: "fridge.example"
     enforce_domain: "true"
     root_url: "https://%(domain)s/grafana"
     serve_from_sub_path: "true"
