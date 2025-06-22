@@ -25,6 +25,8 @@ spec:
           env:
             - name: DB_HOST
               value: postgres
+            - name: HOST
+              value: {{ .Values.host }}
           startupProbe:
 {{ toYaml .Values.recipesProbe | indent 12 }}
           livenessProbe:

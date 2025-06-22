@@ -1,13 +1,13 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: recipes
+  name: private
   namespace: {{ .Values.namespace }}
   annotations:
     ###############################################
     # cert-manager
-    cert-manager.io/cluster-issuer: selfsigned
-    cert-manager.io/common-name: "404-name-not-found"
+    cert-manager.io/issuer: issuer
+    cert-manager.io/common-name: "{{ .Values.host }}"
     cert-manager.io/subject-organizations: devops
     cert-manager.io/subject-countries: DE
     cert-manager.io/subject-provinces: Bavaria
@@ -26,6 +26,13 @@ spec:
     - host: "{{ .Values.host }}"
       http:
         paths:
+          - path: /api/users/whoami
+            pathType: Prefix
+            backend:
+              service:
+                name: users
+                port:
+                  number: 8080
           - path: /api/recipes
             pathType: Prefix
             backend:

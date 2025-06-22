@@ -28,9 +28,10 @@ spec:
           volumeMounts:
             - mountPath: /var/lib/postgresql/data
               name: pgdata
+              subPath: data
           readinessProbe:
             exec:
-              command: ["pg_isready", "-U", "postgres"]
+              command: ["pg_isready", "-U", {{ .Values.postgresUser | quote }}]
             initialDelaySeconds: 10
             periodSeconds: 5
             timeoutSeconds: 5

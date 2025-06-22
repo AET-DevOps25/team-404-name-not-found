@@ -1,6 +1,7 @@
 apiVersion: cert-manager.io/v1
-kind: ClusterIssuer
+kind: Issuer
 metadata:
-  name: selfsigned
+  name: issuer
+  namespace: {{ .Values.namespace }}
 spec:
-  selfSigned: {}
+{{ toYaml .Values.spec | indent 2 }}

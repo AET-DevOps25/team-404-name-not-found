@@ -25,6 +25,12 @@ spec:
           env:
             - name: DB_HOST
               value: postgres
+            - name: HOST
+              value: {{ .Values.host }}
+            - name: CLIENT_ID
+              value: {{ .Values.clientId }}
+            - name: CLIENT_SECRET
+              value: {{ .Values.clientSecret }}
           startupProbe:
 {{ toYaml .Values.usersProbe | indent 12 }}
           livenessProbe:
