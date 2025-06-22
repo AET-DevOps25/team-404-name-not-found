@@ -14,7 +14,7 @@ metadata:
     cert-manager.io/subject-localities: Munich
     ##############################################
     # nginx
-    nginx.ingress.kubernetes.io/auth-url: "https://{{ .Values.host }}/api/users/auth"
+    nginx.ingress.kubernetes.io/auth-url: "http://users.{{ .Values.namespace }}.svc.cluster.local:8080/api/users/auth"
     nginx.ingress.kubernetes.io/auth-response-headers: "X-User-Id"
 spec:
   ingressClassName: nginx
