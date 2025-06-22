@@ -1,0 +1,8 @@
+# Default values for the local development
+
+host: fridge.example
+clientId: Ov23liAV8O5mOpJq1EQ1
+clientSecret: fd7f9fe6ba42b441acd8a211b24044e08ae65645
+
+spec:
+  selfSigned: {}
