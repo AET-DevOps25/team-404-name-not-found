@@ -23,6 +23,8 @@ spec:
           volumeMounts:
             - name: config-volume
               mountPath: /etc/prometheus
+          resources:
+{{ toYaml .Values.resources | indent 12 }}
       volumes:
         - name: config-volume
           configMap:
