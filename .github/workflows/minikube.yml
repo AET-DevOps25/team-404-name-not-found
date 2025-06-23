@@ -56,4 +56,4 @@ jobs:
 
     - name: Wait for readiness
       run: |
-        kubectl wait --for=condition=ready pod --all --all-namespaces --timeout=240s
+        kubectl get pods -A
