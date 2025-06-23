@@ -23,7 +23,7 @@ spec:
       containers:
         - name: users
           image: "ghcr.io/aet-devops25/team-404-name-not-found/users:{{ .Values.currentBranch }}"
-          imagePullPolicy: IfNotPresent
+          imagePullPolicy: Always
           ports:
             - containerPort: 8080
           env:

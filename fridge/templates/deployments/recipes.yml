@@ -19,7 +19,7 @@ spec:
       containers:
         - name: recipes
           image: "ghcr.io/aet-devops25/team-404-name-not-found/recipes:{{ .Values.currentBranch }}"
-          imagePullPolicy: IfNotPresent
+          imagePullPolicy: Always
           ports:
             - containerPort: 8080
           env:

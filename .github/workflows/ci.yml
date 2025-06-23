@@ -40,8 +40,7 @@ jobs:
       DOCKER_CONFIG: ${{ secrets.DOCKER_CONFIG }}
   aet:
     needs:
-      - docker
-      - k8s_linting
+      - minikube
     uses: ./.github/workflows/aet.yml
     secrets:
       KUBECONF: ${{ secrets.KUBECONF }}

@@ -38,18 +38,5 @@ recipesProbe:
 
 host: fridge.example
 
-defaultProvider:
-  - name: jwt
-    issuer: auth-api
-    claimToHeaders:
-      - claim: "sub"
-        header: "Subject"
-    localJWKS:
-      type: ValueRef
-      valueRef:
-        group: ""
-        kind: ConfigMap
-        name: jwt-local-jwks
-
 grafanaUser: admin
 grafanaPass: admin
