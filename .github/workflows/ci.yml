@@ -28,3 +28,7 @@ jobs:
       - dockerfile_linting
       - java
     uses: ./.github/workflows/docker.yml
+  deploy:
+    needs:
+      - docker
+    uses: ./.github/workflows/deploy.yml
