@@ -4,7 +4,9 @@ metadata:
   name: pgdata
   namespace: {{ .Values.namespace }}
 spec:
-  storageClassName: csi-rbd-sc
+{{- if .Values.storageClassName }}
+  storageClassName: {{ .Values.storageClassName }}
+{{- end }}
   accessModes:
     - ReadWriteOnce
   resources:

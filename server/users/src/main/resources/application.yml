@@ -15,7 +15,8 @@ spring:
 api:
   security:
     token:
-      secret: ${JWT_SECRET:my-most-special-secret-key}
+      private-key-path: /etc/keys/private.pem
+      public-key-path: /etc/keys/public.pem
 
 github:
   client-id: ${CLIENT_ID:Ov23liAV8O5mOpJq1EQ1}

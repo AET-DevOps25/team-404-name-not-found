@@ -16,6 +16,10 @@ spec:
     spec:
       imagePullSecrets:
         - name: ghcr-pull-secret
+      volumes:
+        - name: jwt-keys
+          secret:
+            secretName: jwt-keys
       containers:
         - name: users
           image: "ghcr.io/aet-devops25/team-404-name-not-found/users:{{ .Values.currentBranch }}"
@@ -31,6 +35,10 @@ spec:
               value: {{ .Values.clientId }}
             - name: CLIENT_SECRET
               value: {{ .Values.clientSecret }}
+          volumeMounts:
+            - name: jwt-keys
+              mountPath: /etc/keys
+              readOnly: true
           startupProbe:
 {{ toYaml .Values.usersProbe | indent 12 }}
           livenessProbe:

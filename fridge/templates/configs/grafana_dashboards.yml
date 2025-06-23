@@ -2,7 +2,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: grafana-dashboard-provider
-  namespace: team-404-name-not-found
+  namespace: {{ .Values.namespace }}
 data:
   dashboardproviders.yaml: |
     apiVersion: 1

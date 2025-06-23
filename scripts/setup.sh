@@ -17,14 +17,14 @@ helm install \
 echo "#################################################################################"
 
 # this assumes you are running the script from project root
-helm install fridge ./fridge
+helm upgrade --install fridge ./fridge --namespace team-404-name-not-found --create-namespace --atomic -f fridge/values.local.yaml
 
 echo "#################################################################################"
 helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
 helm repo add grafana https://grafana.github.io/helm-charts
 helm repo update
-helm install prometheus prometheus-community/prometheus -n team-404-name-not-found -f metrics/prometheus.yml
-helm install grafana grafana/grafana -n team-404-name-not-found -f metrics/grafana.yml
+helm install prometheus prometheus-community/prometheus -n team-404-name-not-found -f ./fridge/prometheus.yml
+helm install grafana grafana/grafana -n team-404-name-not-found -f ./fridge/grafana.yml
 echo "#################################################################################"
 
 kubectl get pods -A
