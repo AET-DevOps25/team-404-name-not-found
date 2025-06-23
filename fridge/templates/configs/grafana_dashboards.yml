@@ -4,5 +4,5 @@ metadata:
   name: grafana-dashboard-provider
   namespace: {{ .Values.namespace }}
 data:
-  dashboardproviders.yaml:
+  dashboardproviders.yaml: |
 {{ .Files.Get "dashboardproviders.yml" | indent 4 }}
