@@ -31,6 +31,7 @@ jobs:
   minikube:
     needs:
       - docker
+      - k8s_linting
     uses: ./.github/workflows/minikube.yml
     secrets:
       KUBECONF: ${{ secrets.KUBECONF }}
@@ -40,6 +41,7 @@ jobs:
   aet:
     needs:
       - docker
+      - k8s_linting
     uses: ./.github/workflows/aet.yml
     secrets:
       KUBECONF: ${{ secrets.KUBECONF }}
