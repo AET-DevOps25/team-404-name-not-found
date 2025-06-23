@@ -18,6 +18,35 @@ services:
     networks:
       - web
 
+  prometheus:
+    image: prom/prometheus@sha256:9abc6cf6aea7710d163dbb28d8eeb7dc5baef01e38fa4cd146a406dd9f07f70d
+    container_name: prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./fridge/prometheus.yml:/etc/prometheus/prometheus.yml
+    networks:
+      - web
+
+  grafana:
+    image: grafana/grafana@sha256:fe89b739a264c78f2111d68221a1d51db67135ec50885dc93b59a981a7a5d4d5
+    container_name: grafana
+    ports:
+      - "3000:3000"
+    environment:
+      GF_SECURITY_ADMIN_USER: admin
+      GF_SECURITY_ADMIN_PASSWORD: admin
+      GF_SERVER_DOMAIN: fridge.localhost
+      GF_SERVER_ROOT_URL: "https://fridge.localhost/grafana"
+      GF_SERVER_SERVE_FROM_SUB_PATH: "true"
+    volumes:
+      - ./fridge/datasources.yml:/etc/grafana/provisioning/datasources/datasources.yaml
+      - ./fridge/dashboardproviders.yml:/etc/grafana/provisioning/dashboards/dashboardproviders.yaml
+      - ./fridge/jvm.json:/var/lib/grafana/dashboards/default/jvm/jvm.json
+      - ./fridge/spring_boot.json:/var/lib/grafana/dashboards/default/springboot/spring_boot.json
+    networks:
+      - web
+
   postgres:
     container_name: db
     image: postgres:16

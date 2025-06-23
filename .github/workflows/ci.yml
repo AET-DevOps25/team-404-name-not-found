@@ -13,10 +13,6 @@ jobs:
     uses: ./.github/workflows/dockerfile-linter.yml
   k8s_linting:
     uses: ./.github/workflows/k8s-linter.yml
-  ansible-linting:
-    uses: ./.github/workflows/ansible-linter.yml
-  terraform-linting:
-    uses: ./.github/workflows/terraform-lint.yml
   java:
     name: java
     uses: ./.github/workflows/java.yml
@@ -28,6 +24,10 @@ jobs:
       - dockerfile_linting
       - java
     uses: ./.github/workflows/docker.yml
+  compose:
+    needs:
+      - docker
+    uses: ./.github/workflows/integrate-compose.yml
   minikube:
     needs:
       - docker
@@ -40,6 +40,7 @@ jobs:
       DOCKER_CONFIG: ${{ secrets.DOCKER_CONFIG }}
   aet:
     needs:
+      - compose
       - minikube
     uses: ./.github/workflows/aet.yml
     secrets:

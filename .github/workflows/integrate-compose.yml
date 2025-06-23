@@ -1,0 +1,33 @@
+name: Integrate Docker Compose Services
+
+on:
+    workflow_call:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4.2.2
+
+      - name: Run docker compose
+        uses: hoverkraft-tech/compose-action@v2.0.1
+        with:
+          compose-file: "compose.yml"
+
+      - name: Sleep
+        run: |
+            sleep 60
+
+      - name: Execute tests in the running services
+        run: |
+          for service in users recipes; do
+            status=$(docker inspect --format='{{ .State.Health.Status }}' "$service")
+            if [ "$status" != "healthy" ]; then
+              echo "❌ $service is not healthy (status: $status)"
+              docker logs "$service" || true
+              exit 1
+            else
+              echo "✅ $service is healthy"
+            fi
+          done
