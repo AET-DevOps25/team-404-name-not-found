@@ -39,7 +39,7 @@ jobs:
       DOCKER_CONFIG: ${{ secrets.DOCKER_CONFIG }}
   aet:
     needs:
-      - minikube
+      - docker
     uses: ./.github/workflows/aet.yml
     secrets:
       KUBECONF: ${{ secrets.KUBECONF }}

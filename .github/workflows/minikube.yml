@@ -22,9 +22,8 @@ jobs:
 
     - name: Start minikube
       uses: medyagh/setup-minikube@latest
-
-    - name: Try the cluster !
-      run: kubectl get pods -A
+      with:
+        addons: ingress,default-storageclass,storage-provisioner
 
     - name: Set up jwt keys
       run: |
@@ -37,6 +36,15 @@ jobs:
 
     - name: Set up Helm
       uses: azure/setup-helm@v4
+
+    - name: Install cert-manager
+      run: |
+        kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.17.2/cert-manager.crds.yaml
+        helm install \
+            cert-manager jetstack/cert-manager \
+            --version v1.17.2 \
+            --create-namespace --namespace cert-manager \
+            --set config.apiVersion="controller.config.cert-manager.io/v1alpha1"
 
     - name: Helm upgrade
       run: |
