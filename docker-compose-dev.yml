@@ -39,7 +39,7 @@ services:
 
   users:
     container_name: users
-    image: ghcr.io/aet-devops25/team-404-name-not-found/users:main
+    image: ghcr.io/aet-devops25/team-404-name-not-found/users:${BRANCH:-main}
     build:
       context: server
       dockerfile: users/Dockerfile
@@ -61,7 +61,7 @@ services:
 
   recipes:
     container_name: recipes
-    image: ghcr.io/aet-devops25/team-404-name-not-found/recipes:main
+    image: ghcr.io/aet-devops25/team-404-name-not-found/recipes:${BRANCH:-main}
     build:
       context: server
       dockerfile: recipes/Dockerfile

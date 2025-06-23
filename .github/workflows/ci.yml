@@ -28,7 +28,21 @@ jobs:
       - dockerfile_linting
       - java
     uses: ./.github/workflows/docker.yml
-  deploy:
+  minikube:
     needs:
       - docker
-    uses: ./.github/workflows/deploy.yml
+    uses: ./.github/workflows/minikube.yml
+    secrets:
+      KUBECONF: ${{ secrets.KUBECONF }}
+      JWT_PRIV: ${{ secrets.JWT_PRIV }}
+      JWT_PUB: ${{ secrets.JWT_PUB}}
+      DOCKER_CONFIG: ${{ secrets.DOCKER_CONFIG }}
+  aet:
+    needs:
+      - minikube
+    uses: ./.github/workflows/aet.yml
+    secrets:
+      KUBECONF: ${{ secrets.KUBECONF }}
+      JWT_PRIV: ${{ secrets.JWT_PRIV }}
+      JWT_PUB: ${{ secrets.JWT_PUB}}
+      DOCKER_CONFIG: ${{ secrets.DOCKER_CONFIG }}
