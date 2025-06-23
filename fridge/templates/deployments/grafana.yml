@@ -13,16 +13,28 @@ spec:
       labels:
         app: grafana
     spec:
+      securityContext:
+        runAsUser: 472            # Grafana runs as UID 472 by default
+        runAsGroup: 472
+        fsGroup: 472
+        seccompProfile:
+          type: RuntimeDefault    # Use default seccomp profile
       containers:
         - name: grafana
-          image: grafana/grafana:10.4.1
+          image: grafana/grafana@sha256:fe89b739a264c78f2111d68221a1d51db67135ec50885dc93b59a981a7a5d4d5
           ports:
             - containerPort: 3000
           env:
             - name: GF_SECURITY_ADMIN_USER
-              value: "admin"
+              valueFrom:
+                secretKeyRef:
+                  name: grafana-admin-creds
+                  key: username
             - name: GF_SECURITY_ADMIN_PASSWORD
-              value: "admin"
+              valueFrom:
+                secretKeyRef:
+                  name: grafana-admin-creds
+                  key: password
             - name: GF_SERVER_DOMAIN
               value: "{{ .Values.host }}"
             - name: GF_SERVER_ROOT_URL
@@ -40,6 +52,22 @@ spec:
             - name: springboot-dashboards
               mountPath: /var/lib/grafana/dashboards/default/springboot
               readOnly: true
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+            readOnlyRootFilesystem: false
+          readinessProbe:
+            httpGet:
+              path: /grafana/api/health
+              port: 3000
+            initialDelaySeconds: 10
+            periodSeconds: 5
+            failureThreshold: 3
+            timeoutSeconds: 2
+          resources:
+{{ toYaml .Values.resources | indent 12 }}
       volumes:
         - name: datasource-volume
           configMap:

@@ -51,6 +51,9 @@ defaultProvider:
         kind: ConfigMap
         name: jwt-local-jwks
 
+grafanaUser: admin
+grafanaPass: admin
+
 # ofc these values are from me. It is recommended to change them before actually running the app
 jwks: |
   {

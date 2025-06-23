@@ -34,4 +34,4 @@ spec:
           readinessProbe:
 {{ toYaml .Values.recipesProbe | indent 12 }}
           resources:
-{{ toYaml .Values.resources | indent 12}}
+{{ toYaml .Values.resources | indent 12 }}
