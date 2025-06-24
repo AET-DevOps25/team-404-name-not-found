@@ -9,5 +9,5 @@ export interface Recipe {
     difficulty: "Easy" | "Medium" | "Hard";
     ingredients: Ingredient[];
     instructions: string[];
-    availabilityScore: "red" | "yellow" | "green";
+    availabilityScore: "Red" | "Yellow" | "Green";
 }
