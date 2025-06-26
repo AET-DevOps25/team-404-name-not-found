@@ -1,7 +1,17 @@
+from enum import Enum
+
 from pydantic import BaseModel, Field
 
 
+class Unit(Enum):
+    PCS = "pcs"
+    ML = "ml"
+    L = "l"
+    G = "g"
+    KG = "kg"
+
+
 class Ingredient(BaseModel):
-	name: str = Field(description="Name if ingredient")
-	amount: int = Field(description="Amount of ingredient")
-	unit: str = Field(description="Unit of amount")
+    name: str = Field(description="Name if ingredient")
+    amount: int = Field(description="Amount of ingredient")
+    unit: Unit = Field(description="Unit of amount")
