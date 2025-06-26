@@ -1,0 +1,55 @@
+name: Manual Teardown
+
+on:
+  workflow_dispatch:
+    inputs:
+      AWS_ACCESS_KEY_ID:
+        description: 'key id to access your aws instance'
+        required: true
+      AWS_SECRET_ACCESS_KEY:
+        description: 'secret key'
+        required: true
+      AWS_SESSION_TOKEN:
+        description: 'the token for your running session'
+        required: true
+      run_id:
+        description: 'ID of the deploy job that spun up the instance'
+        required: true
+
+jobs:
+  teardown:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Mask all secrets
+        # if you're bored, think of a way to loop through this
+        run: |
+          echo "::add-mask::${{ github.event.inputs.AWS_ACCESS_KEY_ID }}"
+          echo "::add-mask::${{ github.event.inputs.AWS_SECRET_ACCESS_KEY }}"
+          echo "::add-mask::${{ github.event.inputs.AWS_SESSION_TOKEN }}"
+
+      - name: Install Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.12.1
+
+      - name: Download Terraform state artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: tfstate
+          path: infra/
+          github-token: ${{ github.token }}
+          repository: ${{ github.repository }}
+          run-id: ${{ inputs.run_id }}
+
+      - name: Kill EC2
+        env:
+          AWS_ACCESS_KEY_ID: ${{ github.event.inputs.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ github.event.inputs.AWS_SECRET_ACCESS_KEY }}
+          AWS_SESSION_TOKEN: ${{ github.event.inputs.AWS_SESSION_TOKEN }}
+        run: |
+          cd infra
+          make teardown

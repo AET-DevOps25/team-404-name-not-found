@@ -1,0 +1,76 @@
+# Default values for fridge.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+namespace: team-404-name-not-found
+gatewayNs: default
+currentBranch: main
+
+# default login vars for postgres
+postgresUser: postgres
+postgresPass: postgres
+postgresDB: fridge
+
+replicaCount: 1
+
+resources:
+  requests:
+    cpu: 1
+    memory: 100Mi
+  limits:
+    cpu: 2
+    memory: 500Mi
+
+usersProbe:
+  httpGet:
+    path: /api/users/health
+    port: 8080
+  initialDelaySeconds: 15
+  periodSeconds: 10
+  failureThreshold: 30
+
+recipesProbe:
+  httpGet:
+    path: /api/recipes/health
+    port: 8080
+  initialDelaySeconds: 15
+  periodSeconds: 10
+  failureThreshold: 30
+
+host: fridge.localhost
+
+defaultProvider:
+  - name: jwt
+    issuer: auth-api
+    claimToHeaders:
+      - claim: "sub"
+        header: "Subject"
+    localJWKS:
+      type: ValueRef
+      valueRef:
+        group: ""
+        kind: ConfigMap
+        name: jwt-local-jwks
+
+# ofc these values are from me. It is recommended to change them before actually running the app
+jwks: |
+  {
+    "keys":
+      [
+        {
+          "alg": "HS256",
+          "key_ops": ["verify"],
+          "kty": "oct",
+          "k": "TODO: change me"
+        }
+      ]
+  }
+
+dockerConfigJson: |
+  {
+    "auths": {
+      "ghcr.io": {
+          "auth": "TODO: change me"
+      }
+    }
+  }

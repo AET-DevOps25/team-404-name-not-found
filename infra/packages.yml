@@ -1,0 +1,16 @@
+packages:
+  - jq
+  - tree
+  - ca-certificates
+  - apt-transport-https
+  - gnupg
+  - lsb-release
+  - curl
+  - gpg
+  - conntrack
+  - python3-yaml
+  - docker-ce
+  - docker-ce-cli
+  - containerd.io
+  - docker-buildx-plugin
+  - docker-compose-plugin
