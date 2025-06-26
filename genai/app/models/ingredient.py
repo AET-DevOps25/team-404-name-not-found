@@ -12,6 +12,6 @@ class Unit(Enum):
 
 
 class Ingredient(BaseModel):
-    name: str = Field(description="Name if ingredient")
+    name: str = Field(description="Name of ingredient")
     amount: int = Field(description="Amount of ingredient")
     unit: Unit = Field(description="Unit of amount")
