@@ -22,7 +22,7 @@ resources:
 
 usersProbe:
   httpGet:
-    path: /api/users/health
+    path: /api/users/actuator/health
     port: 8080
   initialDelaySeconds: 15
   periodSeconds: 10
@@ -30,7 +30,7 @@ usersProbe:
 
 recipesProbe:
   httpGet:
-    path: /api/recipes/health
+    path: /api/recipes/actuator/health
     port: 8080
   initialDelaySeconds: 15
   periodSeconds: 10
