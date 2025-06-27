@@ -16,6 +16,13 @@ server:
   servlet:
     context-path: /api/recipes
 
+springdoc:
+  api-docs:
+    path: /docs/openapi
+  swagger-ui:
+    path: /docs/swagger-ui.html
+    url: /docs/openapi
+
 management:
   endpoints:
     web:
