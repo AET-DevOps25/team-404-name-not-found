@@ -102,7 +102,7 @@ public class AuthenticationController {
     }
 
     @GetMapping("/callback")
-    public ResponseEntity<?> callback(@RequestParam String code) {
+    public ResponseEntity<Map<String, String>> callback(@RequestParam String code) {
         System.out.println("GitHub reached out to the callback!");
         // 1. Exchange code for access token
         HttpHeaders headers = new HttpHeaders();
@@ -119,7 +119,7 @@ public class AuthenticationController {
                 Map.class);
 
         if (!response.getStatusCode().is2xxSuccessful()) {
-            return ResponseEntity.status(401).body("Failed to get access token from GitHub");
+            return ResponseEntity.status(401).body(Map.of("error", "Failed to get access token from GitHub"));
         }
 
         System.out.println("Here is the response to the query for the access token: " + response.getBody());
@@ -137,7 +137,7 @@ public class AuthenticationController {
                 Map.class);
 
         if (!userResponse.getStatusCode().is2xxSuccessful()) {
-            return ResponseEntity.status(401).body("Failed to get user info from GitHub");
+            return ResponseEntity.status(401).body(Map.of("error", "Failed to get user info from GitHub"));
         }
 
         Map userInfo = userResponse.getBody();
@@ -146,7 +146,7 @@ public class AuthenticationController {
     }
 
     @GetMapping("/auth")
-    public ResponseEntity<?> validateToken(
+    public ResponseEntity<Object> validateToken(
             @RequestHeader(value = "Authorization", required = false) String authHeader) {
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             return ResponseEntity.status(401).body("Missing or invalid Authorization header");
@@ -172,7 +172,7 @@ public class AuthenticationController {
      * @return that same header value
      */
     @GetMapping("/whoami")
-    public ResponseEntity<?> whoAmI(@RequestHeader("X-User-Id") String subject) {
-        return ResponseEntity.ok(subject);
+    public ResponseEntity<Map<String, String>> whoAmI(@RequestHeader("X-User-Id") String subject) {
+        return ResponseEntity.ok(Map.of("userId", subject));
     }
 }
