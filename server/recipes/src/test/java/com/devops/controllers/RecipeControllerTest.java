@@ -53,7 +53,7 @@ class RecipeControllerTest {
                 Mockito.when(recipeService.generateRecipe(eq(ingredients), eq("user123")))
                                 .thenReturn(recipe);
 
-                mockMvc.perform(post("/recipes/ai")
+                mockMvc.perform(post("/ai")
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(objectMapper.writeValueAsString(ingredients))
                                 .header("X-User-Id", "user123"))
@@ -66,7 +66,7 @@ class RecipeControllerTest {
                 Recipe recipe = sampleRecipe();
                 Mockito.when(recipeService.saveRecipe(any(Recipe.class))).thenReturn(recipe);
 
-                mockMvc.perform(post("/recipes/")
+                mockMvc.perform(post("/")
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(objectMapper.writeValueAsString(recipe)))
                                 .andExpect(status().isCreated())
@@ -78,7 +78,7 @@ class RecipeControllerTest {
                 Recipe recipe = sampleRecipe();
                 Mockito.when(recipeService.alterRecipe(any(Recipe.class))).thenReturn(recipe);
 
-                mockMvc.perform(put("/recipes/")
+                mockMvc.perform(put("/")
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(objectMapper.writeValueAsString(recipe)))
                                 .andExpect(status().isOk())
@@ -91,7 +91,7 @@ class RecipeControllerTest {
                 Mockito.when(recipeService.getRecipeById(eq(recipe.getId()), eq("user123")))
                                 .thenReturn(recipe);
 
-                mockMvc.perform(get("/recipes/" + recipe.getId())
+                mockMvc.perform(get("/" + recipe.getId())
                                 .header("X-User-Id", "user123"))
                                 .andExpect(status().isOk())
                                 .andExpect(jsonPath("$.title").value("Test Recipe"));
@@ -102,7 +102,7 @@ class RecipeControllerTest {
                 Mockito.when(recipeService.getRecipeById(anyString(), anyString()))
                                 .thenReturn(null);
 
-                mockMvc.perform(get("/recipes/some-id")
+                mockMvc.perform(get("/some-id")
                                 .header("X-User-Id", "user123"))
                                 .andExpect(status().isNotFound());
         }
@@ -113,7 +113,7 @@ class RecipeControllerTest {
                 Mockito.when(recipeService.getRecipesByUser("user123"))
                                 .thenReturn(List.of(recipe));
 
-                mockMvc.perform(get("/recipes/")
+                mockMvc.perform(get("/")
                                 .header("X-User-Id", "user123"))
                                 .andExpect(status().isOk())
                                 .andExpect(jsonPath("$[0].title").value("Test Recipe"));
@@ -125,7 +125,7 @@ class RecipeControllerTest {
                 Mockito.when(recipeService.getRecipeById(eq(recipe.getId()), eq("user123")))
                                 .thenReturn(recipe);
 
-                mockMvc.perform(delete("/recipes/" + recipe.getId())
+                mockMvc.perform(delete("/" + recipe.getId())
                                 .header("X-User-Id", "user123"))
                                 .andExpect(status().isNoContent());
         }
@@ -135,7 +135,7 @@ class RecipeControllerTest {
                 Mockito.when(recipeService.getRecipeById(anyString(), anyString()))
                                 .thenReturn(null);
 
-                mockMvc.perform(delete("/recipes/nonexistent")
+                mockMvc.perform(delete("/nonexistent")
                                 .header("X-User-Id", "user123"))
                                 .andExpect(status().isNotFound());
         }
