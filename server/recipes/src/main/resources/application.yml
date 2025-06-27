@@ -14,14 +14,13 @@ spring:
 
 server:
   servlet:
-    context-path: /api
+    context-path: /api/recipes
 
 management:
   endpoints:
     web:
       exposure:
         include: "*"
-      base-path: /recipes
       path-mapping:
         health: health
   health:

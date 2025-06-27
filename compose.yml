@@ -73,7 +73,7 @@ services:
       context: server
       dockerfile: users/Dockerfile
     healthcheck:
-      test: ["CMD", "wget", "-q", "--spider", "http://localhost:8080/api/users/health"]
+      test: ["CMD", "wget", "-q", "--spider", "http://localhost:8080/api/users/actuator/health"]
       interval: 10s
       timeout: 15s
       retries: 5
@@ -95,7 +95,7 @@ services:
       context: server
       dockerfile: recipes/Dockerfile
     healthcheck:
-      test: ["CMD", "wget", "-q", "--spider", "http://localhost:8080/api/recipes/health"]
+      test: ["CMD", "wget", "-q", "--spider", "http://localhost:8080/api/recipes/actuator/health"]
       interval: 10s
       timeout: 15s
       retries: 5

@@ -25,14 +25,13 @@ github:
 
 server:
   servlet:
-    context-path: /api
+    context-path: /api/users
 
 management:
   endpoints:
     web:
       exposure:
         include: "*"
-      base-path: /users
       path-mapping:
         health: health
   health:
