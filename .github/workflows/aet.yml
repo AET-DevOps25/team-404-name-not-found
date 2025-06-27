@@ -28,12 +28,12 @@ jobs:
 
     - name: Set up jwt keys
       run: |
-        echo -e "${{ secrets.JWT_PRIV }}" | base64 -d > ${{ github.workspace }}/fridge/private.pem
-        echo -e "${{ secrets.JWT_PUB }}" | base64 -d > ${{ github.workspace }}/fridge/public.pem
+        echo -e "${{ secrets.JWT_PRIV }}" | base64 -d > ${{ github.workspace }}/infra/fridge/private.pem
+        echo -e "${{ secrets.JWT_PUB }}" | base64 -d > ${{ github.workspace }}/infra/fridge/public.pem
 
     - name: Set up docker daemon config
       run: |
-        echo -e "${{ secrets.DOCKER_CONFIG }}" | base64 -d > ${{ github.workspace }}/fridge/docker_config.json
+        echo -e "${{ secrets.DOCKER_CONFIG }}" | base64 -d > ${{ github.workspace }}/infra/fridge/docker_config.json
 
     - name: Set up kubectl
       uses: azure/setup-kubectl@v4
@@ -43,7 +43,7 @@ jobs:
 
     - name: Helm upgrade
       run: |
-        helm upgrade --install fridge ${{ github.workspace }}/fridge \
+        helm upgrade --install fridge ${{ github.workspace }}/infra/fridge \
           --namespace team-404-name-not-found \
           --create-namespace \
-          -f fridge/values.deploy.yaml
+          -f infra/fridge/values.deploy.yaml
