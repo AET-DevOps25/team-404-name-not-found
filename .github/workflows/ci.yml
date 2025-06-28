@@ -28,6 +28,8 @@ jobs:
     needs:
       - docker
     uses: ./.github/workflows/integrate-compose.yml
+    with:
+      branch-name: ${{ github.head_ref || github.ref_name }}
   minikube:
     needs:
       - docker
