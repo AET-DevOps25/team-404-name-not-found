@@ -1,7 +1,0 @@
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: jwt-local-jwks
-  namespace: {{ .Values.namespace }}
-data:
-  jwks: {{ toYaml .Values.jwks | indent 2 }}

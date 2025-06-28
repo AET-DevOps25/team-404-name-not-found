@@ -15,18 +15,30 @@ spring:
 api:
   security:
     token:
-      secret: ${JWT_SECRET:my-most-special-secret-key}
+      private-key-path: /etc/keys/private.pem
+      public-key-path: /etc/keys/public.pem
+
+github:
+  client-id: ${CLIENT_ID:Ov23liAV8O5mOpJq1EQ1}
+  client-secret: ${CLIENT_SECRET:fd7f9fe6ba42b441acd8a211b24044e08ae65645}
+  redirect-uri: https://${HOST:fridge.example}/api/users/callback
 
 server:
   servlet:
-    context-path: /api
+    context-path: /api/users
+
+springdoc:
+  api-docs:
+    path: /docs/openapi
+  swagger-ui:
+    path: /docs/swagger-ui.html
+    url: /docs/openapi
 
 management:
   endpoints:
     web:
       exposure:
         include: "*"
-      base-path: /users
       path-mapping:
         health: health
   health:

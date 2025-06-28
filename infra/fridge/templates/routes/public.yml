@@ -1,0 +1,52 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: public
+  namespace: {{ .Values.namespace }}
+  annotations:
+    ###############################################
+    # cert-manager
+    cert-manager.io/issuer: issuer
+    cert-manager.io/common-name: "{{ .Values.host }}"
+    cert-manager.io/subject-organizations: devops
+    cert-manager.io/subject-countries: DE
+    cert-manager.io/subject-provinces: Bavaria
+    cert-manager.io/subject-localities: Munich
+spec:
+  ingressClassName: nginx
+  tls:
+    - hosts:
+        - "{{ .Values.host }}"
+      secretName: {{ replace "." "-" .Values.host }}
+  rules:
+    - host: "{{ .Values.host }}"
+      http:
+        paths:
+          - path: /api/users
+            pathType: Prefix
+            backend:
+              service:
+                name: users
+                port:
+                  number: 8080
+          - path: /api/recipes/docs
+            pathType: Prefix
+            backend:
+              service:
+                name: recipes
+                port:
+                  number: 8080
+          - path: /api/recipes/actuator
+            pathType: Prefix
+            backend:
+              service:
+                name: recipes
+                port:
+                  number: 8080
+          - path: /grafana
+            pathType: Prefix
+            backend:
+              service:
+                name: grafana
+                port:
+                  number: 3000

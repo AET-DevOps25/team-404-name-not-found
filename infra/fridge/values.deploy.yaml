@@ -1,0 +1,16 @@
+# Default values for the remote development
+
+host: fridge.student.k8s.aet.cit.tum.de
+clientId: Ov23liZK2KskCkff2D1m
+clientSecret: fec87efd032c179de19f880aee746026d146c7f1
+
+spec:
+  acme:
+    server: https://acme-v02.api.letsencrypt.org/directory
+    email: 2plagiarismfree@gmail.com
+    privateKeySecretRef:
+      name: letsencrypt-account-key
+    solvers:
+      - http01:
+          ingress:
+            class: nginx

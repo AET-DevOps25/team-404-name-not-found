@@ -14,14 +14,20 @@ spring:
 
 server:
   servlet:
-    context-path: /api
+    context-path: /api/recipes
+
+springdoc:
+  api-docs:
+    path: /docs/openapi
+  swagger-ui:
+    path: /docs/swagger-ui.html
+    url: /docs/openapi
 
 management:
   endpoints:
     web:
       exposure:
         include: "*"
-      base-path: /recipes
       path-mapping:
         health: health
   health:

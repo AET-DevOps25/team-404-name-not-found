@@ -1,0 +1,59 @@
+name: Integration tests with minikube
+
+on:   
+  workflow_call:
+    secrets:
+      KUBECONF:
+        required: true
+      JWT_PRIV:
+        required: true
+      JWT_PUB:
+        required: true
+      DOCKER_CONFIG:
+        required: true
+
+jobs:
+  minikube:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repo
+      uses: actions/checkout@v4
+
+    - name: Start minikube
+      uses: medyagh/setup-minikube@latest
+      with:
+        addons: ingress,default-storageclass,storage-provisioner
+
+    - name: Set up jwt keys
+      run: |
+        echo -e "${{ secrets.JWT_PRIV }}" | base64 -d > ${{ github.workspace }}/infra/fridge/private.pem
+        echo -e "${{ secrets.JWT_PUB }}" | base64 -d > ${{ github.workspace }}/infra/fridge/public.pem
+
+    - name: Set up docker daemon config
+      run: |
+        echo -e "${{ secrets.DOCKER_CONFIG }}" | base64 -d > ${{ github.workspace }}/infra/fridge/docker_config.json
+
+    - name: Set up Helm
+      uses: azure/setup-helm@v4
+
+    - name: Install cert-manager
+      run: |
+        kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.17.2/cert-manager.crds.yaml
+        helm repo add jetstack https://charts.jetstack.io --force-update
+        helm install \
+            cert-manager jetstack/cert-manager \
+            --version v1.17.2 \
+            --create-namespace --namespace cert-manager \
+            --set config.apiVersion="controller.config.cert-manager.io/v1alpha1"
+
+    - name: Helm upgrade
+      run: |
+        helm upgrade --install fridge ${{ github.workspace }}/infra/fridge \
+          --namespace team-404-name-not-found \
+          --create-namespace \
+          -f infra/fridge/values.local.yaml
+
+    - name: Wait for readiness
+      run: |
+        kubectl get pods -A
