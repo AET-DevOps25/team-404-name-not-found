@@ -36,6 +36,13 @@ spec:
                 name: recipes
                 port:
                   number: 8080
+          - path: /api/recipes/actuator
+            pathType: Prefix
+            backend:
+              service:
+                name: recipes
+                port:
+                  number: 8080
           - path: /grafana
             pathType: Prefix
             backend:
