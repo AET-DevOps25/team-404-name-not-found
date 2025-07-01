@@ -15,6 +15,10 @@ class Recipe(BaseModel):
     description: str = Field(description="Description of recipe")
     difficulty: Difficulty = Field(description="Difficulty of recipe")
     cook_time: int = Field(description="Time needed for recipe")
-    ingredients: list[Ingredient] = Field(description="List of ingredients needed for recipe already available")
-    needed_ingredients: list[Ingredient] = Field(description="List of ingredients needed for recipe to buy")
+    ingredients: list[Ingredient] = Field(
+        description="List of ingredients needed for recipe already available"
+    )
+    needed_ingredients: list[Ingredient] = Field(
+        description="List of ingredients needed for recipe to buy"
+    )
     steps: list[str] = Field(description="List of every step needed for recipe")
