@@ -35,7 +35,7 @@ services:
     container_name: genai
     image: ghcr.io/aet-devops25/team-404-name-not-found/genai:latest
     healthcheck:
-      test: [ "CMD", "wget", "-q", "--spider", "http://localhost:8000/api/genai/v1/health" ]
+      test: ["CMD", "wget", "-q", "--spider", "http://localhost:8000/api/genai/v1/health"]
       interval: 10s
       timeout: 15s
       retries: 5
