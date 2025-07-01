@@ -1,0 +1,29 @@
+name: Python Black Format Check
+
+on:
+  workflow_call:
+
+jobs:
+  python-formatting:
+    # the rationale behind putting everything here is to benefit from gradle's caches in the runner
+    runs-on: ubuntu-latest
+    permissions: write-all
+
+    steps:
+      - uses: actions/checkout@v4
+
+      # this is here to prevent other jobs from running if the triggering event introduced no changes to the server directory
+      - uses: dorny/paths-filter@v3
+        id: changes
+        with:
+          filters: |
+            genai:
+              - 'genai/**'
+
+      - if: steps.changes.outputs.genai == 'true'
+      - name: Enforce formatting with Black
+        uses: psf/black@stable
+        with:
+          # --check: don’t write changes; exit non-zero if files need formatting
+          # --diff: show unified diff of what would change
+          options: "--check --diff"
