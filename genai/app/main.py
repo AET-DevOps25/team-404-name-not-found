@@ -7,7 +7,7 @@ from app.models.ingredients import Ingredients
 
 load_dotenv()
 
-app = FastAPI()
+app = FastAPI(root_path="/api/genai/v1")
 # /metrics endpoint
 Instrumentator().instrument(app).expose(app)
 
@@ -18,20 +18,20 @@ recipe_service = RecipeService()
 def health():
     return {"status": "healthy"}
 
-@app.post("/api/recipe/matching")
+@app.post("/recipe/matching")
 async def generate_recipe_matching(ingredients: Ingredients):
     return await generate_recipes_matching(1, ingredients)
 
-@app.post("/api/recipe/matching/{num_recipes}")
+@app.post("/recipe/matching/{num_recipes}")
 async def generate_recipes_matching(num_recipes: int, ingredients: Ingredients):
     recipes = await recipe_service.get_recipes_matching(num_recipes, ingredients)
     return recipes
 
-@app.post("/api/recipe/exploratory")
+@app.post("/recipe/exploratory")
 async def generate_recipe_exploratory(ingredients: Ingredients):
     return await generate_recipes_exploratory(1, ingredients)
 
-@app.post("/api/recipe/exploratory/{num_recipes}")
+@app.post("/recipe/exploratory/{num_recipes}")
 async def generate_recipes_exploratory(num_recipes: int, ingredients: Ingredients):
     recipes = await recipe_service.get_recipes_exploratory(num_recipes, ingredients)
     return recipes
