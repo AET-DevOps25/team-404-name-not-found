@@ -6,9 +6,7 @@ from pydantic import BaseModel, Field
 class Unit(Enum):
     PCS = "pcs"
     ML = "ml"
-    L = "l"
     G = "g"
-    KG = "kg"
 
 
 class Ingredient(BaseModel):
