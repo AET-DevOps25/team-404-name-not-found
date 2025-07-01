@@ -9,7 +9,7 @@ from app.models.recipes import Recipes
 class RecipeService:
 
     def __init__(self):
-        self.llm = ChatOpenAI(model="gemma3:27b", temperature=0.1, base_url="https://gpu.aet.cit.tum.de/api")
+        self.llm = ChatOpenAI(model="gemma3:27b", temperature=0.1)
         self.llm = self.llm.with_structured_output(Recipe, strict=True)
 
     async def get_recipes_matching(self, num_recipes: int, ingredients: Ingredients):
