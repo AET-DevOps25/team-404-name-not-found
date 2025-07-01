@@ -31,5 +31,20 @@ services:
     environment:
       DB_HOST: db
 
+  genai:
+    container_name: genai
+    image: ghcr.io/aet-devops25/team-404-name-not-found/genai:latest
+    healthcheck:
+      test: [ "CMD", "wget", "-q", "--spider", "http://localhost:8000/api/genai/v1/health" ]
+      interval: 10s
+      timeout: 15s
+      retries: 5
+      start_period: 10s
+    ports:
+      - "8000:8000"
+    environment:
+      OPENAI_API_KEY: keyhere
+      OPENAI_API_BASE: basehere
+
 volumes:
   pgdata:
