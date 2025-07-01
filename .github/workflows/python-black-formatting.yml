@@ -21,7 +21,7 @@ jobs:
               - 'genai/**'
 
       - if: steps.changes.outputs.genai == 'true'
-      - name: Enforce formatting with Black
+        name: Enforce formatting with Black
         uses: psf/black@stable
         with:
           # --check: don’t write changes; exit non-zero if files need formatting
