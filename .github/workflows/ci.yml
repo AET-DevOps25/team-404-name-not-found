@@ -20,6 +20,9 @@ jobs:
   java:
     name: java
     uses: ./.github/workflows/java.yml
+  python-formatting:
+    name: python-formatting
+    uses: ./.github/workflows/python-black-formatting.yml
   typescript:
     name: typescript
     uses: ./.github/workflows/typescript.yml
