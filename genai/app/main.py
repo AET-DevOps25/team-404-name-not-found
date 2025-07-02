@@ -3,6 +3,7 @@ from prometheus_fastapi_instrumentator import Instrumentator
 from dotenv import load_dotenv
 
 from app.models.recipes import Recipes
+from app.services.image_service import ImageService
 from app.services.recipe_service import RecipeService
 from app.models.ingredients import Ingredients
 
@@ -13,18 +14,11 @@ app = FastAPI(root_path="/api/genai/v1")
 Instrumentator().instrument(app).expose(app)
 
 recipe_service = RecipeService()
+image_service = ImageService()
 
 
-@app.get("/health")
+@app.get("/health", summary="Health Check", description="Health Check")
 def health():
-    """
-    Health check endpoint.
-
-    If running returns a simple JSON response.
-
-    Returns:
-        dict: Key "status" set to "healthy"
-    """
     return {"status": "healthy"}
 
 
@@ -88,3 +82,19 @@ async def generate_recipes_exploratory(
 ):
     recipes = await recipe_service.get_recipes_exploratory(num_recipes, ingredients)
     return recipes
+
+
+@app.post(
+    "/image/analyze",
+    response_model=Ingredients,
+    summary="Finds ingredients in fridge image",
+    description=(
+        "Takes an base64 encoded image of a fridge (preferably open). "
+        "Tries to find as many and as accurate ingredients as possible from the image. "
+    ),
+)
+async def analyze_fridge(
+    image_base64: str = Body(description="Image as base64 string"),
+):
+    ingredients = await image_service.analyze_fridge(image_base64)
+    return ingredients
