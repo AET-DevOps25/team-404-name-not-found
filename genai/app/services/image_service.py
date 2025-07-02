@@ -15,7 +15,7 @@ class ImageService:
         self.llm = ChatOpenAI(model="gemma3:27b", temperature=0.1)
         self.llm = self.llm.with_structured_output(Ingredients, strict=True)
 
-    def analyze_fridge(self, image_base64: str) -> Ingredients:
+    async def analyze_fridge(self, image_base64: str) -> Ingredients:
         message = {
             "role": "user",
             "content": [
