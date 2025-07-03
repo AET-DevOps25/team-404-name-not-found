@@ -14,6 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -71,17 +72,17 @@ public class RecipeController {
     }
 
     @GetMapping("/")
-    public ResponseEntity<?> getAllRecipesForUser(@RequestHeader("X-User-Id") String userId) {
+    public ResponseEntity<List<Recipe>> getAllRecipesForUser(@RequestHeader("X-User-Id") String userId) {
         if (userId == null || userId.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("The proxy should have set the user email in the Subject header");
+            System.out.println("The proxy should have set the user email in the Subject header");
+            return ResponseEntity.internalServerError().body(new ArrayList<>());
         }
         List<Recipe> recipes = recipeService.getRecipesByUser(userId);
         return ResponseEntity.ok(recipes);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteRecipe(@PathVariable String id, @RequestHeader("X-User-Id") String userId) {
+    public ResponseEntity<String> deleteRecipe(@PathVariable String id, @RequestHeader("X-User-Id") String userId) {
         if (id == null || id.isEmpty()) {
             return ResponseEntity.badRequest().build();
         }

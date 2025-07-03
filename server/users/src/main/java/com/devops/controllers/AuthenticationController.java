@@ -2,6 +2,7 @@ package com.devops.controllers;
 
 import com.devops.entities.users.User;
 import com.devops.entities.users.UserRole;
+import com.devops.entities.users.dtos.UserId;
 import com.devops.infra.security.TokenService;
 import com.devops.repositories.UserRepository;
 
@@ -172,7 +173,7 @@ public class AuthenticationController {
      * @return that same header value
      */
     @GetMapping("/whoami")
-    public ResponseEntity<Map<String, String>> whoAmI(@RequestHeader("X-User-Id") String subject) {
-        return ResponseEntity.ok(Map.of("userId", subject));
+    public ResponseEntity<UserId> whoAmI(@RequestHeader("X-User-Id") String subject) {
+        return ResponseEntity.ok(new UserId(subject));
     }
 }
