@@ -1,0 +1,42 @@
+name: Manual Teardown
+
+on:
+  workflow_dispatch:
+    inputs:
+      run_id:
+        description: "Run ID of apply workflow to retrieve state from"
+        required: true
+
+jobs:
+  teardown:
+    runs-on: ubuntu-latest
+    permissions:
+      actions:
+        read
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.12.1
+
+      - name: Download Terraform state artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: tfstate
+          path: infra/ec2/
+          github-token: ${{ github.token }}
+          repository: kristi-balla/testing-terraform-and-ansible
+          run-id: ${{ inputs.run_id }}
+
+      - name: Kill EC2
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_SESSION_TOKEN: ${{ secrets.AWS_SESSION_TOKEN }}
+        run: |
+          cd infra/ec2
+          make teardown
