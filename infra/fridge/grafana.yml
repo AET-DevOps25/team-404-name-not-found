@@ -1,0 +1,53 @@
+adminUser: admin
+adminPassword: admin
+
+service:
+  type: ClusterIP
+
+datasources:
+  datasources.yaml:
+    apiVersion: 1
+    datasources:
+      - name: Prometheus
+        type: prometheus
+        access: proxy
+        url: http://prometheus:9090
+        isDefault: true
+
+dashboardProviders:
+  dashboardproviders.yaml:
+    apiVersion: 1
+    providers:
+      - name: "default"
+        orgId: 1
+        folder: ""
+        type: file
+        disableDeletion: false
+        editable: true
+        options:
+          path: /var/lib/grafana/dashboards/default
+
+dashboardsConfigMaps:
+  jvm-grafana-dashboard: "jvm-grafana-dashboard"
+  spring-boot-grafana-dashboard: "spring-boot-grafana-dashboard"
+
+extraConfigmapMounts:
+  - name: jvm-dashboards
+    configMap: jvm-grafana-dashboard
+    mountPath: /var/lib/grafana/dashboards/default/jvm
+    subPath: ""
+    readOnly: true
+  - name: spring-boot-dashboards
+    configMap: spring-boot-grafana-dashboard
+    mountPath: /var/lib/grafana/dashboards/default/springboot
+    subPath: ""
+    readOnly: true
+
+grafana.ini:
+  server:
+    http_addr: "0.0.0.0"
+    http_port: "3000"
+    domain: "fridge.example"
+    enforce_domain: "true"
+    root_url: "https://%(domain)s/grafana"
+    serve_from_sub_path: "true"

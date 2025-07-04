@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       private_key:
-        description: 'Private key (PEM) for infra/priv.pem'
+        description: 'Private key (PEM) for infra/ec2/priv.pem'
         required: true
       AWS_ACCESS_KEY_ID:
         description: 'Key id to access your aws instance'
@@ -36,11 +36,10 @@ jobs:
           echo "::add-mask::${{ github.event.inputs.AWS_SESSION_TOKEN }}"
           echo "::add-mask::${{ github.event.inputs.GHCR_TOKEN }}"
 
-      - name: Write private key to infra/priv.pem
+      - name: Write private key to infra/ec2/priv.pem
         run: |
-          printf "%s" "${{ github.event.inputs.private_key }}" > infra/priv.pem
-          chmod 400 infra/priv.pem
-
+          printf "%s" "${{ github.event.inputs.private_key }}" > infra/ec2/priv.pem
+          chmod 400 infra/ec2/priv.pem
       - name: Install Terraform
         uses: hashicorp/setup-terraform@v3
         with:
@@ -57,21 +56,20 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ github.event.inputs.AWS_SECRET_ACCESS_KEY }}
           AWS_SESSION_TOKEN: ${{ github.event.inputs.AWS_SESSION_TOKEN }}
         run: |
-          cd infra
+          cd infra/ec2
           make deploy
-
       - name: Upload Terraform state file
         uses: actions/upload-artifact@v4
         with:
           name: tfstate
-          path: infra/terraform.tfstate
+          path: infra/ec2/terraform.tfstate
 
       # there also exists ansible.builtin.wait_for_connection, but
       # it doesn't play nice with gather_facts: true, which i need
       # for the docker installation
       - name: Wait for EC2 to be ready
         run: |
-          cd infra
+          cd infra/ec2
           IP=$(terraform output -raw ip)
           echo "Waiting for SSH on $IP..."
           for i in {1..5}; do
@@ -84,19 +82,18 @@ jobs:
 
       - name: Debug SSH to EC2
         run: |
-          cd infra
+          cd infra/ec2
           IP=$(terraform output -raw ip)
           ssh -o StrictHostKeyChecking=no -i priv.pem admin@$IP 'echo connected'
 
-
       - name: Provision EC2
         run: |
-          cd infra
+          cd infra/ec2
           echo "cr_username: ${{ github.actor }}" >> token.yml
           echo "token: ${{ github.event.inputs.GHCR_TOKEN }}" >> token.yml
           make ansible
 
       - name: Integration Tests
         run: |
-          cd infra
+          cd infra/ec2
           make ansible PLAYBOOK=tests.yml

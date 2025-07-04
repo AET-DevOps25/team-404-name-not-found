@@ -1,0 +1,51 @@
+# k8s/base/users/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: users
+  namespace: {{ .Values.namespace }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: users
+  template:
+    metadata:
+      annotations:
+        image-deployment: {{ now | date "Mon, 02/01/06, 03:04PM" }}
+      labels:
+        app: users
+    spec:
+      imagePullSecrets:
+        - name: ghcr-pull-secret
+      volumes:
+        - name: jwt-keys
+          secret:
+            secretName: jwt-keys
+      containers:
+        - name: users
+          image: "ghcr.io/aet-devops25/team-404-name-not-found/users:{{ .Values.currentBranch }}"
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8080
+          env:
+            - name: DB_HOST
+              value: postgres
+            - name: HOST
+              value: {{ .Values.host }}
+            - name: CLIENT_ID
+              value: {{ .Values.clientId }}
+            - name: CLIENT_SECRET
+              value: {{ .Values.clientSecret }}
+          volumeMounts:
+            - name: jwt-keys
+              mountPath: /etc/keys
+              readOnly: true
+          startupProbe:
+{{ toYaml .Values.usersProbe | indent 12 }}
+          livenessProbe:
+{{ toYaml .Values.usersProbe | indent 12 }}
+          readinessProbe:
+{{ toYaml .Values.usersProbe | indent 12 }}
+          resources:
+{{ toYaml .Values.resources | indent 12 }}

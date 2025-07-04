@@ -22,19 +22,18 @@ import java.util.List;
 public class User implements UserDetails {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
 
-    @Column(nullable = false)
+    @Column
     private String name;
 
-    @Column(nullable = false, unique = true)
+    @Column
     private String email;
 
-    @Column(nullable = false)
+    @Column
     private String password;
 
-    @Column(nullable = false)
+    @Column
     @Enumerated(EnumType.STRING)
     private UserRole role;
 
