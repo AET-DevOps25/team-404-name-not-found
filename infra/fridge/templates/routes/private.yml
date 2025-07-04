@@ -1,0 +1,42 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: private
+  namespace: {{ .Values.namespace }}
+  annotations:
+    ###############################################
+    # cert-manager
+    cert-manager.io/issuer: issuer
+    cert-manager.io/common-name: "{{ .Values.host }}"
+    cert-manager.io/subject-organizations: devops
+    cert-manager.io/subject-countries: DE
+    cert-manager.io/subject-provinces: Bavaria
+    cert-manager.io/subject-localities: Munich
+    ##############################################
+    # nginx
+    nginx.ingress.kubernetes.io/auth-url: "http://users.{{ .Values.namespace }}.svc.cluster.local:8080/api/users/auth"
+    nginx.ingress.kubernetes.io/auth-response-headers: "X-User-Id"
+spec:
+  ingressClassName: nginx
+  tls:
+    - hosts:
+        - "{{ .Values.host }}"
+      secretName: {{ replace "." "-" .Values.host }}
+  rules:
+    - host: "{{ .Values.host }}"
+      http:
+        paths:
+          - path: /api/users/whoami
+            pathType: Prefix
+            backend:
+              service:
+                name: users
+                port:
+                  number: 8080
+          - path: /api/recipes
+            pathType: Prefix
+            backend:
+              service:
+                name: recipes
+                port:
+                  number: 8080

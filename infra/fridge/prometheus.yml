@@ -1,0 +1,15 @@
+scrape_configs:
+  - job_name: users
+    metrics_path: "/api/users/actuator/prometheus"
+    scheme: http
+    follow_redirects: true
+    static_configs:
+      - targets:
+          - "users:8080"
+  - job_name: recipes
+    metrics_path: "/api/recipes/actuator/prometheus"
+    scheme: http
+    follow_redirects: true
+    static_configs:
+      - targets:
+          - "recipes:8080"

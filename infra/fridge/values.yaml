@@ -1,0 +1,42 @@
+# Default values for fridge.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+namespace: team-404-name-not-found
+currentBranch: deploy-aet-cluster
+
+# default login vars for postgres
+postgresUser: postgres
+postgresPass: postgres
+postgresDB: fridge
+
+replicaCount: 1
+
+resources:
+  requests:
+    cpu: 1
+    memory: 100Mi
+  limits:
+    cpu: 2
+    memory: 500Mi
+
+usersProbe:
+  httpGet:
+    path: /api/users/actuator/health
+    port: 8080
+  initialDelaySeconds: 15
+  periodSeconds: 10
+  failureThreshold: 30
+
+recipesProbe:
+  httpGet:
+    path: /api/recipes/actuator/health
+    port: 8080
+  initialDelaySeconds: 15
+  periodSeconds: 10
+  failureThreshold: 30
+
+host: fridge.example
+
+grafanaUser: admin
+grafanaPass: admin
