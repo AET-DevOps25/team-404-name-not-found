@@ -1,4 +1,4 @@
-package com.devops.dto;
+package com.devops.entities;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;

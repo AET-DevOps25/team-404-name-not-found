@@ -1,0 +1,49 @@
+
+   FastAPI   Starting production server 🚀
+ 
+             Searching for package file structure from directories with         
+             __init__.py files                                                  
+             Importing from /code
+ 
+    module   📁 app            
+             ├── 🐍 __init__.py
+             └── 🐍 main.py    
+ 
+      code   Importing the FastAPI app object from the module with the following
+             code:                                                              
+ 
+             from app.main import app
+ 
+       app   Using import string: app.main:app
+ 
+    server   Server started at http://0.0.0.0:8000
+    server   Documentation at http://0.0.0.0:8000/docs
+ 
+             Logs:
+ 
+      INFO   127.0.0.1:55764 - "GET /api/genai/v1/health HTTP/1.1" 200
+      INFO   127.0.0.1:57180 - "GET /api/genai/v1/health HTTP/1.1" 200
+      INFO   127.0.0.1:53636 - "GET /api/genai/v1/health HTTP/1.1" 200
+      INFO   127.0.0.1:45314 - "GET /api/genai/v1/health HTTP/1.1" 200
+      INFO   127.0.0.1:36552 - "GET /api/genai/v1/health HTTP/1.1" 200
+      INFO   127.0.0.1:60606 - "GET /api/genai/v1/health HTTP/1.1" 200
+      INFO   127.0.0.1:55512 - "GET /api/genai/v1/health HTTP/1.1" 200
+      INFO   127.0.0.1:39160 - "GET /api/genai/v1/health HTTP/1.1" 200
+      INFO   127.0.0.1:41098 - "GET /api/genai/v1/health HTTP/1.1" 200
+      INFO   127.0.0.1:43948 - "GET /api/genai/v1/health HTTP/1.1" 200
+      INFO   172.18.0.8:37964 - "POST /api/genai/v1/image/analyze HTTP/1.1" 500
+      INFO   127.0.0.1:53246 - "GET /api/genai/v1/health HTTP/1.1" 200
+      INFO   127.0.0.1:36678 - "GET /api/genai/v1/health HTTP/1.1" 200
+      INFO   127.0.0.1:34894 - "GET /api/genai/v1/health HTTP/1.1" 200
+      INFO   127.0.0.1:45214 - "GET /api/genai/v1/health HTTP/1.1" 200
+      INFO   127.0.0.1:33690 - "GET /api/genai/v1/health HTTP/1.1" 200
+      INFO   127.0.0.1:56382 - "GET /api/genai/v1/health HTTP/1.1" 200
+      INFO   127.0.0.1:45574 - "GET /api/genai/v1/health HTTP/1.1" 200
+      INFO   127.0.0.1:42576 - "GET /api/genai/v1/health HTTP/1.1" 200
+      INFO   127.0.0.1:52880 - "GET /api/genai/v1/health HTTP/1.1" 200
+      INFO   127.0.0.1:53282 - "GET /api/genai/v1/health HTTP/1.1" 200
+      INFO   127.0.0.1:57904 - "GET /api/genai/v1/health HTTP/1.1" 200
+      INFO   127.0.0.1:45856 - "GET /api/genai/v1/health HTTP/1.1" 200
+      INFO   127.0.0.1:52078 - "GET /api/genai/v1/health HTTP/1.1" 200
+      INFO   127.0.0.1:56642 - "GET /api/genai/v1/health HTTP/1.1" 200
+      INFO   127.0.0.1:46958 - "GET /api/genai/v1/health HTTP/1.1" 200

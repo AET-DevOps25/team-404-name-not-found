@@ -1,7 +1,9 @@
 package com.devops.service;
 
 import com.devops.dto.Ingredient;
+import com.devops.dto.IngredientsResponse;
 import com.devops.dto.Recipe;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
@@ -12,6 +14,7 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.io.File;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -30,6 +33,7 @@ public class ImagesService {
     public List<Recipe> analyzeAndFetchRecipes(MultipartFile file, int numRecipes) {
         String base64Image = encodeToBase64(file);
         List<Ingredient> ingredients = callGenAi(base64Image);
+        System.out.println(ingredients);
         return callRecipesService(ingredients, numRecipes);
     }
 
@@ -43,22 +47,19 @@ public class ImagesService {
     }
 
     private List<Ingredient> callGenAi(String base64Image) {
-        Map<String, String> body = new HashMap<>();
-        body.put("image_base64", base64Image);
-
         HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.setContentType(MediaType.TEXT_PLAIN);
 
-        HttpEntity<Map<String, String>> entity = new HttpEntity<>(body, headers);
+        HttpEntity<String> entity = new HttpEntity<>(base64Image, headers);
 
-        ResponseEntity<List<Ingredient>> response = restTemplate.exchange(
+        ResponseEntity<IngredientsResponse> response = restTemplate.exchange(
                 genaiUrl + "/image/analyze",
                 HttpMethod.POST,
                 entity,
                 new ParameterizedTypeReference<>() {
                 });
 
-        return response.getBody();
+        return response.getBody().getIngredients();
     }
 
     private List<Recipe> callRecipesService(List<Ingredient> ingredients, int numRecipes) {
@@ -68,7 +69,7 @@ public class ImagesService {
         HttpEntity<List<Ingredient>> entity = new HttpEntity<>(ingredients, headers);
 
         ResponseEntity<List<Recipe>> response = restTemplate.exchange(
-                recipesUrl + "/ai/{numRecipes}" + String.valueOf(numRecipes),
+                recipesUrl + "/ai/" + String.valueOf(numRecipes),
                 HttpMethod.POST,
                 entity,
                 new ParameterizedTypeReference<>() {

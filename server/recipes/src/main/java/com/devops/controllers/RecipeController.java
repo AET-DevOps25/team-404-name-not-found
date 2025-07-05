@@ -1,5 +1,6 @@
 package com.devops.controllers;
 
+import com.devops.entities.Ingredient;
 import com.devops.entities.Recipe;
 import com.devops.services.RecipeService;
 
@@ -27,13 +28,14 @@ public class RecipeController {
         this.recipeService = recipeService;
     }
 
-    @Operation(summary = "Generate a recipe using AI from a list of ingredients", requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(content = @Content(mediaType = "application/json", examples = @ExampleObject(name = "Ingredients list", value = "[\"tomato\", \"cheese\", \"basil\"]"))), responses = {
+    @Operation(summary = "Generate a recipe using AI from a list of ingredients", requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(content = @Content(mediaType = "application/json")), responses = {
             @ApiResponse(responseCode = "200", description = "Generated Recipe", content = @Content(schema = @Schema(implementation = Recipe.class)))
     })
-    @PostMapping("/ai")
-    public ResponseEntity<Recipe> generateRecipe(@RequestBody List<String> ingredients,
+    @PostMapping("/ai/{numRecipes}")
+    public ResponseEntity<Recipe> generateRecipe(@RequestBody List<Ingredient> ingredients,
+            @PathVariable int numRecipes,
             @Parameter(description = "User ID from proxy") @RequestHeader("X-User-Id") String userId) {
-        Recipe recipe = recipeService.generateRecipe(ingredients, userId);
+        Recipe recipe = recipeService.generateRecipe(ingredients, numRecipes, userId);
         return ResponseEntity.ok(recipe);
     }
 
