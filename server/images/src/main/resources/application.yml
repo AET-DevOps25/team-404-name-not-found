@@ -1,0 +1,44 @@
+spring:
+  application:
+    name: images
+  datasource:
+    url: jdbc:postgresql://${DB_HOST:localhost}:5432/fridge
+    username: postgres
+    password: postgres
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate.dialect: org.hibernate.dialect.PostgreSQLDialect
+
+server:
+  servlet:
+    context-path: /api/images/v1
+
+springdoc:
+  api-docs:
+    path: /docs/openapi
+  swagger-ui:
+    path: /docs/swagger-ui.html
+    url: /docs/openapi
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+      path-mapping:
+        health: health
+  health:
+    show-details: always
+  metrics:
+    export:
+      prometheus:
+        enabled: true
+  endpoint:
+    prometheus:
+      enabled: true
+
+vars:
+  HOST: ${HOST:localhost}

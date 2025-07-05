@@ -13,3 +13,10 @@ scrape_configs:
     static_configs:
       - targets:
           - "recipes:8080"
+  - job_name: images
+    metrics_path: "/api/images/v1/actuator/prometheus"
+    scheme: http
+    follow_redirects: true
+    static_configs:
+      - targets:
+          - "images:8080"

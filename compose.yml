@@ -15,6 +15,8 @@ services:
         condition: service_healthy
       recipes:
         condition: service_healthy
+      images:
+        condition: service_healthy
     networks:
       - web
 
@@ -105,6 +107,30 @@ services:
     depends_on:
       users:
         condition: service_healthy
+    environment:
+      DB_HOST: db
+    networks:
+      - web
+
+  images:
+    container_name: images
+    image: ghcr.io/aet-devops25/team-404-name-not-found/images:${BRANCH:-main}
+    build:
+      context: server
+      dockerfile: images/Dockerfile
+    healthcheck:
+      test: ["CMD", "wget", "-q", "--spider", "http://localhost:8080/api/images/v1/actuator/health"]
+      interval: 10s
+      timeout: 15s
+      retries: 5
+      start_period: 10s
+    ports:
+      - "8083:8080"
+    depends_on:
+      recipes:
+        condition: service_healthy
+      # genai:
+      #   condition: service_healthy
     environment:
       DB_HOST: db
     networks:
