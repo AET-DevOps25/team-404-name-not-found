@@ -1,7 +1,9 @@
 package com.devops.services;
 
 import com.devops.entities.Difficulty;
+import com.devops.entities.Ingredient;
 import com.devops.entities.Recipe;
+import com.devops.entities.RecipeResponseDTO;
 import com.devops.repositories.RecipeRepository;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -25,22 +27,31 @@ public class RecipeService {
     @Value("${vars.HOST}")
     public String host;
 
-    public Recipe generateRecipe(List<String> ingredients, String userId) {
+    public Recipe generateRecipe(List<Ingredient> ingredients, int numRecipes, String userId) {
         try {
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
 
-            HttpEntity<List<String>> request = new HttpEntity<>(ingredients, headers);
-            ResponseEntity<Recipe> response = restTemplate.postForEntity(
-                    "http://" + host + "/api/genai/recipe", request, Recipe.class);
+            HttpEntity<List<Ingredient>> request = new HttpEntity<>(ingredients, headers);
+            ResponseEntity<RecipeResponseDTO> response = restTemplate.postForEntity(
+                    "http://" + host + "/api/genai/v1/recipe/matching/" + String.valueOf(numRecipes), request,
+                    RecipeResponseDTO.class);
 
-            return recipeRepository.save(response.getBody());
+            RecipeResponseDTO recipeResponse = response.getBody();
+            Recipe toSave = new Recipe();
+            toSave.setTitle(recipeResponse.getTitle());
+            toSave.setInstructions(recipeResponse.getSteps());
+            toSave.setIngredients(ingredients.stream().map(ingredient -> ingredient.getName()).toList());
+            toSave.setDifficulty(recipeResponse.getDifficulty());
+            toSave.setCookingTime(recipeResponse.getCookingTime());
+            toSave.setUserId(userId);
+            return recipeRepository.save(toSave);
         } catch (Exception e) {
             // Fallback
             Recipe fallback = new Recipe();
             fallback.setTitle("Fallback Recipe");
             fallback.setInstructions(List.of("Mix all ingredients", "Cook for 20 minutes"));
-            fallback.setIngredients(ingredients);
+            fallback.setIngredients(ingredients.stream().map(ingredient -> ingredient.getName()).toList());
             fallback.setDifficulty(Difficulty.EASY);
             fallback.setCookingTime(30);
             fallback.setUserId(userId);

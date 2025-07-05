@@ -50,3 +50,17 @@ spec:
                 name: grafana
                 port:
                   number: 3000
+          - path: /api/images/v1/docs
+            pathType: Prefix
+            backend:
+              service:
+                name: images
+                port:
+                  number: 8080
+          - path: /api/images/v1/actuator
+            pathType: Prefix
+            backend:
+              service:
+                name: images
+                port:
+                  number: 8080
