@@ -2,6 +2,8 @@ package com.devops.service;
 
 import com.devops.dto.Ingredient;
 import com.devops.dto.Recipe;
+
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
@@ -19,8 +21,11 @@ public class ImagesService {
 
     private final RestTemplate restTemplate = new RestTemplate();
 
-    private final String GENAI_URL = "http://genai-service/api/genai/v1/image/analyze";
-    private final String RECIPES_URL = "http://recipes-service/api/recipes/ai/{numRecipes}";
+    @Value("${vars.genai-url}")
+    private String genaiUrl;
+
+    @Value("${vars.recipes-url}")
+    private String recipesUrl;
 
     public List<Recipe> analyzeAndFetchRecipes(MultipartFile file, int numRecipes) {
         String base64Image = encodeToBase64(file);
@@ -47,7 +52,7 @@ public class ImagesService {
         HttpEntity<Map<String, String>> entity = new HttpEntity<>(body, headers);
 
         ResponseEntity<List<Ingredient>> response = restTemplate.exchange(
-                GENAI_URL,
+                genaiUrl + "/image/analyze",
                 HttpMethod.POST,
                 entity,
                 new ParameterizedTypeReference<>() {
@@ -63,7 +68,7 @@ public class ImagesService {
         HttpEntity<List<Ingredient>> entity = new HttpEntity<>(ingredients, headers);
 
         ResponseEntity<List<Recipe>> response = restTemplate.exchange(
-                RECIPES_URL,
+                recipesUrl + "/ai/{numRecipes}" + String.valueOf(numRecipes),
                 HttpMethod.POST,
                 entity,
                 new ParameterizedTypeReference<>() {
