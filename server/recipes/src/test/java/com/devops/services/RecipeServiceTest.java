@@ -1,6 +1,6 @@
 package com.devops.services;
 
-import com.devops.entities.Difficulty;
+import com.devops.entities.ImageRecipeDTO;
 import com.devops.entities.Ingredient;
 import com.devops.entities.Recipe;
 import com.devops.repositories.RecipeRepository;
@@ -52,12 +52,8 @@ class RecipeServiceTest {
                 .when(spyService)
                 .generateRecipe(eq(ingredients), eq(numRecipes), eq(userId));
 
-        Recipe fallback = recipeService.generateRecipe(ingredients, numRecipes, userId);
-
-        assertEquals("Fallback Recipe", fallback.getTitle());
-        assertEquals(Difficulty.EASY, fallback.getDifficulty());
-        assertEquals(30, fallback.getCookingTime());
-        assertEquals(userId, fallback.getUserId());
+        List<ImageRecipeDTO> recipes = recipeService.generateRecipe(ingredients, numRecipes, userId);
+        assert recipes.isEmpty();
     }
 
     @Test

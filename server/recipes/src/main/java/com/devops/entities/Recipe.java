@@ -40,4 +40,15 @@ public class Recipe {
 
     @Column(nullable = false)
     private String userId;
+
+    public static Recipe fromAiRecipeDTO(AiRecipeDTO recipeDTO, String userId) {
+        Recipe recipe = new Recipe();
+        recipe.setTitle(recipeDTO.getTitle());
+        recipe.setInstructions(recipeDTO.getSteps());
+        recipe.setIngredients(recipeDTO.getIngredients().stream().map(ingredient -> ingredient.getName()).toList());
+        recipe.setDifficulty(recipeDTO.getDifficulty());
+        recipe.setCookingTime(recipeDTO.getCookingTime());
+        recipe.setUserId(userId);
+        return recipe;
+    }
 }

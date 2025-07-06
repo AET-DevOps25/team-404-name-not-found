@@ -29,6 +29,8 @@ spec:
               value: postgres
             - name: HOST
               value: {{ .Values.host }}
+            - name: AI_HOST
+              value: genai:8000
           startupProbe:
 {{ toYaml .Values.recipesProbe | indent 12 }}
           livenessProbe:

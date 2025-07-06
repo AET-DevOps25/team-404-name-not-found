@@ -2,9 +2,7 @@ package com.devops.service;
 
 import com.devops.dto.Ingredient;
 import com.devops.dto.IngredientsResponse;
-import com.devops.dto.Recipe;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
+import com.devops.dto.RecipeDTO;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
@@ -14,10 +12,7 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.io.File;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Service
 public class ImagesService {
@@ -30,11 +25,10 @@ public class ImagesService {
     @Value("${vars.recipes-url}")
     private String recipesUrl;
 
-    public List<Recipe> analyzeAndFetchRecipes(MultipartFile file, int numRecipes) {
+    public List<RecipeDTO> analyzeAndFetchRecipes(MultipartFile file, int numRecipes, String userId) {
         String base64Image = encodeToBase64(file);
         List<Ingredient> ingredients = callGenAi(base64Image);
-        System.out.println(ingredients);
-        return callRecipesService(ingredients, numRecipes);
+        return callRecipesService(ingredients, numRecipes, userId);
     }
 
     private String encodeToBase64(MultipartFile file) {
@@ -62,13 +56,16 @@ public class ImagesService {
         return response.getBody().getIngredients();
     }
 
-    private List<Recipe> callRecipesService(List<Ingredient> ingredients, int numRecipes) {
+    private List<RecipeDTO> callRecipesService(List<Ingredient> ingredients, int numRecipes, String userId) {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.add("X-User-Id", userId);
 
         HttpEntity<List<Ingredient>> entity = new HttpEntity<>(ingredients, headers);
 
-        ResponseEntity<List<Recipe>> response = restTemplate.exchange(
+        System.out.println("Sending off request to recipes service...");
+
+        ResponseEntity<List<RecipeDTO>> response = restTemplate.exchange(
                 recipesUrl + "/ai/" + String.valueOf(numRecipes),
                 HttpMethod.POST,
                 entity,

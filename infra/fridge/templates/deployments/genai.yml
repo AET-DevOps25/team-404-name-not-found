@@ -1,0 +1,45 @@
+# k8s/base/genai/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: genai
+  namespace: {{ .Values.namespace }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: genai
+  template:
+    metadata:
+      annotations:
+        image-deployment: {{ now | date "Mon, 02/01/06, 03:04PM" }}
+      labels:
+        app: genai
+    spec:
+      imagePullSecrets:
+        - name: ghcr-pull-secret
+      containers:
+        - name: genai
+          image: "ghcr.io/aet-devops25/team-404-name-not-found/genai:{{ .Values.currentBranch }}"
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8000
+          env:
+            - name: OPENAI_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: genai-openai-creds
+                  key: openaiApiKey
+            - name: OPENAI_API_BASE
+              valueFrom:
+                secretKeyRef:
+                  name: genai-openai-creds
+                  key: openaiApiBase
+          startupProbe:
+{{ toYaml .Values.genaiProbe | indent 12 }}
+          livenessProbe:
+{{ toYaml .Values.genaiProbe | indent 12 }}
+          readinessProbe:
+{{ toYaml .Values.genaiProbe | indent 12 }}
+          resources:
+{{ toYaml .Values.resources | indent 12 }}

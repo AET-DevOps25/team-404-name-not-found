@@ -43,6 +43,7 @@ services:
       GF_SERVER_DOMAIN: fridge.localhost
       GF_SERVER_ROOT_URL: "https://fridge.localhost/grafana"
       GF_SERVER_SERVE_FROM_SUB_PATH: "true"
+      GF_LOG_LEVEL: warn
     volumes:
       - ./infra/fridge/datasources.yml:/etc/grafana/provisioning/datasources/datasources.yaml
       - ./infra/fridge/dashboardproviders.yml:/etc/grafana/provisioning/dashboards/dashboardproviders.yaml
@@ -89,6 +90,7 @@ services:
         condition: service_healthy
     environment:
       DB_HOST: db
+      MODE: dev
     networks:
       - web
 
@@ -111,6 +113,8 @@ services:
         condition: service_healthy
     environment:
       DB_HOST: db
+      MODE: dev
+      AI_HOST: genai:8000
     networks:
       - web
 
@@ -135,8 +139,7 @@ services:
         condition: service_healthy
     environment:
       DB_HOST: db
-      # GENAI_URL: http://localhost:8000/api/genai/v1
-      # RECIPES_URL: http://localhost:8082/api/recipes
+      MODE: dev
     networks:
       - web
 

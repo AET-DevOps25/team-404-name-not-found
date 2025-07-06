@@ -1,5 +1,6 @@
 package com.devops.controllers;
 
+import com.devops.entities.ImageRecipeDTO;
 import com.devops.entities.Ingredient;
 import com.devops.entities.Recipe;
 import com.devops.services.RecipeService;
@@ -11,18 +12,23 @@ import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping
 public class RecipeController {
 
     private final RecipeService recipeService;
+
+    @Value("${vars.mode}")
+    private String mode;
 
     public RecipeController(RecipeService recipeService) {
         this.recipeService = recipeService;
@@ -32,11 +38,15 @@ public class RecipeController {
             @ApiResponse(responseCode = "200", description = "Generated Recipe", content = @Content(schema = @Schema(implementation = Recipe.class)))
     })
     @PostMapping("/ai/{numRecipes}")
-    public ResponseEntity<Recipe> generateRecipe(@RequestBody List<Ingredient> ingredients,
+    public ResponseEntity<List<ImageRecipeDTO>> generateRecipe(@RequestBody List<Ingredient> ingredients,
             @PathVariable int numRecipes,
-            @Parameter(description = "User ID from proxy") @RequestHeader("X-User-Id") String userId) {
-        Recipe recipe = recipeService.generateRecipe(ingredients, numRecipes, userId);
-        return ResponseEntity.ok(recipe);
+            @Parameter(description = "User ID from proxy") @RequestHeader(value = "X-User-Id", required = false) String userId) {
+        if (mode.equalsIgnoreCase("dev")) {
+            userId = Optional.ofNullable(userId).orElse("dev-user");
+        }
+
+        List<ImageRecipeDTO> recipes = recipeService.generateRecipe(ingredients, numRecipes, userId);
+        return ResponseEntity.ok(recipes);
     }
 
     @PostMapping("/")
@@ -58,7 +68,12 @@ public class RecipeController {
     })
     @GetMapping("/{id}")
     public ResponseEntity<?> getRecipeById(@PathVariable String id,
-            @Parameter(description = "User ID from proxy") @RequestHeader("X-User-Id") String userId) {
+            @Parameter(description = "User ID from proxy") @RequestHeader(value = "X-User-Id", required = false) String userId) {
+
+        if (mode.equalsIgnoreCase("dev")) {
+            userId = Optional.ofNullable(userId).orElse("dev-user");
+        }
+
         if (id == null || id.isEmpty()) {
             return ResponseEntity.badRequest().build();
         }
@@ -74,7 +89,13 @@ public class RecipeController {
     }
 
     @GetMapping("/")
-    public ResponseEntity<List<Recipe>> getAllRecipesForUser(@RequestHeader("X-User-Id") String userId) {
+    public ResponseEntity<List<Recipe>> getAllRecipesForUser(
+            @RequestHeader(value = "X-User-Id", required = false) String userId) {
+
+        if (mode.equalsIgnoreCase("dev")) {
+            userId = Optional.ofNullable(userId).orElse("dev-user");
+        }
+
         if (userId == null || userId.isEmpty()) {
             System.out.println("The proxy should have set the user email in the Subject header");
             return ResponseEntity.internalServerError().body(new ArrayList<>());
@@ -84,7 +105,13 @@ public class RecipeController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteRecipe(@PathVariable String id, @RequestHeader("X-User-Id") String userId) {
+    public ResponseEntity<String> deleteRecipe(@PathVariable String id,
+            @RequestHeader(value = "X-User-Id", required = false) String userId) {
+
+        if (mode.equalsIgnoreCase("dev")) {
+            userId = Optional.ofNullable(userId).orElse("dev-user");
+        }
+
         if (id == null || id.isEmpty()) {
             return ResponseEntity.badRequest().build();
         }

@@ -7,7 +7,7 @@ import java.util.List;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Data
-public class Recipe {
+public class AiRecipe {
     private String id;
     private String title;
     private Difficulty difficulty;

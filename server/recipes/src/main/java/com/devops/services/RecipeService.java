@@ -1,8 +1,10 @@
 package com.devops.services;
 
-import com.devops.entities.Difficulty;
+import com.devops.entities.AiRecipeRequest;
+import com.devops.entities.ImageRecipeDTO;
 import com.devops.entities.Ingredient;
 import com.devops.entities.Recipe;
+import com.devops.entities.AiRecipeDTO;
 import com.devops.entities.RecipeResponseDTO;
 import com.devops.repositories.RecipeRepository;
 
@@ -11,6 +13,7 @@ import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -24,38 +27,38 @@ public class RecipeService {
         this.restTemplate = new RestTemplate();
     }
 
-    @Value("${vars.HOST}")
+    @Value("${vars.ai-host}")
     public String host;
 
-    public Recipe generateRecipe(List<Ingredient> ingredients, int numRecipes, String userId) {
+    public List<ImageRecipeDTO> generateRecipe(List<Ingredient> ingredients, int numRecipes, String userId) {
+
+        System.out.println("Recipes service making request to ai service");
         try {
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
 
-            HttpEntity<List<Ingredient>> request = new HttpEntity<>(ingredients, headers);
+            AiRecipeRequest aiRecipeRequest = new AiRecipeRequest(ingredients);
+            HttpEntity<AiRecipeRequest> request = new HttpEntity<>(aiRecipeRequest, headers);
             ResponseEntity<RecipeResponseDTO> response = restTemplate.postForEntity(
                     "http://" + host + "/api/genai/v1/recipe/matching/" + String.valueOf(numRecipes), request,
                     RecipeResponseDTO.class);
 
-            RecipeResponseDTO recipeResponse = response.getBody();
-            Recipe toSave = new Recipe();
-            toSave.setTitle(recipeResponse.getTitle());
-            toSave.setInstructions(recipeResponse.getSteps());
-            toSave.setIngredients(ingredients.stream().map(ingredient -> ingredient.getName()).toList());
-            toSave.setDifficulty(recipeResponse.getDifficulty());
-            toSave.setCookingTime(recipeResponse.getCookingTime());
-            toSave.setUserId(userId);
-            return recipeRepository.save(toSave);
+            System.out.println("AI service response: " + response.getBody().getRecipes());
+
+            List<ImageRecipeDTO> recipes = new ArrayList<>();
+            for (AiRecipeDTO recipeDTO : response.getBody().getRecipes()) {
+                Recipe toSave = Recipe.fromAiRecipeDTO(recipeDTO, userId);
+                recipeRepository.save(toSave);
+
+                ImageRecipeDTO imageRecipeDTO = ImageRecipeDTO.fromRecipe(toSave, userId, ingredients,
+                        recipeDTO.getNeededIngredients());
+                recipes.add(imageRecipeDTO);
+            }
+            return recipes;
         } catch (Exception e) {
+            System.out.println("Something went horribly wrong! " + e);
             // Fallback
-            Recipe fallback = new Recipe();
-            fallback.setTitle("Fallback Recipe");
-            fallback.setInstructions(List.of("Mix all ingredients", "Cook for 20 minutes"));
-            fallback.setIngredients(ingredients.stream().map(ingredient -> ingredient.getName()).toList());
-            fallback.setDifficulty(Difficulty.EASY);
-            fallback.setCookingTime(30);
-            fallback.setUserId(userId);
-            return fallback;
+            return new ArrayList<ImageRecipeDTO>();
         }
     }
 

@@ -50,3 +50,6 @@ management:
   endpoint:
     prometheus:
       enabled: true
+
+vars:
+  mode: ${MODE:prod}

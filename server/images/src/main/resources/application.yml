@@ -44,3 +44,4 @@ vars:
   HOST: ${HOST:localhost}
   genai-url: ${GENAI_URL:http://genai:8000/api/genai/v1}
   recipes-url: ${RECIPES_URL:http://recipes:8080/api/recipes}
+  mode: ${MODE:prod}

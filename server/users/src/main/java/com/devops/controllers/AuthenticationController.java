@@ -52,6 +52,9 @@ public class AuthenticationController {
     @Value("${github.redirect-uri}")
     private String redirectUri;
 
+    @Value("${vars.mode}")
+    private String mode;
+
     /**
      * Forwards login requests to github
      * 
@@ -149,6 +152,13 @@ public class AuthenticationController {
     @GetMapping("/auth")
     public ResponseEntity<Object> validateToken(
             @RequestHeader(value = "Authorization", required = false) String authHeader) {
+
+        if (mode.equalsIgnoreCase("dev")) {
+            HttpHeaders headers = new HttpHeaders();
+            headers.add("X-User-Id", "dev-user-id");
+            return new ResponseEntity<>(headers, HttpStatus.OK);
+        }
+
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             return ResponseEntity.status(401).body("Missing or invalid Authorization header");
         }
