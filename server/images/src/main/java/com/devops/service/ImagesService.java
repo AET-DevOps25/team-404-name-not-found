@@ -25,10 +25,11 @@ public class ImagesService {
     @Value("${vars.recipes-url}")
     private String recipesUrl;
 
-    public List<RecipeDTO> analyzeAndFetchRecipes(MultipartFile file, int numRecipes, String userId) {
+    public List<RecipeDTO> analyzeAndFetchRecipes(MultipartFile file, int numRecipes, String userId,
+            String aiEndpoint) {
         String base64Image = encodeToBase64(file);
         List<Ingredient> ingredients = callGenAi(base64Image);
-        return callRecipesService(ingredients, numRecipes, userId);
+        return callRecipesService(ingredients, numRecipes, userId, aiEndpoint);
     }
 
     private String encodeToBase64(MultipartFile file) {
@@ -56,7 +57,8 @@ public class ImagesService {
         return response.getBody().getIngredients();
     }
 
-    private List<RecipeDTO> callRecipesService(List<Ingredient> ingredients, int numRecipes, String userId) {
+    private List<RecipeDTO> callRecipesService(List<Ingredient> ingredients, int numRecipes, String userId,
+            String aiEndpoint) {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.add("X-User-Id", userId);
@@ -66,7 +68,7 @@ public class ImagesService {
         System.out.println("Sending off request to recipes service...");
 
         ResponseEntity<List<RecipeDTO>> response = restTemplate.exchange(
-                recipesUrl + "/ai/" + String.valueOf(numRecipes),
+                recipesUrl + "/ai" + aiEndpoint + String.valueOf(numRecipes),
                 HttpMethod.POST,
                 entity,
                 new ParameterizedTypeReference<>() {

@@ -35,7 +35,7 @@ public class ImagesController {
                                         @ApiResponse(responseCode = "400", description = "Invalid input"),
                                         @ApiResponse(responseCode = "500", description = "Internal server error")
                         })
-        @PostMapping("/recipes")
+        @PostMapping("/recipes/match")
         public ResponseEntity<List<RecipeDTO>> analyzeImage(
                         @Parameter(description = "Image file of the fridge", required = true, content = @Content(mediaType = "multipart/form-data", schema = @Schema(type = "string", format = "binary"))) @RequestParam("file") MultipartFile file,
 
@@ -45,6 +45,25 @@ public class ImagesController {
                 if (mode.equalsIgnoreCase("dev")) {
                         userId = Optional.ofNullable(userId).orElse("dev-user");
                 }
-                return ResponseEntity.ok(imagesService.analyzeAndFetchRecipes(file, numRecipes, userId));
+                return ResponseEntity.ok(imagesService.analyzeAndFetchRecipes(file, numRecipes, userId, "/match/"));
+        }
+
+        @Operation(summary = "Analyze fridge image and return recipes with a creative twist", description = "Accepts a fridge photo as a file and returns a list of generated recipes based on identified ingredients.", requestBody = @RequestBody(content = @Content(mediaType = "multipart/form-data", schema = @Schema(type = "object", requiredProperties = {
+                        "file", "numRecipes" }))), responses = {
+                                        @ApiResponse(responseCode = "200", description = "List of recipes generated from the image"),
+                                        @ApiResponse(responseCode = "400", description = "Invalid input"),
+                                        @ApiResponse(responseCode = "500", description = "Internal server error")
+                        })
+        @PostMapping("/recipes/explore")
+        public ResponseEntity<List<RecipeDTO>> checkImage(
+                        @Parameter(description = "Image file of the fridge", required = true, content = @Content(mediaType = "multipart/form-data", schema = @Schema(type = "string", format = "binary"))) @RequestParam("file") MultipartFile file,
+
+                        @Parameter(description = "Number of recipes to return", required = true, example = "3", schema = @Schema(type = "integer", format = "int32")) @RequestParam("numRecipes") int numRecipes,
+                        @RequestHeader(value = "X-User-Id", required = false) String userId) {
+
+                if (mode.equalsIgnoreCase("dev")) {
+                        userId = Optional.ofNullable(userId).orElse("dev-user");
+                }
+                return ResponseEntity.ok(imagesService.analyzeAndFetchRecipes(file, numRecipes, userId, "/explore/"));
         }
 }

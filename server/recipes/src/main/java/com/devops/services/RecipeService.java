@@ -31,8 +31,16 @@ public class RecipeService {
     public String host;
 
     public List<ImageRecipeDTO> generateRecipe(List<Ingredient> ingredients, int numRecipes, String userId) {
+        return fetchRecipe(ingredients, numRecipes, userId, "/matching/");
+    }
 
-        System.out.println("Recipes service making request to ai service");
+    public List<ImageRecipeDTO> exploreRecipe(List<Ingredient> ingredients, int numRecipes, String userId) {
+        return fetchRecipe(ingredients, numRecipes, userId, "/exploratory/");
+    }
+
+    private List<ImageRecipeDTO> fetchRecipe(List<Ingredient> ingredients, int numRecipes, String userId,
+            String aiEndpoint) {
+
         try {
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
@@ -40,13 +48,17 @@ public class RecipeService {
             AiRecipeRequest aiRecipeRequest = new AiRecipeRequest(ingredients);
             HttpEntity<AiRecipeRequest> request = new HttpEntity<>(aiRecipeRequest, headers);
             ResponseEntity<RecipeResponseDTO> response = restTemplate.postForEntity(
-                    "http://" + host + "/api/genai/v1/recipe/matching/" + String.valueOf(numRecipes), request,
+                    "http://" + host + "/api/genai/v1/recipe" + aiEndpoint + String.valueOf(numRecipes), request,
                     RecipeResponseDTO.class);
-
-            System.out.println("AI service response: " + response.getBody().getRecipes());
 
             List<ImageRecipeDTO> recipes = new ArrayList<>();
             for (AiRecipeDTO recipeDTO : response.getBody().getRecipes()) {
+
+                // Recipe is what is saved in the db
+                // It most notably differs from ImageRecipeDTO in the List of Ingredients
+                // Since I didn't want to introduce another table for ingredients,
+                // and I can't save an ingredient in my recipes table
+                // I had to solve it like this
                 Recipe toSave = Recipe.fromAiRecipeDTO(recipeDTO, userId);
                 recipeRepository.save(toSave);
 
@@ -60,6 +72,7 @@ public class RecipeService {
             // Fallback
             return new ArrayList<ImageRecipeDTO>();
         }
+
     }
 
     public List<Recipe> getRecipesByUser(String userId) {

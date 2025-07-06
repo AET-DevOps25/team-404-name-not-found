@@ -34,10 +34,10 @@ public class RecipeController {
         this.recipeService = recipeService;
     }
 
-    @Operation(summary = "Generate a recipe using AI from a list of ingredients", requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(content = @Content(mediaType = "application/json")), responses = {
+    @Operation(summary = "Generate a recipe using AI from a list of ingredients. The result will try its best to match your given ingredient list", requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(content = @Content(mediaType = "application/json")), responses = {
             @ApiResponse(responseCode = "200", description = "Generated Recipe", content = @Content(schema = @Schema(implementation = Recipe.class)))
     })
-    @PostMapping("/ai/{numRecipes}")
+    @PostMapping("/ai/match/{numRecipes}")
     public ResponseEntity<List<ImageRecipeDTO>> generateRecipe(@RequestBody List<Ingredient> ingredients,
             @PathVariable int numRecipes,
             @Parameter(description = "User ID from proxy") @RequestHeader(value = "X-User-Id", required = false) String userId) {
@@ -46,6 +46,21 @@ public class RecipeController {
         }
 
         List<ImageRecipeDTO> recipes = recipeService.generateRecipe(ingredients, numRecipes, userId);
+        return ResponseEntity.ok(recipes);
+    }
+
+    @Operation(summary = "Generate a recipe using AI from a list of ingredients. The AI can experiment with your given ingredient list, leading to potential recipes you can't cook right away", requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(content = @Content(mediaType = "application/json")), responses = {
+            @ApiResponse(responseCode = "200", description = "Generated Recipe", content = @Content(schema = @Schema(implementation = Recipe.class)))
+    })
+    @PostMapping("/ai/explore/{numRecipes}")
+    public ResponseEntity<List<ImageRecipeDTO>> exploreRecipe(@RequestBody List<Ingredient> ingredients,
+            @PathVariable int numRecipes,
+            @Parameter(description = "User ID from proxy") @RequestHeader(value = "X-User-Id", required = false) String userId) {
+        if (mode.equalsIgnoreCase("dev")) {
+            userId = Optional.ofNullable(userId).orElse("dev-user");
+        }
+
+        List<ImageRecipeDTO> recipes = recipeService.exploreRecipe(ingredients, numRecipes, userId);
         return ResponseEntity.ok(recipes);
     }
 
