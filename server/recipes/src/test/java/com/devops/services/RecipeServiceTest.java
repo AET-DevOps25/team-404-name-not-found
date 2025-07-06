@@ -1,6 +1,7 @@
 package com.devops.services;
 
 import com.devops.entities.Difficulty;
+import com.devops.entities.Ingredient;
 import com.devops.entities.Recipe;
 import com.devops.repositories.RecipeRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -11,6 +12,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -40,16 +42,17 @@ class RecipeServiceTest {
     @Test
     @DisplayName("Should fallback and return dummy recipe on AI service failure")
     void generateRecipe_shouldFallbackOnError() {
-        List<String> ingredients = List.of("Flour", "Eggs", "Milk");
+        List<Ingredient> ingredients = new ArrayList<>();
         String userId = "user-123";
+        int numRecipes = 1;
 
         // Force a failure in AI service call
         RecipeService spyService = spy(recipeService);
         doThrow(new RuntimeException("AI service down"))
                 .when(spyService)
-                .generateRecipe(eq(ingredients), eq(userId));
+                .generateRecipe(eq(ingredients), eq(numRecipes), eq(userId));
 
-        Recipe fallback = recipeService.generateRecipe(ingredients, userId);
+        Recipe fallback = recipeService.generateRecipe(ingredients, numRecipes, userId);
 
         assertEquals("Fallback Recipe", fallback.getTitle());
         assertEquals(Difficulty.EASY, fallback.getDifficulty());

@@ -1,6 +1,7 @@
 package com.devops.controllers;
 
 import com.devops.entities.Difficulty;
+import com.devops.entities.Ingredient;
 import com.devops.entities.Recipe;
 import com.devops.services.RecipeService;
 import org.junit.jupiter.api.Test;
@@ -13,6 +14,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -47,13 +49,14 @@ class RecipeControllerTest {
 
         @Test
         void generateRecipe_shouldReturnRecipe() throws Exception {
-                List<String> ingredients = List.of("egg", "milk");
+                List<Ingredient> ingredients = new ArrayList<>();
+                int numRecipes = 1;
                 Recipe recipe = sampleRecipe();
 
-                Mockito.when(recipeService.generateRecipe(eq(ingredients), eq("user123")))
+                Mockito.when(recipeService.generateRecipe(eq(ingredients), eq(numRecipes), eq("user123")))
                                 .thenReturn(recipe);
 
-                mockMvc.perform(post("/ai")
+                mockMvc.perform(post("/ai/" + numRecipes)
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(objectMapper.writeValueAsString(ingredients))
                                 .header("X-User-Id", "user123"))
