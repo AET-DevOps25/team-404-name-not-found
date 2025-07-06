@@ -21,6 +21,12 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Create .env for genai
+        run: |
+          cd ${{ github.workspace }}/genai
+          echo "OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }}" >> .env
+          echo "OPENAI_API_BASE=${{ secrets.OPENAI_API_BASE }}" >> .env
+
       - name: Run docker compose
         uses: hoverkraft-tech/compose-action@v2.0.1
         env:
