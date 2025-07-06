@@ -60,7 +60,7 @@ class RecipeControllerTest {
                 Mockito.when(recipeService.generateRecipe(eq(ingredients), eq(numRecipes), eq("user123")))
                                 .thenReturn(recipes);
 
-                mockMvc.perform(post("/ai/" + numRecipes)
+                mockMvc.perform(post("/ai/match/" + numRecipes)
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(objectMapper.writeValueAsString(ingredients))
                                 .header("X-User-Id", "user123"))
