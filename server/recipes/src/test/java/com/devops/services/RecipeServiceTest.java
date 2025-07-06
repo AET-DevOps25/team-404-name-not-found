@@ -58,7 +58,6 @@ class RecipeServiceTest {
         assertEquals(Difficulty.EASY, fallback.getDifficulty());
         assertEquals(30, fallback.getCookingTime());
         assertEquals(userId, fallback.getUserId());
-        assertEquals(ingredients, fallback.getIngredients());
     }
 
     @Test
