@@ -1,7 +1,6 @@
 package com.devops.controllers;
 
 import com.devops.entities.Difficulty;
-import com.devops.entities.ImageRecipeDTO;
 import com.devops.entities.Ingredient;
 import com.devops.entities.Recipe;
 import com.devops.entities.Unit;
@@ -38,11 +37,10 @@ class RecipeControllerTest {
         @Autowired
         private ObjectMapper objectMapper;
 
-        private List<ImageRecipeDTO> sampleRecipe() {
-                return List.of(new ImageRecipeDTO(
+        private List<Recipe> sampleRecipe() {
+                return List.of(new Recipe(
                                 UUID.randomUUID().toString(),
                                 "Test Recipe",
-                                "Test Description",
                                 Difficulty.MEDIUM,
                                 30,
                                 List.of("Step 1", "Step 2"),
@@ -55,7 +53,7 @@ class RecipeControllerTest {
         void generateRecipe_shouldReturnRecipe() throws Exception {
                 List<Ingredient> ingredients = new ArrayList<>();
                 int numRecipes = 1;
-                List<ImageRecipeDTO> recipes = sampleRecipe();
+                List<Recipe> recipes = sampleRecipe();
 
                 Mockito.when(recipeService.generateRecipe(eq(ingredients), eq(numRecipes), eq("user123")))
                                 .thenReturn(recipes);
@@ -69,31 +67,31 @@ class RecipeControllerTest {
 
         @Test
         void saveRecipe_shouldReturnCreatedRecipe() throws Exception {
-                List<ImageRecipeDTO> recipes = sampleRecipe();
-                Mockito.when(recipeService.saveRecipe(any(Recipe.class))).thenReturn(recipes.getFirst().toRecipe());
+                List<Recipe> recipes = sampleRecipe();
+                Mockito.when(recipeService.saveRecipe(any(Recipe.class))).thenReturn(recipes.getFirst());
 
                 mockMvc.perform(post("/")
                                 .contentType(MediaType.APPLICATION_JSON)
-                                .content(objectMapper.writeValueAsString(recipes.getFirst().toRecipe())))
+                                .content(objectMapper.writeValueAsString(recipes.getFirst())))
                                 .andExpect(status().isCreated());
         }
 
         @Test
         void alterRecipe_shouldReturnUpdatedRecipe() throws Exception {
-                List<ImageRecipeDTO> recipes = sampleRecipe();
-                Mockito.when(recipeService.alterRecipe(any(Recipe.class))).thenReturn(recipes.getFirst().toRecipe());
+                List<Recipe> recipes = sampleRecipe();
+                Mockito.when(recipeService.alterRecipe(any(Recipe.class))).thenReturn(recipes.getFirst());
 
                 mockMvc.perform(put("/")
                                 .contentType(MediaType.APPLICATION_JSON)
-                                .content(objectMapper.writeValueAsString(recipes.getFirst().toRecipe())))
+                                .content(objectMapper.writeValueAsString(recipes.getFirst())))
                                 .andExpect(status().isOk());
         }
 
         @Test
         void getRecipeById_shouldReturnRecipe() throws Exception {
-                List<ImageRecipeDTO> recipes = sampleRecipe();
+                List<Recipe> recipes = sampleRecipe();
                 Mockito.when(recipeService.getRecipeById(eq(recipes.getFirst().getId()), eq("user123")))
-                                .thenReturn(recipes.getFirst().toRecipe());
+                                .thenReturn(recipes.getFirst());
 
                 mockMvc.perform(get("/" + recipes.getFirst().getId())
                                 .header("X-User-Id", "user123"))
@@ -113,9 +111,9 @@ class RecipeControllerTest {
 
         @Test
         void getAllRecipesForUser_shouldReturnList() throws Exception {
-                List<ImageRecipeDTO> recipes = sampleRecipe();
+                List<Recipe> recipes = sampleRecipe();
                 Mockito.when(recipeService.getRecipesByUser("user123"))
-                                .thenReturn(recipes.stream().map(imageRecipeDTO -> imageRecipeDTO.toRecipe()).toList());
+                                .thenReturn(recipes);
 
                 mockMvc.perform(get("/")
                                 .header("X-User-Id", "user123"))
@@ -125,9 +123,9 @@ class RecipeControllerTest {
 
         @Test
         void deleteRecipe_shouldDeleteAndReturnNoContent() throws Exception {
-                List<ImageRecipeDTO> recipes = sampleRecipe();
+                List<Recipe> recipes = sampleRecipe();
                 Mockito.when(recipeService.getRecipeById(eq(recipes.getFirst().getId()), eq("user123")))
-                                .thenReturn(recipes.getFirst().toRecipe());
+                                .thenReturn(recipes.getFirst());
 
                 mockMvc.perform(delete("/" + recipes.getFirst().getId())
                                 .header("X-User-Id", "user123"))

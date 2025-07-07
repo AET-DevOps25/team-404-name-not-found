@@ -1,7 +1,6 @@
 package com.devops.services;
 
 import com.devops.entities.AiRecipeRequest;
-import com.devops.entities.ImageRecipeDTO;
 import com.devops.entities.Ingredient;
 import com.devops.entities.Recipe;
 import com.devops.entities.AiRecipeDTO;
@@ -30,15 +29,15 @@ public class RecipeService {
     @Value("${vars.ai-host}")
     public String host;
 
-    public List<ImageRecipeDTO> generateRecipe(List<Ingredient> ingredients, int numRecipes, String userId) {
+    public List<Recipe> generateRecipe(List<Ingredient> ingredients, int numRecipes, String userId) {
         return fetchRecipe(ingredients, numRecipes, userId, "/matching/");
     }
 
-    public List<ImageRecipeDTO> exploreRecipe(List<Ingredient> ingredients, int numRecipes, String userId) {
+    public List<Recipe> exploreRecipe(List<Ingredient> ingredients, int numRecipes, String userId) {
         return fetchRecipe(ingredients, numRecipes, userId, "/exploratory/");
     }
 
-    private List<ImageRecipeDTO> fetchRecipe(List<Ingredient> ingredients, int numRecipes, String userId,
+    private List<Recipe> fetchRecipe(List<Ingredient> ingredients, int numRecipes, String userId,
             String aiEndpoint) {
 
         try {
@@ -51,26 +50,17 @@ public class RecipeService {
                     "http://" + host + "/api/genai/v1/recipe" + aiEndpoint + String.valueOf(numRecipes), request,
                     RecipeResponseDTO.class);
 
-            List<ImageRecipeDTO> recipes = new ArrayList<>();
+            List<Recipe> recipes = new ArrayList<>();
             for (AiRecipeDTO recipeDTO : response.getBody().getRecipes()) {
-
-                // Recipe is what is saved in the db
-                // It most notably differs from ImageRecipeDTO in the List of Ingredients
-                // Since I didn't want to introduce another table for ingredients,
-                // and I can't save an ingredient in my recipes table
-                // I had to solve it like this
                 Recipe toSave = Recipe.fromAiRecipeDTO(recipeDTO, userId);
                 recipeRepository.save(toSave);
-
-                ImageRecipeDTO imageRecipeDTO = ImageRecipeDTO.fromRecipe(toSave, userId, ingredients,
-                        recipeDTO.getNeededIngredients());
-                recipes.add(imageRecipeDTO);
+                recipes.add(toSave);
             }
             return recipes;
         } catch (Exception e) {
             System.out.println("Something went horribly wrong! " + e);
             // Fallback
-            return new ArrayList<ImageRecipeDTO>();
+            return new ArrayList<Recipe>();
         }
 
     }

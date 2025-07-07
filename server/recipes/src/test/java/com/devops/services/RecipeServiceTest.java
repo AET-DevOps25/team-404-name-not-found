@@ -1,6 +1,5 @@
 package com.devops.services;
 
-import com.devops.entities.ImageRecipeDTO;
 import com.devops.entities.Ingredient;
 import com.devops.entities.Recipe;
 import com.devops.repositories.RecipeRepository;
@@ -52,7 +51,7 @@ class RecipeServiceTest {
                 .when(spyService)
                 .generateRecipe(eq(ingredients), eq(numRecipes), eq(userId));
 
-        List<ImageRecipeDTO> recipes = recipeService.generateRecipe(ingredients, numRecipes, userId);
+        List<Recipe> recipes = recipeService.generateRecipe(ingredients, numRecipes, userId);
         assert recipes.isEmpty();
     }
 

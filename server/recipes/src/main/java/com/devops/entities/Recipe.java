@@ -35,8 +35,12 @@ public class Recipe {
     private List<String> instructions;
 
     @ElementCollection
-    @Column(nullable = false)
-    private List<String> ingredients;
+    @CollectionTable(name = "recipe_ingredients", joinColumns = @JoinColumn(name = "recipe_id"))
+    private List<Ingredient> ingredients;
+
+    @ElementCollection
+    @CollectionTable(name = "recipe_needed_ingredients", joinColumns = @JoinColumn(name = "recipe_id"))
+    private List<Ingredient> neededIngredients;
 
     @Column(nullable = false)
     private String userId;
@@ -45,7 +49,8 @@ public class Recipe {
         Recipe recipe = new Recipe();
         recipe.setTitle(recipeDTO.getTitle());
         recipe.setInstructions(recipeDTO.getSteps());
-        recipe.setIngredients(recipeDTO.getIngredients().stream().map(ingredient -> ingredient.getName()).toList());
+        recipe.setIngredients(recipeDTO.getIngredients());
+        recipe.setNeededIngredients(recipeDTO.getNeededIngredients());
         recipe.setDifficulty(recipeDTO.getDifficulty());
         recipe.setCookingTime(recipeDTO.getCookingTime());
         recipe.setUserId(userId);

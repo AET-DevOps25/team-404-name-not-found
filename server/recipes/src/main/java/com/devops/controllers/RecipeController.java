@@ -1,6 +1,5 @@
 package com.devops.controllers;
 
-import com.devops.entities.ImageRecipeDTO;
 import com.devops.entities.Ingredient;
 import com.devops.entities.Recipe;
 import com.devops.services.RecipeService;
@@ -38,14 +37,14 @@ public class RecipeController {
             @ApiResponse(responseCode = "200", description = "Generated Recipe", content = @Content(schema = @Schema(implementation = Recipe.class)))
     })
     @PostMapping("/ai/match/{numRecipes}")
-    public ResponseEntity<List<ImageRecipeDTO>> generateRecipe(@RequestBody List<Ingredient> ingredients,
+    public ResponseEntity<List<Recipe>> generateRecipe(@RequestBody List<Ingredient> ingredients,
             @PathVariable int numRecipes,
             @Parameter(description = "User ID from proxy") @RequestHeader(value = "X-User-Id", required = false) String userId) {
         if (mode.equalsIgnoreCase("dev")) {
             userId = Optional.ofNullable(userId).orElse("dev-user");
         }
 
-        List<ImageRecipeDTO> recipes = recipeService.generateRecipe(ingredients, numRecipes, userId);
+        List<Recipe> recipes = recipeService.generateRecipe(ingredients, numRecipes, userId);
         return ResponseEntity.ok(recipes);
     }
 
@@ -53,14 +52,14 @@ public class RecipeController {
             @ApiResponse(responseCode = "200", description = "Generated Recipe", content = @Content(schema = @Schema(implementation = Recipe.class)))
     })
     @PostMapping("/ai/explore/{numRecipes}")
-    public ResponseEntity<List<ImageRecipeDTO>> exploreRecipe(@RequestBody List<Ingredient> ingredients,
+    public ResponseEntity<List<Recipe>> exploreRecipe(@RequestBody List<Ingredient> ingredients,
             @PathVariable int numRecipes,
             @Parameter(description = "User ID from proxy") @RequestHeader(value = "X-User-Id", required = false) String userId) {
         if (mode.equalsIgnoreCase("dev")) {
             userId = Optional.ofNullable(userId).orElse("dev-user");
         }
 
-        List<ImageRecipeDTO> recipes = recipeService.exploreRecipe(ingredients, numRecipes, userId);
+        List<Recipe> recipes = recipeService.exploreRecipe(ingredients, numRecipes, userId);
         return ResponseEntity.ok(recipes);
     }
 

@@ -16,6 +16,9 @@ metadata:
     # nginx
     nginx.ingress.kubernetes.io/auth-url: "http://users.{{ .Values.namespace }}.svc.cluster.local:8080/api/users/auth"
     nginx.ingress.kubernetes.io/auth-response-headers: "X-User-Id"
+    nginx.ingress.kubernetes.io/proxy-connect-timeout: "90"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "90"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "90"
 spec:
   ingressClassName: nginx
   tls:
