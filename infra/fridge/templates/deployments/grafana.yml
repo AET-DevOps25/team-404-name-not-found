@@ -52,6 +52,12 @@ spec:
             - name: springboot-dashboards
               mountPath: /var/lib/grafana/dashboards/default/springboot
               readOnly: true
+            - name: grafana-custom-alerts
+              mountPath: /etc/grafana/provisioning/alerting
+              readOnly: true
+            - name: grafana-alerts
+              mountPath: /etc/grafana/provisioning
+              readOnly: true
           securityContext:
             allowPrivilegeEscalation: false
             capabilities:
@@ -81,3 +87,9 @@ spec:
         - name: springboot-dashboards
           configMap:
             name: spring-boot-grafana-dashboard
+        - name: grafana-custom-alerts
+          configMap:
+            name: grafana-custom-alerts
+        - name: grafana-alerts
+          configMap:
+            name: grafana-alerts

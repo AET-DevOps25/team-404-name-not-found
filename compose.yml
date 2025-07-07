@@ -35,6 +35,8 @@ services:
   grafana:
     image: grafana/grafana@sha256:fe89b739a264c78f2111d68221a1d51db67135ec50885dc93b59a981a7a5d4d5
     container_name: grafana
+    depends_on:
+      - prometheus
     ports:
       - "3000:3000"
     environment:
@@ -43,12 +45,15 @@ services:
       GF_SERVER_DOMAIN: fridge.localhost
       GF_SERVER_ROOT_URL: "https://fridge.localhost/grafana"
       GF_SERVER_SERVE_FROM_SUB_PATH: "true"
-      GF_LOG_LEVEL: warn
+      GF_LOG_LEVEL: info
+      GF_FEATURE_TOGGLES_ENABLE: ngalert
     volumes:
       - ./infra/fridge/datasources.yml:/etc/grafana/provisioning/datasources/datasources.yaml
       - ./infra/fridge/dashboardproviders.yml:/etc/grafana/provisioning/dashboards/dashboardproviders.yaml
       - ./infra/fridge/jvm.json:/var/lib/grafana/dashboards/default/jvm/jvm.json
       - ./infra/fridge/spring_boot.json:/var/lib/grafana/dashboards/default/springboot/spring_boot.json
+      - ./infra/fridge/alerting.yml:/etc/grafana/provisioning/alerting.yaml
+      - ./infra/fridge/custom_alerts.yml:/etc/grafana/provisioning/alerting/custom_alerts.yaml
     networks:
       - web
 
