@@ -65,7 +65,7 @@ echo "$(minikube ip) fridge.example" | sudo tee -a /etc/hosts
 5. Do stuff:
 
 ```bash
-curl -vvv -X POST -k https://fridge.example/api/images/v1/recipes/explore -F "file=@fruit-and-veg-in-a-fridge.png;type=image/png" -F "numRecipes=2" -H "Authorization: Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJmcmlkZ2UtYXV0aC1hcGkiLCJzdWIiOiIxNTU5MTQ5OTciLCJleHAiOjE3NTE5MDA3MjZ9.bpbYQk6RPhvltjwN0SDNE9nMuB-MYueJN64ytOO_OcTUb1MggGGqNZt9wl2Op38mFA7Gjde7QSP5cl1kozebmvZGY-ojH7Bu6hcva8x6tQCYUMAHFk0Z8YtnevXnywIaT9JejPfSsxKl1kbOkIYtdhl_zqHNxiJixFXtG3pW1tNcdJrSIr_QqBzJaD9ODa4LVGcAc3_vZcuXMX535_nXbxYm_cyX12VBP73FxggqVUXUTpzUdAcx0DjQw7pYgs1rvskhCpyo5hc8SxT1E_8rgLnK5Q5nmBiZNlBHysFJnaZAZIvzFhMKi4mwGwnZ8mXrthli5tGrBW3OveuDdMRAuA"
+curl -vvv -X POST -k https://fridge.example/api/images/v1/recipes/explore -F "file=@fruit-and-veg-in-a-fridge.png;type=image/png" -F "numRecipes=2" -H "Authorization: Bearer <your token>"
 ```
 
 6. Yeet
