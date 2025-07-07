@@ -1,7 +1,7 @@
 #!/bin/bash
 set -euo pipefail
 
-DOMAIN="example.localhost"
+DOMAIN="fridge.localhost"
 KEY_FILE="${DOMAIN}.key"
 CERT_FILE="${DOMAIN}.crt"
 DAYS_VALID=365
