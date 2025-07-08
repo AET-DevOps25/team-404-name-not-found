@@ -50,3 +50,10 @@ spec:
                 name: grafana
                 port:
                   number: 3000
+          - path: /ui/v1/callback
+            pathType: Prefix
+            backend:
+              service:
+                name: ui
+                port:
+                  number: 80
