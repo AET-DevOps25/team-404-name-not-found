@@ -1,9 +1,11 @@
 #!/bin/bash
 set -euo pipefail
 
+DIR=$(dirname "$(realpath $0)")
+
 DOMAIN="fridge.localhost"
-KEY_FILE="${DOMAIN}.key"
-CERT_FILE="${DOMAIN}.crt"
+KEY_FILE="$DIR/../nginx/${DOMAIN}.key"
+CERT_FILE="$DIR/../nginx/${DOMAIN}.crt"
 DAYS_VALID=365
 
 echo "Generating TLS certificate for $DOMAIN..."
@@ -37,3 +39,14 @@ rm "${DOMAIN}.csr" "${DOMAIN}.ext"
 echo "✔ Certificate generated:"
 echo "  - $CERT_FILE"
 echo "  - $KEY_FILE"
+
+# Generate public/private key pair for JWT
+JWT_PRIVATE_KEY_FILE="$DIR/../fridge/private.pem"
+JWT_PUBLIC_KEY_FILE="$DIR/../fridge/public.pem"
+
+openssl genpkey -algorithm RSA -out "$JWT_PRIVATE_KEY_FILE" -pkeyopt rsa_keygen_bits:2048
+openssl rsa -pubout -in "$JWT_PRIVATE_KEY_FILE" -out "$JWT_PUBLIC_KEY_FILE"
+
+echo "✔ JWT public/private key pair generated:"
+echo "  - $JWT_PRIVATE_KEY_FILE"
+echo "  - $JWT_PUBLIC_KEY_FILE"

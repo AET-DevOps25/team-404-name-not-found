@@ -381,6 +381,7 @@ sketch
 # do not accidentally push any key and/or cert to git!
 *.pem
 *.key
+*.crt
 infra/.env
 *.terraform
 *.backup

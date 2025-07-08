@@ -53,3 +53,4 @@ management:
 
 vars:
   mode: ${MODE:prod}
+  host: ${HOST:fridge.example}
