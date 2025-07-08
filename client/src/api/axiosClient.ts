@@ -1,11 +1,13 @@
 import axios from 'axios';
 
 const axiosClient = axios.create({
-    baseURL: "/api", // TODO: Set this to your actual API base URL
+    baseURL: import.meta.env.VITE_API_BASE_URL || "/api",
     headers: {
         "Content-Type": "application/json",
     },
 });
+
+console.log("Axios client created with base URL:", axiosClient.defaults.baseURL);
 
 // Add request interceptor
 axiosClient.interceptors.request.use(

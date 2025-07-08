@@ -1,6 +1,7 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react-swc";
 import path from "path";
+import runtimeEnv from "vite-plugin-runtime-env";
 
 // https://vitejs.dev/config/
 export default defineConfig(({}) => ({
@@ -8,7 +9,10 @@ export default defineConfig(({}) => ({
         host: "::",
         port: 8080,
     },
-    plugins: [react()].filter(Boolean),
+    plugins: [
+        runtimeEnv(),
+        react()
+    ].filter(Boolean),
     resolve: {
         alias: {
             "@": path.resolve(__dirname, "./src"),
