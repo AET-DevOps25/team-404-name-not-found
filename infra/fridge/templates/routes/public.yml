@@ -71,3 +71,17 @@ spec:
                 name: ui
                 port:
                   number: 80
+          - path: /api/ingredients/v1/docs
+            pathType: Prefix
+            backend:
+              service:
+                name: ingredients
+                port:
+                  number: 8080
+          - path: /api/ingredients/v1/actuator
+            pathType: Prefix
+            backend:
+              service:
+                name: ingredients
+                port:
+                  number: 8080

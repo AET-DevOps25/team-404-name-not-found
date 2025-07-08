@@ -14,7 +14,7 @@ replicaCount: 1
 
 resources:
   requests:
-    cpu: 1
+    cpu: 500m
     memory: 100Mi
   limits:
     cpu: 2
@@ -41,5 +41,5 @@ host: fridge.example
 grafanaUser: admin
 grafanaPass: admin
 
-openaiApiKey: add-it-here
+openaiApiKey: sk-5e897d1335dc4ef490b08838acb668dc
 openaiApiBase: https://gpu.aet.cit.tum.de/api

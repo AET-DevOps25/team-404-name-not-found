@@ -50,3 +50,10 @@ spec:
                 name: images
                 port:
                   number: 8080
+          - path: /api/ingredients/v1
+            pathType: Prefix
+            backend:
+              service:
+                name: ingredients
+                port:
+                  number: 8080
