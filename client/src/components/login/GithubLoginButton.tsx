@@ -1,8 +1,8 @@
-interface LoginScreenProps {
+interface GithubLoginButtonProps {
     onClick: () => void;
 }
 
-const GitHubLoginButton = ({onClick} : LoginScreenProps) => {
+const GitHubLoginButton = ({onClick} : GithubLoginButtonProps) => {
     return (
         <button
             onClick={onClick}

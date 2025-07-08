@@ -1,7 +1,8 @@
 // src/context/AuthContext.tsx
 import { createContext, useContext, useEffect, useState, ReactNode } from 'react';
-import axios from '@/api/axiosClient.ts';
 import { User } from '@/types/authTypes';
+import authService from '@/api/services/authService';
+import { resetAuthToken, setAuthToken } from "@/api/fetchClient.ts";
 
 interface AuthContextType {
     user: User | null;
@@ -17,22 +18,31 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const [loading, setLoading] = useState<boolean>(true);
 
     useEffect(() => {
+        console.log("AuthProvider mounted");
+
         const token = localStorage.getItem('token');
         if (!token) {
+            console.log("AuthProvider no previous token found");
             setLoading(false);
             return;
         }
 
-        axios.get<User>('/users/whoami')
-            .then(res => setUser(res.data))
-            .catch(() => localStorage.removeItem('token'))
+        setAuthToken(token);
+
+        authService.whoAmi()
+            .then((user: User) => setUser(user))
+            .catch(() => {
+                localStorage.removeItem("token");
+                resetAuthToken();
+                window.location.replace("/");
+            })
             .finally(() => setLoading(false));
     }, []);
 
     const login = async (token: string) => {
         localStorage.setItem('token', token);
-        const res = await axios.get<User>('/users/whoami');
-        setUser(res.data);
+        //onst res = await axios.get<User>('/users/whoami');
+        //setUser(res.data);
     };
 
     const logout = () => {
