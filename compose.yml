@@ -116,6 +116,14 @@ services:
     networks:
       - web
 
+  ui:
+    image: ealen/echo-server:0.9.2
+    container_name: ui
+    ports:
+      - 7070:80
+    networks:
+      - web
+
 volumes:
   pgdata:
 
