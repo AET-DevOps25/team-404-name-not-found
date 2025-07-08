@@ -1,0 +1,398 @@
+{
+    "openapi": "3.1.0",
+    "info": {
+        "title": "OpenAPI definition",
+        "version": "v0"
+    },
+    "servers": [
+        {
+            "url": "http://fridge.localhost/api/recipes",
+            "description": "Generated server url"
+        }
+    ],
+    "paths": {
+        "/": {
+            "get": {
+                "tags": [
+                    "recipe-controller"
+                ],
+                "operationId": "getAllRecipesForUser",
+                "parameters": [
+                    {
+                        "name": "X-User-Id",
+                        "in": "header",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Recipe"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "recipe-controller"
+                ],
+                "operationId": "alterRecipe",
+                "parameters": [
+                    {
+                        "name": "X-User-Id",
+                        "in": "header",
+                        "description": "User ID from proxy",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Recipe"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Recipe"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "recipe-controller"
+                ],
+                "operationId": "saveRecipe",
+                "parameters": [
+                    {
+                        "name": "X-User-Id",
+                        "in": "header",
+                        "description": "User ID from proxy",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Recipe"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Recipe"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/ai/match/{numRecipes}": {
+            "post": {
+                "tags": [
+                    "recipe-controller"
+                ],
+                "summary": "Generate a recipe using AI from a list of ingredients. The result will try its best to match your given ingredient list",
+                "operationId": "generateRecipe",
+                "parameters": [
+                    {
+                        "name": "numRecipes",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int32"
+                        }
+                    },
+                    {
+                        "name": "X-User-Id",
+                        "in": "header",
+                        "description": "User ID from proxy",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "array",
+                                "items": {
+                                    "$ref": "#/components/schemas/Ingredient"
+                                }
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "Generated Recipe",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Recipe"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/ai/explore/{numRecipes}": {
+            "post": {
+                "tags": [
+                    "recipe-controller"
+                ],
+                "summary": "Generate a recipe using AI from a list of ingredients. The AI can experiment with your given ingredient list, leading to potential recipes you can't cook right away",
+                "operationId": "exploreRecipe",
+                "parameters": [
+                    {
+                        "name": "numRecipes",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int32"
+                        }
+                    },
+                    {
+                        "name": "X-User-Id",
+                        "in": "header",
+                        "description": "User ID from proxy",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "array",
+                                "items": {
+                                    "$ref": "#/components/schemas/Ingredient"
+                                }
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "Generated Recipe",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Recipe"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/{id}": {
+            "get": {
+                "tags": [
+                    "recipe-controller"
+                ],
+                "summary": "Get a recipe by its ID",
+                "operationId": "getRecipeById",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "X-User-Id",
+                        "in": "header",
+                        "description": "User ID from proxy",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Recipe found",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Recipe"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Recipe not found",
+                        "content": {
+                            "application/json": {
+                                "example": {
+                                    "error": "Recipe not found"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Missing user header",
+                        "content": {
+                            "application/json": {
+                                "example": {
+                                    "error": "The proxy should have set the user id in the Subject header"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "recipe-controller"
+                ],
+                "operationId": "deleteRecipe",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "X-User-Id",
+                        "in": "header",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "Ingredient": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string"
+                    },
+                    "amount": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "unit": {
+                        "type": "string",
+                        "enum": [
+                            "pcs",
+                            "ml",
+                            "g"
+                        ]
+                    }
+                }
+            },
+            "Recipe": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "title": {
+                        "type": "string"
+                    },
+                    "difficulty": {
+                        "type": "string",
+                        "enum": [
+                            "easy",
+                            "medium",
+                            "advanced"
+                        ]
+                    },
+                    "cookingTime": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "instructions": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "ingredients": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Ingredient"
+                        }
+                    },
+                    "neededIngredients": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Ingredient"
+                        }
+                    },
+                    "userId": {
+                        "type": "string"
+                    }
+                }
+            }
+        }
+    }
+}

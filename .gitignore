@@ -391,6 +391,7 @@ hosts.ini
 *.json
 !jvm.json
 !spring_boot.json
+!openapi.json
 */charts
 
 # do not push pictures to git!

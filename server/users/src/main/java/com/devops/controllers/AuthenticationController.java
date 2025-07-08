@@ -11,6 +11,7 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -190,7 +191,15 @@ public class AuthenticationController {
      * @return that same header value
      */
     @GetMapping("/whoami")
-    public ResponseEntity<UserId> whoAmI(@RequestHeader("X-User-Id") String subject) {
-        return ResponseEntity.ok(new UserId(subject));
+    public ResponseEntity<UserId> whoAmI(@RequestHeader(value = "X-User-Id", required = false) String subject) {
+
+        UserId id = new UserId(subject);
+
+        if (mode.equalsIgnoreCase("dev")) {
+            String realSubject = Optional.ofNullable(subject).orElse("dev-user");
+            id = new UserId(realSubject);
+        }
+
+        return ResponseEntity.ok(id);
     }
 }
