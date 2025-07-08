@@ -85,6 +85,12 @@ services:
         condition: service_healthy
     environment:
       DB_HOST: db
+      HOST: fridge.localhost
+      CLIENT_ID:  Ov23liW7lTaWxDdnscNp
+      CLIENT_SECRET: 12072402f08ae298d376b1b28e20823c582d8d93
+    volumes:
+      - ./infra/fridge/public.pem:/etc/keys/public.pem
+      - ./infra/fridge/private.pem:/etc/keys/private.pem
     networks:
       - web
 
