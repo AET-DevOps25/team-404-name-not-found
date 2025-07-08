@@ -45,7 +45,7 @@ services:
       GF_SERVER_DOMAIN: fridge.localhost
       GF_SERVER_ROOT_URL: "https://fridge.localhost/grafana"
       GF_SERVER_SERVE_FROM_SUB_PATH: "true"
-      GF_LOG_LEVEL: info
+      GF_LOG_LEVEL: warn
       GF_FEATURE_TOGGLES_ENABLE: ngalert
     volumes:
       - ./infra/fridge/datasources.yml:/etc/grafana/provisioning/datasources/datasources.yaml
@@ -120,6 +120,29 @@ services:
       DB_HOST: db
       MODE: dev
       AI_HOST: genai:8000
+    networks:
+      - web
+
+  ingredients:
+    container_name: ingredients
+    image: ghcr.io/aet-devops25/team-404-name-not-found/ingredients:${BRANCH:-main}
+    build:
+      context: server
+      dockerfile: ingredients/Dockerfile
+    healthcheck:
+      test: ["CMD", "wget", "-q", "--spider", "http://localhost:8080/api/ingredients/v1/actuator/health"]
+      interval: 10s
+      timeout: 15s
+      retries: 5
+      start_period: 10s
+    ports:
+      - "8083:8080"
+    depends_on:
+      users:
+        condition: service_healthy
+    environment:
+      DB_HOST: db
+      MODE: dev
     networks:
       - web
 
