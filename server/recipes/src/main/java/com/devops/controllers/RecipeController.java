@@ -64,13 +64,27 @@ public class RecipeController {
     }
 
     @PostMapping("/")
-    public ResponseEntity<Recipe> saveRecipe(@RequestBody Recipe recipe) {
+    public ResponseEntity<Recipe> saveRecipe(@RequestBody Recipe recipe,
+            @Parameter(description = "User ID from proxy") @RequestHeader(value = "X-User-Id", required = false) String userId) {
+
+        if (mode.equalsIgnoreCase("dev")) {
+            String realUserId = Optional.ofNullable(userId).orElse("dev-user");
+            recipe.setUserId(realUserId);
+        }
+
         Recipe savedRecipe = recipeService.saveRecipe(recipe);
         return ResponseEntity.status(HttpStatus.CREATED).body(savedRecipe);
     }
 
     @PutMapping("/")
-    public ResponseEntity<Recipe> alterRecipe(@RequestBody Recipe recipe) {
+    public ResponseEntity<Recipe> alterRecipe(@RequestBody Recipe recipe,
+            @Parameter(description = "User ID from proxy") @RequestHeader(value = "X-User-Id", required = false) String userId) {
+
+        if (mode.equalsIgnoreCase("dev")) {
+            String realUserId = Optional.ofNullable(userId).orElse("dev-user");
+            recipe.setUserId(realUserId);
+        }
+
         Recipe updatedRecipe = recipeService.alterRecipe(recipe);
         return ResponseEntity.ok(updatedRecipe);
     }

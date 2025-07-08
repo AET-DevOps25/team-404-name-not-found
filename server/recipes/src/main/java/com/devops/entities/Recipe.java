@@ -42,7 +42,7 @@ public class Recipe {
     @CollectionTable(name = "recipe_needed_ingredients", joinColumns = @JoinColumn(name = "recipe_id"))
     private List<Ingredient> neededIngredients;
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     private String userId;
 
     public static Recipe fromAiRecipeDTO(AiRecipeDTO recipeDTO, String userId) {
