@@ -1,6 +1,6 @@
 import { useState } from "react";
-import LoginScreen from "@/components/LoginScreen";
-import Dashboard from "@/components/Dashboard.tsx";
+import LoginScreen from "@/pages/LoginScreen.tsx";
+import Dashboard from "@/pages/Dashboard.tsx";
 
 const Index = () => {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
