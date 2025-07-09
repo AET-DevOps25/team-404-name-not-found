@@ -8,6 +8,7 @@ services:
       - "80:80"
     volumes:
       - ./infra/nginx/default.conf:/etc/nginx/conf.d/default.conf
+      - ./infra/nginx/cors.conf:/etc/nginx/cors.conf
       - ./infra/nginx/fridge.localhost.crt:/etc/nginx/certs/fridge.localhost.crt
       - ./infra/nginx/fridge.localhost.key:/etc/nginx/certs/fridge.localhost.key
     depends_on:
