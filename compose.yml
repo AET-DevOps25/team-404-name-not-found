@@ -15,9 +15,13 @@ services:
         condition: service_healthy
       recipes:
         condition: service_healthy
+      ingredients:
+        condition: service_healthy
       images:
         condition: service_healthy
       genai:
+        condition: service_healthy
+      client:
         condition: service_healthy
     networks:
       - web
@@ -197,11 +201,17 @@ services:
     networks:
       - web
 
-  ui:
-    image: ealen/echo-server:0.9.2
-    container_name: ui
+  client:
+    container_name: client
+    image: ghcr.io/aet-devops25/team-404-name-not-found/client:${BRANCH:-main}
+    build:
+      context: client
+      dockerfile: Dockerfile
     ports:
-      - 7070:80
+      - "8085:80"
+    environment:
+      VITE_MODE: dev
+      VITE_API_BASE_URL: /api
     networks:
       - web
 
