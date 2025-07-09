@@ -32,7 +32,7 @@ To redirect this to something else:
   docker run -e VITE_API_BASE_URL=https://fridge.example/api image-name
   ```
   When serving a static build like this, you cannot simply change the environment variable in the `.env` file, as it is only read at build time.  
-  However, we dont want to rebuild the image every time we change the server URL, so we use a little workaround:  
+  However, we don't want to rebuild the image every time we change the server URL, so we use a little workaround:  
   We use the vite plugin `vite-plugin-env-compatible`, which creates placeholders for all used envvars in the built `index.html`   
   For example:
   ```html
