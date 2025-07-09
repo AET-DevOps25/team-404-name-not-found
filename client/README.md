@@ -14,17 +14,24 @@
 
 ## Available NPM Scripts
 
-- `npm run dev` – Starts the Vite development server
+- `npm run dev` – Starts the Vite development server, listening on port 8080
 - `npm run build` – Compiles TypeScript and builds the project with Vite
 - `npm run preview` – Serves the built project for local preview
 - `npm run lint` – Runs ESLint + Prettier on the project
 - `npm run lint:fix` – Fixes formatting issues using Prettier
 
+## Available Scripts
+
+- `./scripts/generate-openapi-typescript.sh` – Generates TypeScript types from the OpenAPI specification of the server
+  services
+
 ## Setting the Base URL of the Server
 
 The client needs to know the base URL of the server to make API requests.  
 This is configured with the environment variable `VITE_API_BASE_URL`.
-The default value is `/api`, which uses the current host and port.
+The default value is `/api`, which uses the current host/port and appends `/api` (e.g. when running on
+`https://fridge.student.k8s.aet.tum.de`, the client will use `https://fridge.student.k8s.aet.tum.de/api` as the base
+URL).
 
 To redirect this to something else:
 
@@ -50,7 +57,10 @@ To redirect this to something else:
 ## Dev Mode with mocked login
 
 You can run the client in development mode by setting the environment variable `VITE_MODE` to `dev`.  
-This will enable the mocked login flow, which allows you to test the client without needing a backend server.
+This will enable the mocked login flow, which allows you to test the client without actually logging in.
+This is especially useful when running the client with the development server (e.g. with server running in docker
+compose), as we can't use OAuth login flow there. We can't use the OAuth login flow because the callback URL that the
+server uses will be on the HOST of the docker compose and not localhost.
 
 ## FAQ
 

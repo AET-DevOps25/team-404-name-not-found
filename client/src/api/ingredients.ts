@@ -11,43 +11,9 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get: operations["getAllRecipesForUser"];
-        put: operations["alterRecipe"];
-        post: operations["saveRecipe"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/ai/match/{numRecipes}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /** Generate a recipe using AI from a list of ingredients. The result will try its best to match your given ingredient list */
-        post: operations["generateRecipe"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/ai/explore/{numRecipes}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /** Generate a recipe using AI from a list of ingredients. The AI can experiment with your given ingredient list, leading to potential recipes you can't cook right away */
-        post: operations["exploreRecipe"];
+        get: operations["getAllIngredientsForUser"];
+        put: operations["alterIngredient"];
+        post: operations["saveIngredients"];
         delete?: never;
         options?: never;
         head?: never;
@@ -61,37 +27,29 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** Get a recipe by its ID */
-        get: operations["getRecipeById"];
+        /** Get an ingredient by its ID */
+        get: operations["getIngredientById"];
         put?: never;
         post?: never;
-        delete: operations["deleteRecipe"];
+        delete: operations["deleteIngredient"];
         options?: never;
         head?: never;
         patch?: never;
         trace?: never;
     };
 }
+
 export type webhooks = Record<string, never>;
+
 export interface components {
     schemas: {
         Ingredient: {
+            id?: string;
             name?: string;
             /** Format: int32 */
             amount?: number;
             /** @enum {string} */
             unit?: "pcs" | "ml" | "g";
-        };
-        Recipe: {
-            id?: string;
-            title?: string;
-            /** @enum {string} */
-            difficulty?: "easy" | "medium" | "advanced";
-            /** Format: int32 */
-            cookingTime?: number;
-            instructions?: string[];
-            ingredients?: components["schemas"]["Ingredient"][];
-            neededIngredients?: components["schemas"]["Ingredient"][];
             userId?: string;
         };
     };
@@ -101,9 +59,11 @@ export interface components {
     headers: never;
     pathItems: never;
 }
+
 export type $defs = Record<string, never>;
+
 export interface operations {
-    getAllRecipesForUser: {
+    getAllIngredientsForUser: {
         parameters: {
             query?: never;
             header?: {
@@ -120,16 +80,15 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["Recipe"][];
+                    "*/*": components["schemas"]["Ingredient"][];
                 };
             };
         };
     };
-    alterRecipe: {
+    alterIngredient: {
         parameters: {
             query?: never;
             header?: {
-                /** @description User ID from proxy */
                 "X-User-Id"?: string;
             };
             path?: never;
@@ -137,7 +96,7 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["Recipe"];
+                "application/json": components["schemas"]["Ingredient"];
             };
         };
         responses: {
@@ -147,16 +106,15 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["Recipe"];
+                    "*/*": components["schemas"]["Ingredient"];
                 };
             };
         };
     };
-    saveRecipe: {
+    saveIngredients: {
         parameters: {
             query?: never;
             header?: {
-                /** @description User ID from proxy */
                 "X-User-Id"?: string;
             };
             path?: never;
@@ -164,7 +122,7 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["Recipe"];
+                "application/json": components["schemas"]["Ingredient"][];
             };
         };
         responses: {
@@ -174,70 +132,12 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["Recipe"];
+                    "*/*": components["schemas"]["Ingredient"][];
                 };
             };
         };
     };
-    generateRecipe: {
-        parameters: {
-            query?: never;
-            header?: {
-                /** @description User ID from proxy */
-                "X-User-Id"?: string;
-            };
-            path: {
-                numRecipes: number;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["Ingredient"][];
-            };
-        };
-        responses: {
-            /** @description Generated Recipe */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "*/*": components["schemas"]["Recipe"];
-                };
-            };
-        };
-    };
-    exploreRecipe: {
-        parameters: {
-            query?: never;
-            header?: {
-                /** @description User ID from proxy */
-                "X-User-Id"?: string;
-            };
-            path: {
-                numRecipes: number;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["Ingredient"][];
-            };
-        };
-        responses: {
-            /** @description Generated Recipe */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "*/*": components["schemas"]["Recipe"];
-                };
-            };
-        };
-    };
-    getRecipeById: {
+    getIngredientById: {
         parameters: {
             query?: never;
             header?: {
@@ -251,23 +151,23 @@ export interface operations {
         };
         requestBody?: never;
         responses: {
-            /** @description Recipe found */
+            /** @description Ingredient found */
             200: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["Recipe"];
+                    "*/*": components["schemas"]["Ingredient"];
                 };
             };
-            /** @description Recipe not found */
+            /** @description Ingredient not found */
             404: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
                     /** @example {
-                     *       "error": "Recipe not found"
+                     *       "error": "Ingredient not found"
                      *     } */
                     "application/json": unknown;
                 };
@@ -286,7 +186,7 @@ export interface operations {
             };
         };
     };
-    deleteRecipe: {
+    deleteIngredient: {
         parameters: {
             query?: never;
             header?: {

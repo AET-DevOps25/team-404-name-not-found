@@ -87,8 +87,8 @@ export interface operations {
     whoAmI: {
         parameters: {
             query?: never;
-            header: {
-                "X-User-Id": string;
+            header?: {
+                "X-User-Id"?: string;
             };
             path?: never;
             cookie?: never;

@@ -2,7 +2,7 @@
 import { createContext, useContext, useState, ReactNode } from "react";
 import { User } from "@/types/authTypes";
 import authService from "@/api/services/authService";
-import { getAuthToken, isAuthTokenSet, resetAuthToken, setAuthToken } from "@/api/fetchClient.ts";
+import { getAuthToken, isAuthTokenSet, resetAuthToken, setAuthToken } from "@/utils/authToken";
 
 interface AuthContextType {
     user: User | null;
