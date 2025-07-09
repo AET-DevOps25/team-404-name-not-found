@@ -1,14 +1,13 @@
 import createClient, { type Middleware } from "openapi-fetch";
 import type { paths as UsersPaths } from "@/api/users";
 import type { paths as RecipesPaths } from "@/api/recipes";
-
-const baseUrl: string = import.meta.env.VITE_API_BASE_URL || "/api";
-let authToken: string | undefined = undefined;
+import { recipesApiBaseUrl, usersApiBaseUrl } from "@/api/baseUrl.ts";
 
 const authTokenMiddleware: Middleware = {
     async onRequest({ request }) {
-        if (authToken) {
-            request.headers.set("Authorization", `Bearer ${authToken}`);
+        const token = localStorage.getItem("token");
+        if (token) {
+            request.headers.set("Authorization", `Bearer ${token}`);
         }
 
         return request;
@@ -26,16 +25,27 @@ const unauthorizedResponseRedirectMiddleware: Middleware = {
     }
 };
 
-export const setAuthToken = (token: string) => {
-    authToken = token;
-};
+export const setAuthToken = (token: string): void => {
+    localStorage.setItem("token", token);
+}
 
-export const resetAuthToken = () => {
-    authToken = undefined;
-};
+export const resetAuthToken = (): void => {
+    localStorage.removeItem("token");
+}
 
-const usersApiBaseUrl = `${baseUrl}/users/`;
-const recipesApiBaseUrl = `${baseUrl}/recipes/`;
+
+export const getAuthToken = (): string => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+        throw new Error("No auth token found");
+    }
+    return token;
+}
+
+export const isAuthTokenSet = (): boolean => {
+    return !!localStorage.getItem("token");
+}
+
 
 export const usersClient = createClient<UsersPaths>({ baseUrl: usersApiBaseUrl });
 export const recipesClient = createClient<RecipesPaths>({ baseUrl: recipesApiBaseUrl });

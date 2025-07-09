@@ -40,6 +40,10 @@ To redirect this to something else:
   ```
   The `entrypoint.sh` script is executed when the container starts and replaces the placeholders with the environment variables value using `envsubst`.
 
+## Dev Mode with mocked login
+You can run the client in development mode by setting the environment variable `VITE_MODE` to `dev`.  
+This will enable the mocked login flow, which allows you to test the client without needing a backend server.
+
 ## FAQ
 - Why is entrypoint.sh needed?
   - The client is a static build, so it cannot read environment variables at runtime. The entrypoint script replaces the placeholders in the `index.html` file with the actual environment variable values.

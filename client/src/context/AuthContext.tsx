@@ -1,13 +1,14 @@
 // src/context/AuthContext.tsx
-import { createContext, useContext, useEffect, useState, ReactNode } from 'react';
+import { createContext, useContext, useState, ReactNode } from 'react';
 import { User } from '@/types/authTypes';
 import authService from '@/api/services/authService';
-import { resetAuthToken, setAuthToken } from "@/api/fetchClient.ts";
+import { getAuthToken, isAuthTokenSet, resetAuthToken, setAuthToken } from "@/api/fetchClient.ts";
 
 interface AuthContextType {
     user: User | null;
     loading: boolean;
     login: (token: string) => Promise<void>;
+    tryLoginWithStoredToken: () => Promise<void>;
     logout: () => void;
 }
 
@@ -15,34 +16,32 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const [user, setUser] = useState<User | null>(null);
-    const [loading, setLoading] = useState<boolean>(true);
+    const [loading, setLoading] = useState<boolean>(false);
 
-    useEffect(() => {
-        console.log("AuthProvider mounted");
-
-        const token = localStorage.getItem('token');
-        if (!token) {
-            console.log("AuthProvider no previous token found");
-            setLoading(false);
-            return;
+    const tryLoginWithStoredToken = async () => {
+        if (!isAuthTokenSet()) {
+            console.log("AuthProvider: no auth token found, skipping login");
+            throw new Error("No auth token found");
         }
+        return login(getAuthToken());
+    }
+
+    const login = async (token: string) => {
+        console.log("AuthProvider: login")
 
         setAuthToken(token);
 
-        authService.whoAmi()
-            .then((user: User) => setUser(user))
-            .catch(() => {
-                localStorage.removeItem("token");
+        console.log("AuthProvider: checking whoAmI with token");
+        return authService.whoAmi()
+            .then((user: User) => {
+                setUser(user);
+                console.log("AuthProvider: whoAmI correct, userId:", user.userId);
+            })
+            .catch((error) => {
                 resetAuthToken();
-                window.location.replace("/");
+                throw error;
             })
             .finally(() => setLoading(false));
-    }, []);
-
-    const login = async (token: string) => {
-        localStorage.setItem('token', token);
-        //onst res = await axios.get<User>('/users/whoami');
-        //setUser(res.data);
     };
 
     const logout = () => {
@@ -52,7 +51,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     };
 
     return (
-        <AuthContext.Provider value={{ user, loading, login, logout }}>
+        <AuthContext.Provider value={{ user, loading, login, tryLoginWithStoredToken, logout }}>
             {children}
         </AuthContext.Provider>
     );

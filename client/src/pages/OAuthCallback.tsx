@@ -1,25 +1,29 @@
-import { useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
+import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 
 const OAuthCallback = () => {
-  const navigate = useNavigate();
-  const { login } = useAuth();
+    const navigate = useNavigate();
+    const { login } = useAuth();
 
-  useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    const token = params.get('token');
+    useEffect(() => {
+        console.log("OAuthCallback: mounted");
 
-    if (token) {
-      login(token)
-        .then(() => navigate('/dashboard'))
-        .catch(() => navigate('/'));
-    } else {
-      navigate('/');
-    }
-  }, []);
+        const params = new URLSearchParams(window.location.search);
+        const token = params.get("token");
 
-  return <p>Logging you in...</p>;
+        if (token) {
+            console.log("OAuthCallback: token found, logging in with token.");
+            login(token)
+                .then(() => navigate("/dashboard"))
+                .catch(() => navigate("/"));
+        } else {
+            console.error("OAuthCallback: no token found in URL parameters.");
+            navigate("/");
+        }
+    }, []);
+
+    return <p>Logging you in...</p>;
 };
 
 export default OAuthCallback;
