@@ -27,7 +27,7 @@ public class RecipeService {
     }
 
     @Value("${vars.ai-host}")
-    public String host;
+    public String aiHost;
 
     public List<Recipe> generateRecipe(List<Ingredient> ingredients, int numRecipes, String userId) {
         return fetchRecipe(ingredients, numRecipes, userId, "/matching/");
@@ -47,7 +47,7 @@ public class RecipeService {
             AiRecipeRequest aiRecipeRequest = new AiRecipeRequest(ingredients);
             HttpEntity<AiRecipeRequest> request = new HttpEntity<>(aiRecipeRequest, headers);
             ResponseEntity<RecipeResponseDTO> response = restTemplate.postForEntity(
-                    "http://" + host + "/api/genai/v1/recipe" + aiEndpoint + String.valueOf(numRecipes), request,
+                    "http://" + aiHost + "/api/genai/v1/recipe" + aiEndpoint + String.valueOf(numRecipes), request,
                     RecipeResponseDTO.class);
 
             List<Recipe> recipes = new ArrayList<>();

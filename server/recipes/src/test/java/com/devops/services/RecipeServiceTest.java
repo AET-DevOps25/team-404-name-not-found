@@ -35,7 +35,7 @@ class RecipeServiceTest {
     void setUp() {
         MockitoAnnotations.openMocks(this);
         recipeService = new RecipeService(recipeRepository);
-        recipeService.host = "localhost:8080";
+        recipeService.aiHost = "localhost:8080";
     }
 
     @Test
