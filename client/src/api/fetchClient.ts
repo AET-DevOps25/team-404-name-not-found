@@ -11,7 +11,7 @@ const authTokenMiddleware: Middleware = {
         }
 
         return request;
-    }
+    },
 };
 
 const unauthorizedResponseRedirectMiddleware: Middleware = {
@@ -22,17 +22,16 @@ const unauthorizedResponseRedirectMiddleware: Middleware = {
             window.location.replace("/");
         }
         return response;
-    }
+    },
 };
 
 export const setAuthToken = (token: string): void => {
     localStorage.setItem("token", token);
-}
+};
 
 export const resetAuthToken = (): void => {
     localStorage.removeItem("token");
-}
-
+};
 
 export const getAuthToken = (): string => {
     const token = localStorage.getItem("token");
@@ -40,12 +39,11 @@ export const getAuthToken = (): string => {
         throw new Error("No auth token found");
     }
     return token;
-}
+};
 
 export const isAuthTokenSet = (): boolean => {
     return !!localStorage.getItem("token");
-}
-
+};
 
 export const usersClient = createClient<UsersPaths>({ baseUrl: usersApiBaseUrl });
 export const recipesClient = createClient<RecipesPaths>({ baseUrl: recipesApiBaseUrl });
@@ -56,7 +54,3 @@ recipesClient.use(unauthorizedResponseRedirectMiddleware);
 
 console.log("Users client created with base URL:", usersApiBaseUrl);
 console.log("Recipes client created with base URL:", recipesApiBaseUrl);
-
-
-
-

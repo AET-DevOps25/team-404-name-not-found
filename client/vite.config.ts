@@ -9,10 +9,7 @@ export default defineConfig(({}) => ({
         host: "::",
         port: 8080,
     },
-    plugins: [
-        runtimeEnv(),
-        react()
-    ].filter(Boolean),
+    plugins: [runtimeEnv(), react()].filter(Boolean),
     resolve: {
         alias: {
             "@": path.resolve(__dirname, "./src"),

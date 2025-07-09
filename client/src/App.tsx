@@ -19,11 +19,14 @@ const App: React.FC = () => {
                 <BrowserRouter>
                     <Routes>
                         <Route path="/ui/v1/callback" element={<OAuthCallback />} />
-                        <Route path="/dashboard" element={
-                            <PrivateRoute>
-                                <Dashboard />
-                            </PrivateRoute>
-                        } />
+                        <Route
+                            path="/dashboard"
+                            element={
+                                <PrivateRoute>
+                                    <Dashboard />
+                                </PrivateRoute>
+                            }
+                        />
                         <Route path="/" element={<LoginScreen />} />
                         <Route path="*" element={<NotFound />} />
                     </Routes>

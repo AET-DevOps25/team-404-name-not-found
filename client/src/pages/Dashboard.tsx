@@ -5,7 +5,6 @@ import IngredientGrid from "@/components/ingredients/IngredientGrid.tsx";
 import { RenderableIngredient } from "@/types/ingredientTypes.ts";
 import { dummyIngredients } from "@/dummyIngredients.ts";
 
-
 const Dashboard = () => {
     // @ts-ignore
     const [ingredients, setIngredients] = useState<RenderableIngredient[]>(dummyIngredients);

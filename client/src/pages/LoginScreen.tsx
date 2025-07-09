@@ -14,7 +14,7 @@ const LoginScreen = () => {
 
     const isDevMode = import.meta.env.VITE_MODE === "dev";
 
-    const loginDevUser = ()=> {
+    const loginDevUser = () => {
         login("dummy-token-for-dev-user")
             .then(() => navigate("/dashboard"))
             .catch((error) => {
@@ -22,10 +22,11 @@ const LoginScreen = () => {
                 toast({
                     variant: "destructive",
                     title: "Login Failed",
-                    description: "Failed to log in as dev user. Are the server services in dev mode? Check console for details.",
+                    description:
+                        "Failed to log in as dev user. Are the server services in dev mode? Check console for details.",
                 });
-            })
-    }
+            });
+    };
 
     const onLoginButtonClick = () => {
         if (isDevMode) {
@@ -39,7 +40,7 @@ const LoginScreen = () => {
             // Redirect to GitHub OAuth login
             window.location.href = `${usersApiBaseUrl}/login`;
         }
-    }
+    };
 
     useEffect(() => {
         console.log("LoginScreen: mounted");
@@ -50,13 +51,14 @@ const LoginScreen = () => {
         } else {
             // Try logging in with stored token if available
             console.log("LoginScreen: checking for stored token");
-            tryLoginWithStoredToken().then(() => {
-                console.log("LoginScreen: user logged in with stored token, redirecting to /dashboard");
-                navigate("/dashboard");
-            })
-            .catch(() => {
-                console.log("LoginScreen: no stored token or login failed, staying on login screen");
-            });
+            tryLoginWithStoredToken()
+                .then(() => {
+                    console.log("LoginScreen: user logged in with stored token, redirecting to /dashboard");
+                    navigate("/dashboard");
+                })
+                .catch(() => {
+                    console.log("LoginScreen: no stored token or login failed, staying on login screen");
+                });
         }
     }, []);
 
@@ -82,7 +84,7 @@ const LoginScreen = () => {
                     </CardHeader>
                     <CardContent>
                         <div className="w-full">
-                            <GithubLoginButton onClick={onLoginButtonClick}/>
+                            <GithubLoginButton onClick={onLoginButtonClick} />
                         </div>
                     </CardContent>
                 </Card>

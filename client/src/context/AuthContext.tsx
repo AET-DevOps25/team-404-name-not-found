@@ -1,7 +1,7 @@
 // src/context/AuthContext.tsx
-import { createContext, useContext, useState, ReactNode } from 'react';
-import { User } from '@/types/authTypes';
-import authService from '@/api/services/authService';
+import { createContext, useContext, useState, ReactNode } from "react";
+import { User } from "@/types/authTypes";
+import authService from "@/api/services/authService";
 import { getAuthToken, isAuthTokenSet, resetAuthToken, setAuthToken } from "@/api/fetchClient.ts";
 
 interface AuthContextType {
@@ -24,15 +24,16 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
             throw new Error("No auth token found");
         }
         return login(getAuthToken());
-    }
+    };
 
     const login = async (token: string) => {
-        console.log("AuthProvider: login")
+        console.log("AuthProvider: login");
 
         setAuthToken(token);
 
         console.log("AuthProvider: checking whoAmI with token");
-        return authService.whoAmi()
+        return authService
+            .whoAmi()
             .then((user: User) => {
                 setUser(user);
                 console.log("AuthProvider: whoAmI correct, userId:", user.userId);
@@ -45,9 +46,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     };
 
     const logout = () => {
-        localStorage.removeItem('token');
+        localStorage.removeItem("token");
         setUser(null);
-        window.location.href = '/';
+        window.location.href = "/";
     };
 
     return (
@@ -60,7 +61,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 export const useAuth = (): AuthContextType => {
     const context = useContext(AuthContext);
     if (!context) {
-        throw new Error('useAuth must be used within an AuthProvider');
+        throw new Error("useAuth must be used within an AuthProvider");
     }
     return context;
 };
