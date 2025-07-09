@@ -39,7 +39,7 @@ public class IngredientService {
 
     public void deleteIngredient(String id, String userId) {
         List<Ingredient> userIngredients = ingredientsRepository.findAllByUserId(userId);
-        boolean recipeExistsForUser = userIngredients.stream().anyMatch(r -> r.getId().equals(id));
+        boolean ingredientExistsForUser = userIngredients.stream().anyMatch(r -> r.getId().equals(id));
         if (!recipeExistsForUser) {
             return;
         }
