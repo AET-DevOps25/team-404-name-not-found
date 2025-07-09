@@ -9,14 +9,14 @@ import { useNavigate } from "react-router-dom";
 
 const LoginScreen = () => {
     // @ts-ignore
-    const { user, loading, login, tryLoginWithStoredToken } = useAuth();
+    const { user, loginDevMode, tryLoginWithStoredToken } = useAuth();
     const navigate = useNavigate();
 
     const isDevMode = import.meta.env.VITE_MODE === "dev";
 
     const loginDevUser = () => {
-        login("dummy-token-for-dev-user")
-            .then(() => navigate("/dashboard"))
+        loginDevMode()
+            .then(() => navigate("/dashboard", { replace: true }))
             .catch((error) => {
                 console.error("Login as dev user failed:", error);
                 toast({
@@ -47,14 +47,14 @@ const LoginScreen = () => {
 
         if (user) {
             console.log("LoginScreen: user already logged in, redirecting to /dashboard");
-            navigate("/dashboard");
+            navigate("/dashboard", { replace: true });
         } else {
             // Try logging in with stored token if available
             console.log("LoginScreen: checking for stored token");
             tryLoginWithStoredToken()
                 .then(() => {
                     console.log("LoginScreen: user logged in with stored token, redirecting to /dashboard");
-                    navigate("/dashboard");
+                    navigate("/dashboard", { replace: true });
                 })
                 .catch(() => {
                     console.log("LoginScreen: no stored token or login failed, staying on login screen");

@@ -7,6 +7,7 @@ import { getAuthToken, isAuthTokenSet, resetAuthToken, setAuthToken } from "@/ap
 interface AuthContextType {
     user: User | null;
     loading: boolean;
+    loginDevMode: () => Promise<void>;
     login: (token: string) => Promise<void>;
     tryLoginWithStoredToken: () => Promise<void>;
     logout: () => void;
@@ -26,23 +27,35 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         return login(getAuthToken());
     };
 
+    const checkToken = async () => {
+        console.log("AuthProvider: checking token with whoAmI");
+        return authService
+            .whoAmi()
+            .then((user: User) => {
+                setUser(user);
+                console.log("AuthProvider: whoAmI correct setting User, userId:", user.userId);
+            })
+            .catch((error) => {
+                resetAuthToken();
+                throw error;
+            });
+    };
+
+    const loginDevMode = async () => {
+        console.log("AuthProvider: login");
+        // We don't need to set the token in dev mode, they auth backend accepts it without it
+        setLoading(true);
+        return checkToken().finally(() => setLoading(false));
+    };
+
     const login = async (token: string) => {
         console.log("AuthProvider: login");
 
         setAuthToken(token);
 
         console.log("AuthProvider: checking whoAmI with token");
-        return authService
-            .whoAmi()
-            .then((user: User) => {
-                setUser(user);
-                console.log("AuthProvider: whoAmI correct, userId:", user.userId);
-            })
-            .catch((error) => {
-                resetAuthToken();
-                throw error;
-            })
-            .finally(() => setLoading(false));
+        setLoading(true);
+        return checkToken().finally(() => setLoading(false));
     };
 
     const logout = () => {
@@ -52,7 +65,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     };
 
     return (
-        <AuthContext.Provider value={{ user, loading, login, tryLoginWithStoredToken, logout }}>
+        <AuthContext.Provider value={{ user, loading, loginDevMode, login, tryLoginWithStoredToken, logout }}>
             {children}
         </AuthContext.Provider>
     );
