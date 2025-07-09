@@ -21,8 +21,6 @@ services:
         condition: service_healthy
       genai:
         condition: service_healthy
-      client:
-        condition: service_healthy
     networks:
       - web
 
@@ -102,7 +100,7 @@ services:
       HOST: fridge.localhost
       CLIENT_ID:  Ov23liW7lTaWxDdnscNp
       CLIENT_SECRET: 12072402f08ae298d376b1b28e20823c582d8d93
-      MODE: dev
+      MODE: ${MODE:-dev}
     volumes:
       - ./infra/fridge/public.pem:/etc/keys/public.pem
       - ./infra/fridge/private.pem:/etc/keys/private.pem
@@ -128,7 +126,7 @@ services:
         condition: service_healthy
     environment:
       DB_HOST: db
-      MODE: dev
+      MODE: ${MODE:-dev}
       AI_HOST: genai:8000
     networks:
       - web
@@ -152,7 +150,7 @@ services:
         condition: service_healthy
     environment:
       DB_HOST: db
-      MODE: dev
+      MODE: ${MODE:-dev}
     networks:
       - web
 
@@ -177,7 +175,7 @@ services:
         condition: service_healthy
     environment:
       DB_HOST: db
-      MODE: dev
+      MODE: ${MODE:-dev}
     networks:
       - web
 
@@ -210,7 +208,7 @@ services:
     ports:
       - "8085:80"
     environment:
-      VITE_MODE: dev
+      VITE_MODE: ${MODE:-dev}
       VITE_API_BASE_URL: /api
     networks:
       - web
