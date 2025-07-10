@@ -24,7 +24,6 @@ public class Ingredient {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    @NotNull
     private String id;
 
     @Column(nullable = false)
