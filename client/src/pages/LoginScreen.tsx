@@ -1,10 +1,10 @@
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card.tsx";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Refrigerator } from "lucide-react";
-import GithubLoginButton from "@/components/login/GithubLoginButton.tsx";
-import { usersApiBaseUrl } from "@/api/baseUrl.ts";
-import { useAuth } from "@/context/AuthContext.tsx";
+import GithubLoginButton from "@/components/login/GithubLoginButton";
+import { usersApiBaseUrl } from "@/api/baseUrl";
+import { useAuth } from "@/context/AuthContext";
 import { useEffect } from "react";
-import { toast } from "@/hooks/use-toast.ts";
+import { toast } from "@/hooks/use-toast";
 import { useNavigate } from "react-router-dom";
 
 const LoginScreen = () => {

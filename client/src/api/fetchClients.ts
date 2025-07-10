@@ -3,8 +3,8 @@ import type { paths as UsersPaths } from "@/api/users";
 import type { paths as RecipesPaths } from "@/api/recipes";
 import type { paths as IngredientsPaths } from "@/api/ingredients";
 import type { paths as ImagesPaths } from "@/api/images";
-import { imagesApiBaseUrl, ingredientsApiBaseUrl, recipesApiBaseUrl, usersApiBaseUrl } from "@/api/baseUrl.ts";
-import { getAuthTokenOrNull } from "@/utils/authToken.ts";
+import { imagesApiBaseUrl, ingredientsApiBaseUrl, recipesApiBaseUrl, usersApiBaseUrl } from "@/api/baseUrl";
+import { getAuthTokenOrNull } from "@/utils/authToken";
 
 const authTokenMiddleware: Middleware = {
     async onRequest({ request }) {

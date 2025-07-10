@@ -1,10 +1,10 @@
 import { useState } from "react";
-import { Button } from "@/components/ui/button.tsx";
+import { Button } from "@/components/ui/button";
 import { Refrigerator, Camera, Plus, LogOut, Settings } from "lucide-react";
-import IngredientGrid from "@/components/ingredients/IngredientGrid.tsx";
-import { RenderableIngredient } from "@/types/ingredientTypes.ts";
-import { dummyIngredients } from "@/dummyIngredients.ts";
-import { useAuth } from "@/context/AuthContext.tsx";
+import IngredientGrid from "@/components/ingredients/IngredientGrid";
+import { RenderableIngredient } from "@/types/ingredientTypes";
+import { dummyIngredients } from "@/dummyIngredients";
+import { useAuth } from "@/context/AuthContext";
 
 const Dashboard = () => {
     const { logout } = useAuth();

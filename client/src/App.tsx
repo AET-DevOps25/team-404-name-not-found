@@ -2,13 +2,13 @@ import React from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import { TooltipProvider } from "@/components/ui/tooltip.tsx";
-import NotFound from "@/pages/NotFound.tsx";
-import LoginScreen from "@/pages/LoginScreen.tsx";
-import Dashboard from "@/pages/Dashboard.tsx";
-import OAuthCallback from "@/pages/OAuthCallback.tsx";
-import PrivateRoute from "@/components/PrivateRoute.tsx";
-import { AuthProvider } from "@/context/AuthContext.tsx";
+import { TooltipProvider } from "@/components/ui/tooltip";
+import NotFound from "@/pages/NotFound";
+import LoginScreen from "@/pages/LoginScreen";
+import Dashboard from "@/pages/Dashboard";
+import OAuthCallback from "@/pages/OAuthCallback";
+import PrivateRoute from "@/components/PrivateRoute";
+import { AuthProvider } from "@/context/AuthContext";
 
 const App: React.FC = () => {
     return (

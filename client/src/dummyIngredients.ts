@@ -1,4 +1,4 @@
-import { RenderableIngredient } from "@/types/ingredientTypes.ts";
+import { RenderableIngredient } from "@/types/ingredientTypes";
 
 export const dummyIngredients: RenderableIngredient[] = [
     {
