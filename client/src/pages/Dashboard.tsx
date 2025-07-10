@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Refrigerator, Camera, Plus, LogOut, Settings } from "lucide-react";
 import IngredientGrid from "@/components/ingredients/IngredientGrid";
-import { Ingredient } from "@/types/ingredientTypes";
+import { Ingredient, IngredientNoId } from "@/types/ingredientTypes";
 import { useAuth } from "@/context/AuthContext";
 import ingredientsService from "@/api/services/ingredientsService.ts";
 import { toast } from "@/hooks/use-toast.ts";
@@ -21,14 +21,10 @@ const Dashboard = () => {
         });
     };
 
-    const addIngredient = (ingredient: Omit<Ingredient, "id">) => {
+    const addIngredient = (ingredient: IngredientNoId) => {
         setShowAddIngredientModal(false);
 
-        const ingredientWithId = {
-            ...ingredient,
-            id: Date.now().toString(), // Temporary ID, should be replaced by the server-generated ID
-        };
-        ingredientsService.saveIngredients([ingredientWithId]).then((newIngredients) => {
+        ingredientsService.saveIngredients([ingredient]).then((newIngredients) => {
             console.log("Ingredients added successfully:", newIngredients);
             setIngredients((prev) => [...prev, ...newIngredients]);
         }).catch((error: Error) => {

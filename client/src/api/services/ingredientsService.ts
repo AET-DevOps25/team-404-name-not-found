@@ -1,5 +1,20 @@
 import { ingredientsClient } from "@/api/fetchClients";
-import { Ingredient } from "@/types/ingredientTypes";
+import { Ingredient, IngredientNoId } from "@/types/ingredientTypes";
+import { components } from "@/api/ingredients";
+
+type ApiIngredient = components["schemas"]["Ingredient"];
+
+const mapIngredient = (ingredient: ApiIngredient): Ingredient => {
+    if (!ingredient.id) {
+        throw new Error("Ingredient must have an id");
+    }
+    return {
+        id: ingredient.id,
+        name: ingredient.name,
+        quantity: ingredient.amount,
+        unit: ingredient.unit,
+    };
+};
 
 class IngredientsService {
     async getAll(): Promise<Ingredient[]> {
@@ -15,12 +30,7 @@ class IngredientsService {
             throw new Error(`${errorMessageHeader}: response has no data`);
         }
 
-        return result.data.map((ingredient) => ({
-            id: ingredient.id,
-            name: ingredient.name,
-            quantity: ingredient.amount,
-            unit: ingredient.unit,
-        }));
+        return result.data.map(mapIngredient);
     }
 
     async getById(id: string): Promise<Ingredient> {
@@ -40,12 +50,7 @@ class IngredientsService {
             throw new Error(`${errorMessageHeader}: response has no data`);
         }
 
-        return {
-            id: result.data.id,
-            name: result.data.name,
-            quantity: result.data.amount,
-            unit: result.data.unit,
-        };
+        return mapIngredient(result.data);
     }
 
     async deleteById(id: string): Promise<void> {
@@ -86,18 +91,12 @@ class IngredientsService {
         if (!result.data) {
             throw new Error(`${errorMessageHeader}: response has no data`);
         }
-        return {
-            id: result.data.id,
-            name: result.data.name,
-            quantity: result.data.amount,
-            unit: result.data.unit,
-        };
+        return mapIngredient(result.data);
     }
 
-    async saveIngredients(ingredients: Ingredient[]): Promise<Ingredient[]> {
+    async saveIngredients(ingredients: IngredientNoId[]): Promise<Ingredient[]> {
         const result = await ingredientsClient.POST("/", {
             body: ingredients.map((ingredient) => ({
-                id: ingredient.id,
                 name: ingredient.name,
                 amount: ingredient.quantity,
                 unit: ingredient.unit,
@@ -114,12 +113,7 @@ class IngredientsService {
             throw new Error(`${errorMessageHeader}: response has no data`);
         }
 
-        return result.data.map((ingredient) => ({
-            id: ingredient.id,
-            name: ingredient.name,
-            quantity: ingredient.amount,
-            unit: ingredient.unit,
-        }));
+        return result.data.map(mapIngredient);
     }
 }
 
