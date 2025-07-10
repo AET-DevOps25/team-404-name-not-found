@@ -40,25 +40,25 @@ To redirect this to something else:
     ```bash
     docker run -e VITE_API_BASE_URL=https://fridge.example/api image-name
     ```
-  When serving a static build like this, you cannot simply change the environment variable in the `.env` file, as it is
-  only read at build time.  
-  However, we don't want to rebuild the image every time we change the server URL, so we use a little workaround:  
-  We use the vite plugin `vite-plugin-runtime-env` for the production build, which creates placeholders for all used
-  envvars beginning with `VITE_` in the built
-  `index.html`  
-  For example:
+    When serving a static build like this, you cannot simply change the environment variable in the `.env` file, as it is
+    only read at build time.  
+    However, we don't want to rebuild the image every time we change the server URL, so we use a little workaround:  
+    We use the vite plugin `vite-plugin-runtime-env` for the production build, which creates placeholders for all used
+    envvars beginning with `VITE_` in the built
+    `index.html`  
+    For example:
     ```html
     <script type="application/javascript">
         window.env = JSON.parse('{"VITE_API_BASE_URL":"${VITE_API_BASE_URL}"}');
     </script>
     ```
-  The `entrypoint.sh` script is executed when the container starts and replaces the placeholders with the environment
-  variables value using `envsubst`. The plugin also replaces uses of env variables in the TypeScript code, to switch
-  from normal env usage to `window.env`:
+    The `entrypoint.sh` script is executed when the container starts and replaces the placeholders with the environment
+    variables value using `envsubst`. The plugin also replaces uses of env variables in the TypeScript code, to switch
+    from normal env usage to `window.env`:
     ```typescript
     const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
     ```
-  is replaced with:
+    is replaced with:
     ```typescript
     const apiBaseUrl = window.env.VITE_API_BASE_URL;
     ```

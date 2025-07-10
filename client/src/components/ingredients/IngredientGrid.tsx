@@ -39,8 +39,7 @@ const IngredientGrid = ({ ingredients, onEdit, onDelete }: IngredientGridProps) 
                     onMouseEnter={() => setHoveredId(ingredient.id)}
                     onMouseLeave={() => setHoveredId(null)}
                 >
-                    <div
-                        className="aspect-square flex items-center justify-center bg-gray-100 relative text-5xl font-bold text-gray-400">
+                    <div className="aspect-square flex items-center justify-center bg-gray-100 relative text-5xl font-bold text-gray-400">
                         {ingredient.name.charAt(0).toUpperCase()}
                         {hoveredId === ingredient.id && (
                             <div className="absolute top-2 right-2 flex gap-1">

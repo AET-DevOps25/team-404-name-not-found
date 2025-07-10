@@ -57,7 +57,7 @@ const Dashboard = () => {
             .then((updatedIngredient) => {
                 console.log("Ingredient updated successfully:", updatedIngredient);
                 setIngredients((prev) =>
-                    prev.map((ing) => (ing.id === updatedIngredient.id ? updatedIngredient : ing)),
+                    prev.map((ing) => (ing.id === updatedIngredient.id ? updatedIngredient : ing))
                 );
             })
             .catch((error: Error) => {
