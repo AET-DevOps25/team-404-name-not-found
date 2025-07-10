@@ -73,7 +73,7 @@ export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
         UserId: {
-            userId?: string;
+            userId: string;
         };
     };
     responses: never;
