@@ -6,17 +6,33 @@ import { Ingredient } from "@/types/ingredientTypes";
 import { useAuth } from "@/context/AuthContext";
 import ingredientsService from "@/api/services/ingredientsService.ts";
 import { toast } from "@/hooks/use-toast.ts";
+import AddIngredientModal from "@/components/ingredients/AddIngredientModal.tsx";
 
 const Dashboard = () => {
     const { logout } = useAuth();
-    // @ts-ignore
     const [ingredients, setIngredients] = useState<Ingredient[]>([]);
+    const [showAddIngredientModal, setShowAddIngredientModal] = useState(false);
 
     const errorHandler = (error: Error) => {
         toast({
             variant: "destructive",
             title: "Error",
             description: error.message,
+        });
+    };
+
+    const addIngredient = (ingredient: Omit<Ingredient, "id">) => {
+        setShowAddIngredientModal(false);
+
+        const ingredientWithId = {
+            ...ingredient,
+            id: Date.now().toString(), // Temporary ID, should be replaced by the server-generated ID
+        };
+        ingredientsService.saveIngredients([ingredientWithId]).then((newIngredients) => {
+            console.log("Ingredients added successfully:", newIngredients);
+            setIngredients((prev) => [...prev, ...newIngredients]);
+        }).catch((error: Error) => {
+            errorHandler(error);
         });
     };
 
@@ -59,7 +75,9 @@ const Dashboard = () => {
                             <Button
                                 variant="outline"
                                 size="sm"
-                                onClick={() => {}} // TODO: Show add ingredient modal
+                                onClick={() => {
+                                    setShowAddIngredientModal(true);
+                                }}
                                 className="border-green-200 text-green-700 hover:bg-green-50 dark:border-green-700 dark:text-green-400 dark:hover:bg-green-900"
                             >
                                 <Plus className="w-4 h-4 mr-2" />
@@ -119,6 +137,14 @@ const Dashboard = () => {
                     </div>
                 </div>
             </div>
+
+            {/* Modals */}
+            {showAddIngredientModal && (
+                <AddIngredientModal
+                    onClose={() => setShowAddIngredientModal(false)}
+                    onAdd={addIngredient}
+                />
+            )}
         </div>
     );
 };
