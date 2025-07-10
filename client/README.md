@@ -43,7 +43,8 @@ To redirect this to something else:
   When serving a static build like this, you cannot simply change the environment variable in the `.env` file, as it is
   only read at build time.  
   However, we don't want to rebuild the image every time we change the server URL, so we use a little workaround:  
-  We use the vite plugin `vite-plugin-env-compatible`, which creates placeholders for all used envvars in the built
+  We use the vite plugin `vite-plugin-runtime-env` for the production build, which creates placeholders for all used
+  envvars beginning with `VITE_` in the built
   `index.html`  
   For example:
     ```html
@@ -52,15 +53,25 @@ To redirect this to something else:
     </script>
     ```
   The `entrypoint.sh` script is executed when the container starts and replaces the placeholders with the environment
-  variables value using `envsubst`.
+  variables value using `envsubst`. The plugin also replaces uses of env variables in the TypeScript code, to switch
+  from normal env usage to `window.env`:
+    ```typescript
+    const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
+    ```
+  is replaced with:
+    ```typescript
+    const apiBaseUrl = window.env.VITE_API_BASE_URL;
+    ```
 
 ## Dev Mode with mocked login
 
 You can run the client in development mode by setting the environment variable `VITE_MODE` to `dev`.  
 This will enable the mocked login flow, which allows you to test the client without actually logging in.
-This is especially useful when running the client with the development server (e.g. with server running in docker
-compose), as we can't use OAuth login flow there. We can't use the OAuth login flow because the callback URL that the
-server uses will be on the HOST of the docker compose and not localhost.
+This is especially useful when running the client with the vite development server on `localhost:8080`
+and the rest of the application (server etc.) with docker compose, as we can't use OAuth login flow there. We can't use
+the OAuth login flow because the callback URL that the
+server uses, will be on the HOST (e.g. `fridge.localhost`) of the docker compose and not localhost. Keep in mind that
+the server services must be run with `MODE=dev` for this to work.
 
 ## FAQ
 
