@@ -22,7 +22,7 @@ class IngredientsService {
 
         const errorMessageHeader = "Failed to fetch ingredients";
         if (!result.response.ok) {
-            const errorMessage = `${errorMessageHeader}: response is not OK: ${result.response.status} ${result.response.status}`;
+            const errorMessage = `${errorMessageHeader}: response is not OK: ${result.response.status} ${result.response.statusText}`;
             console.error(errorMessage, result.data);
             throw new Error(errorMessage);
         }
@@ -42,7 +42,7 @@ class IngredientsService {
 
         const errorMessageHeader = `Failed to fetch ingredient with id ${id}`;
         if (!result.response.ok) {
-            const errorMessage = `${errorMessageHeader}: response is not OK: ${result.response.status} ${result.response.status}`;
+            const errorMessage = `${errorMessageHeader}: response is not OK: ${result.response.status} ${result.response.statusText}`;
             console.error(errorMessage, result.data);
             throw new Error(errorMessage);
         }
@@ -62,7 +62,7 @@ class IngredientsService {
 
         const errorMessageHeader = `Failed to delete ingredient with id ${id}`;
         if (!result.response.ok) {
-            const errorMessage = `${errorMessageHeader}: response is not OK: ${result.response.status} ${result.response.status}`;
+            const errorMessage = `${errorMessageHeader}: response is not OK: ${result.response.status} ${result.response.statusText}`;
             console.error(errorMessage, result.data);
 
             if (result.response.status === 404) {
@@ -84,7 +84,7 @@ class IngredientsService {
 
         const errorMessageHeader = `Failed to update ingredient with id ${ingredient.id}`;
         if (!result.response.ok) {
-            const errorMessage = `${errorMessageHeader}: response is not OK: ${result.response.status} ${result.response.status}`;
+            const errorMessage = `${errorMessageHeader}: response is not OK: ${result.response.status} ${result.response.statusText}`;
             console.error(errorMessage, result.data);
             throw new Error(errorMessage);
         }
@@ -105,7 +105,7 @@ class IngredientsService {
 
         const errorMessageHeader = "Failed to save ingredients";
         if (!result.response.ok) {
-            const errorMessage = `${errorMessageHeader}: response is not OK: ${result.response.status} ${result.response.status}`;
+            const errorMessage = `${errorMessageHeader}: response is not OK: ${result.response.status} ${result.response.statusText}`;
             console.error(errorMessage, result.data);
             throw new Error(errorMessage);
         }
