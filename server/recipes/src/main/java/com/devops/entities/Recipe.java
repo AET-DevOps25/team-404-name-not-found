@@ -1,6 +1,7 @@
 package com.devops.entities;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -18,29 +19,36 @@ public class Recipe {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
+    @NotNull
     private String id;
 
     @Column(nullable = false)
+    @NotNull
     private String title;
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
+    @NotNull
     private Difficulty difficulty;
 
     @Column(nullable = false)
+    @NotNull
     private int cookingTime;
 
     @ElementCollection
     @Column(nullable = false, columnDefinition = "TEXT")
-    private List<String> instructions;
+    @NotNull
+    private List<@NotNull String> instructions;
 
     @ElementCollection
     @CollectionTable(name = "recipe_ingredients", joinColumns = @JoinColumn(name = "recipe_id"))
-    private List<Ingredient> ingredients;
+    @NotNull
+    private List<@NotNull Ingredient> ingredients;
 
     @ElementCollection
     @CollectionTable(name = "recipe_needed_ingredients", joinColumns = @JoinColumn(name = "recipe_id"))
-    private List<Ingredient> neededIngredients;
+    @NotNull
+    private List<@NotNull Ingredient> neededIngredients;
 
     @Column(nullable = true)
     private String userId;
