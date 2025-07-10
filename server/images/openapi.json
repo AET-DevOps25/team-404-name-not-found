@@ -1,262 +1,277 @@
 {
-    "openapi": "3.1.0",
-    "info": {
-        "title": "OpenAPI definition",
-        "version": "v0"
-    },
-    "servers": [
-        {
-            "url": "http://fridge.localhost/api/images/v1",
-            "description": "Generated server url"
-        }
-    ],
-    "tags": [
-        {
-            "name": "Images",
-            "description": "Image analysis and recipe generation"
-        }
-    ],
-    "paths": {
-        "/recipes/match": {
-            "post": {
-                "tags": [
-                    "Images"
-                ],
-                "summary": "Analyze fridge image and return recipes",
-                "description": "Accepts a fridge photo as a file and returns a list of generated recipes based on identified ingredients.",
-                "operationId": "analyzeImage",
-                "parameters": [
-                    {
-                        "name": "numRecipes",
-                        "in": "query",
-                        "description": "Number of recipes to return",
-                        "required": true,
-                        "schema": {
-                            "type": "integer",
-                            "format": "int32"
-                        },
-                        "example": 3
-                    },
-                    {
-                        "name": "X-User-Id",
-                        "in": "header",
-                        "required": false,
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                ],
-                "requestBody": {
-                    "content": {
-                        "multipart/form-data": {
-                            "schema": {
-                                "type": "object",
-                                "required": [
-                                    "file",
-                                    "numRecipes"
-                                ]
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "List of recipes generated from the image",
-                        "content": {
-                            "*/*": {
-                                "schema": {
-                                    "type": "array",
-                                    "items": {
-                                        "$ref": "#/components/schemas/RecipeDTO"
-                                    }
-                                }
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "Invalid input",
-                        "content": {
-                            "*/*": {
-                                "schema": {
-                                    "type": "array",
-                                    "items": {
-                                        "$ref": "#/components/schemas/RecipeDTO"
-                                    }
-                                }
-                            }
-                        }
-                    },
-                    "500": {
-                        "description": "Internal server error",
-                        "content": {
-                            "*/*": {
-                                "schema": {
-                                    "type": "array",
-                                    "items": {
-                                        "$ref": "#/components/schemas/RecipeDTO"
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        "/recipes/explore": {
-            "post": {
-                "tags": [
-                    "Images"
-                ],
-                "summary": "Analyze fridge image and return recipes with a creative twist",
-                "description": "Accepts a fridge photo as a file and returns a list of generated recipes based on identified ingredients.",
-                "operationId": "checkImage",
-                "parameters": [
-                    {
-                        "name": "numRecipes",
-                        "in": "query",
-                        "description": "Number of recipes to return",
-                        "required": true,
-                        "schema": {
-                            "type": "integer",
-                            "format": "int32"
-                        },
-                        "example": 3
-                    },
-                    {
-                        "name": "X-User-Id",
-                        "in": "header",
-                        "required": false,
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                ],
-                "requestBody": {
-                    "content": {
-                        "multipart/form-data": {
-                            "schema": {
-                                "type": "object",
-                                "required": [
-                                    "file",
-                                    "numRecipes"
-                                ]
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "List of recipes generated from the image",
-                        "content": {
-                            "*/*": {
-                                "schema": {
-                                    "type": "array",
-                                    "items": {
-                                        "$ref": "#/components/schemas/RecipeDTO"
-                                    }
-                                }
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "Invalid input",
-                        "content": {
-                            "*/*": {
-                                "schema": {
-                                    "type": "array",
-                                    "items": {
-                                        "$ref": "#/components/schemas/RecipeDTO"
-                                    }
-                                }
-                            }
-                        }
-                    },
-                    "500": {
-                        "description": "Internal server error",
-                        "content": {
-                            "*/*": {
-                                "schema": {
-                                    "type": "array",
-                                    "items": {
-                                        "$ref": "#/components/schemas/RecipeDTO"
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    },
-    "components": {
-        "schemas": {
-            "Ingredient": {
-                "type": "object",
-                "properties": {
-                    "name": {
-                        "type": "string"
-                    },
-                    "amount": {
-                        "type": "integer",
-                        "format": "int32"
-                    },
-                    "unit": {
-                        "type": "string",
-                        "enum": [
-                            "pcs",
-                            "ml",
-                            "g"
-                        ]
-                    }
-                }
-            },
-            "RecipeDTO": {
-                "type": "object",
-                "properties": {
-                    "id": {
-                        "type": "string"
-                    },
-                    "title": {
-                        "type": "string"
-                    },
-                    "description": {
-                        "type": "string"
-                    },
-                    "difficulty": {
-                        "type": "string",
-                        "enum": [
-                            "easy",
-                            "medium",
-                            "advanced"
-                        ]
-                    },
-                    "cookingTime": {
-                        "type": "integer",
-                        "format": "int32"
-                    },
-                    "instructions": {
-                        "type": "array",
-                        "items": {
-                            "type": "string"
-                        }
-                    },
-                    "ingredients": {
-                        "type": "array",
-                        "items": {
-                            "$ref": "#/components/schemas/Ingredient"
-                        }
-                    },
-                    "neededIngredients": {
-                        "type": "array",
-                        "items": {
-                            "$ref": "#/components/schemas/Ingredient"
-                        }
-                    },
-                    "userId": {
-                        "type": "string"
-                    }
-                }
-            }
-        }
+  "openapi": "3.1.0",
+  "info": {
+    "title": "OpenAPI definition",
+    "version": "v0"
+  },
+  "servers": [
+    {
+      "url": "http://fridge.localhost/api/images/v1",
+      "description": "Generated server url"
     }
+  ],
+  "tags": [
+    {
+      "name": "Images",
+      "description": "Image analysis and recipe generation"
+    }
+  ],
+  "paths": {
+    "/recipes/match": {
+      "post": {
+        "tags": [
+          "Images"
+        ],
+        "summary": "Analyze fridge image and return recipes",
+        "description": "Accepts a fridge photo as a file and returns a list of generated recipes based on identified ingredients.",
+        "operationId": "analyzeImage",
+        "parameters": [
+          {
+            "name": "numRecipes",
+            "in": "query",
+            "description": "Number of recipes to return",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "example": 3
+          },
+          {
+            "name": "X-User-Id",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "file",
+                  "numRecipes"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "List of recipes generated from the image",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/RecipeDTO"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/RecipeDTO"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/RecipeDTO"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/recipes/explore": {
+      "post": {
+        "tags": [
+          "Images"
+        ],
+        "summary": "Analyze fridge image and return recipes with a creative twist",
+        "description": "Accepts a fridge photo as a file and returns a list of generated recipes based on identified ingredients.",
+        "operationId": "checkImage",
+        "parameters": [
+          {
+            "name": "numRecipes",
+            "in": "query",
+            "description": "Number of recipes to return",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "example": 3
+          },
+          {
+            "name": "X-User-Id",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "file",
+                  "numRecipes"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "List of recipes generated from the image",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/RecipeDTO"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/RecipeDTO"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/RecipeDTO"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Ingredient": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "amount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "unit": {
+            "type": "string",
+            "enum": [
+              "pcs",
+              "ml",
+              "g"
+            ]
+          }
+        },
+        "required": [
+          "amount",
+          "name",
+          "unit"
+        ]
+      },
+      "RecipeDTO": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "difficulty": {
+            "type": "string",
+            "enum": [
+              "easy",
+              "medium",
+              "advanced"
+            ]
+          },
+          "cookingTime": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "instructions": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "ingredients": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Ingredient"
+            }
+          },
+          "neededIngredients": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Ingredient"
+            }
+          },
+          "userId": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "cookingTime",
+          "description",
+          "difficulty",
+          "id",
+          "ingredients",
+          "instructions",
+          "neededIngredients",
+          "title"
+        ]
+      }
+    }
+  }
 }
