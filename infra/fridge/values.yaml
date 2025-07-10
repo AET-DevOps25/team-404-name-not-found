@@ -3,7 +3,7 @@
 # Declare variables to be passed into your templates.
 
 namespace: team-404-name-not-found
-currentBranch: integrate-image-service
+currentBranch: create-functional-login
 
 # default login vars for postgres
 postgresUser: postgres

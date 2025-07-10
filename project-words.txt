@@ -10,3 +10,4 @@ genai
 cpus
 kubelet
 Yeet
+envsubst

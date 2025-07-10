@@ -389,6 +389,7 @@ token.yml
 hosts.ini
 *.ansible
 *.json
+!api-specification/*.json
 !jvm.json
 !spring_boot.json
 !openapi.json

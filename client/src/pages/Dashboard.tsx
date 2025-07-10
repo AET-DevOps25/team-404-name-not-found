@@ -4,12 +4,10 @@ import { Refrigerator, Camera, Plus, LogOut, Settings } from "lucide-react";
 import IngredientGrid from "@/components/ingredients/IngredientGrid";
 import { RenderableIngredient } from "@/types/ingredientTypes";
 import { dummyIngredients } from "@/dummyIngredients";
+import { useAuth } from "@/context/AuthContext";
 
-interface DashboardProps {
-    onLogout: () => void;
-}
-
-const Dashboard = ({ onLogout }: DashboardProps) => {
+const Dashboard = () => {
+    const { logout } = useAuth();
     // @ts-ignore
     const [ingredients, setIngredients] = useState<RenderableIngredient[]>(dummyIngredients);
 
@@ -49,7 +47,7 @@ const Dashboard = ({ onLogout }: DashboardProps) => {
                             <Button
                                 variant="ghost"
                                 size="sm"
-                                onClick={onLogout}
+                                onClick={logout}
                                 className="text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white"
                             >
                                 <LogOut className="w-4 h-4 mr-2" />
