@@ -59,6 +59,10 @@ class IngredientsService {
         if (!result.response.ok) {
             const errorMessage = `${errorMessageHeader}: response is not OK: ${result.response.status} ${result.response.status}`;
             console.error(errorMessage, result.data);
+
+            if (result.response.status === 404) {
+                throw new Error(`Ingredient not found`);
+            }
             throw new Error(errorMessage);
         }
     }

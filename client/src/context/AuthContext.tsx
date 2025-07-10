@@ -30,7 +30,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const checkToken = async () => {
         console.log("AuthProvider: checking token with whoAmI");
         return authService
-            .whoAmi()
+            .whoAmI()
             .then((user: User) => {
                 setUser(user);
                 console.log("AuthProvider: whoAmI correct setting User, userId:", user.userId);

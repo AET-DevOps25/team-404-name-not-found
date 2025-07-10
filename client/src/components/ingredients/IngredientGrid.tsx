@@ -3,11 +3,11 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Trash, Pen } from "lucide-react";
-import { RenderableIngredient } from "@/types/ingredientTypes";
+import { Ingredient } from "@/types/ingredientTypes";
 
 interface IngredientGridProps {
-    ingredients: RenderableIngredient[];
-    onEdit: (ingredient: RenderableIngredient) => void;
+    ingredients: Ingredient[];
+    onEdit: (ingredient: Ingredient) => void;
     onDelete: (id: string) => void;
 }
 
@@ -39,12 +39,9 @@ const IngredientGrid = ({ ingredients, onEdit, onDelete }: IngredientGridProps) 
                     onMouseEnter={() => setHoveredId(ingredient.id)}
                     onMouseLeave={() => setHoveredId(null)}
                 >
-                    <div className="aspect-square overflow-hidden relative">
-                        <img
-                            src={ingredient.imageUrl}
-                            alt={ingredient.name}
-                            className="w-full h-full object-cover hover:scale-105 transition-transform duration-200"
-                        />
+                    <div
+                        className="aspect-square flex items-center justify-center bg-gray-100 relative text-5xl font-bold text-gray-400">
+                        {ingredient.name.charAt(0).toUpperCase()}
                         {hoveredId === ingredient.id && (
                             <div className="absolute top-2 right-2 flex gap-1">
                                 <Button

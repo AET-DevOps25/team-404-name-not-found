@@ -1,15 +1,45 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Refrigerator, Camera, Plus, LogOut, Settings } from "lucide-react";
 import IngredientGrid from "@/components/ingredients/IngredientGrid";
-import { RenderableIngredient } from "@/types/ingredientTypes";
-import { dummyIngredients } from "@/dummyIngredients";
+import { Ingredient } from "@/types/ingredientTypes";
 import { useAuth } from "@/context/AuthContext";
+import ingredientsService from "@/api/services/ingredientsService.ts";
+import { toast } from "@/hooks/use-toast.ts";
 
 const Dashboard = () => {
     const { logout } = useAuth();
     // @ts-ignore
-    const [ingredients, setIngredients] = useState<RenderableIngredient[]>(dummyIngredients);
+    const [ingredients, setIngredients] = useState<Ingredient[]>([]);
+
+    const errorHandler = (error: Error) => {
+        toast({
+            variant: "destructive",
+            title: "Error",
+            description: error.message,
+        });
+    };
+
+    const deleteIngredient = (id: string) => {
+        ingredientsService.deleteById(id).then(() => {
+            console.log(`Ingredient with id ${id} deleted successfully`);
+            setIngredients((prev) => prev.filter((ingredient) => ingredient.id !== id));
+        }).catch((error: Error) => {
+            errorHandler(error);
+        });
+    };
+
+    useEffect(() => {
+        console.log("Dashboard mounted, fetching ingredients...");
+        // Fetch ingredients from the API
+        ingredientsService.getAll()
+            .then((fetchedIngredients) => {
+                setIngredients(fetchedIngredients);
+            })
+            .catch((error: Error) => {
+                errorHandler(error);
+            });
+    }, []);
 
     return (
         <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
@@ -69,7 +99,7 @@ const Dashboard = () => {
                         <IngredientGrid
                             ingredients={ingredients}
                             onEdit={() => {}} // TODO: Add function to edit
-                            onDelete={() => {}} // TODO: Add function to delete
+                            onDelete={deleteIngredient}
                         />
                     </div>
 
