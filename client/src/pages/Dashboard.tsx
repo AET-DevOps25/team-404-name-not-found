@@ -7,11 +7,13 @@ import { useAuth } from "@/context/AuthContext";
 import ingredientsService from "@/api/services/ingredientsService.ts";
 import { toast } from "@/hooks/use-toast.ts";
 import AddIngredientModal from "@/components/ingredients/AddIngredientModal.tsx";
+import EditIngredientModal from "@/components/ingredients/EditIngredientModal.tsx";
 
 const Dashboard = () => {
     const { logout } = useAuth();
     const [ingredients, setIngredients] = useState<Ingredient[]>([]);
     const [showAddIngredientModal, setShowAddIngredientModal] = useState(false);
+    const [editingIngredient, setEditingIngredient] = useState<Ingredient | null>(null);
 
     const errorHandler = (error: Error) => {
         toast({
@@ -41,6 +43,22 @@ const Dashboard = () => {
             .then(() => {
                 console.log(`Ingredient with id ${id} deleted successfully`);
                 setIngredients((prev) => prev.filter((ingredient) => ingredient.id !== id));
+            })
+            .catch((error: Error) => {
+                errorHandler(error);
+            });
+    };
+
+    const editIngredient = (ingredient: Ingredient) => {
+        setEditingIngredient(null);
+
+        ingredientsService
+            .updateIngredient(ingredient)
+            .then((updatedIngredient) => {
+                console.log("Ingredient updated successfully:", updatedIngredient);
+                setIngredients((prev) =>
+                    prev.map((ing) => (ing.id === updatedIngredient.id ? updatedIngredient : ing)),
+                );
             })
             .catch((error: Error) => {
                 errorHandler(error);
@@ -119,7 +137,7 @@ const Dashboard = () => {
                         </div>
                         <IngredientGrid
                             ingredients={ingredients}
-                            onEdit={() => {}} // TODO: Add function to edit
+                            onEdit={setEditingIngredient}
                             onDelete={deleteIngredient}
                         />
                     </div>
@@ -144,6 +162,13 @@ const Dashboard = () => {
             {/* Modals */}
             {showAddIngredientModal && (
                 <AddIngredientModal onClose={() => setShowAddIngredientModal(false)} onAdd={addIngredient} />
+            )}
+            {editingIngredient && (
+                <EditIngredientModal
+                    ingredient={editingIngredient}
+                    onClose={() => setEditingIngredient(null)}
+                    onSave={editIngredient}
+                />
             )}
         </div>
     );
