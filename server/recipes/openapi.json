@@ -400,7 +400,6 @@
         "required": [
           "cookingTime",
           "difficulty",
-          "id",
           "ingredients",
           "instructions",
           "neededIngredients",

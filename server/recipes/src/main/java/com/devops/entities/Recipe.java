@@ -19,7 +19,6 @@ public class Recipe {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    @NotNull
     private String id;
 
     @Column(nullable = false)
