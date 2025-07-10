@@ -24,27 +24,34 @@ const Dashboard = () => {
     const addIngredient = (ingredient: IngredientNoId) => {
         setShowAddIngredientModal(false);
 
-        ingredientsService.saveIngredients([ingredient]).then((newIngredients) => {
-            console.log("Ingredients added successfully:", newIngredients);
-            setIngredients((prev) => [...prev, ...newIngredients]);
-        }).catch((error: Error) => {
-            errorHandler(error);
-        });
+        ingredientsService
+            .saveIngredients([ingredient])
+            .then((newIngredients) => {
+                console.log("Ingredients added successfully:", newIngredients);
+                setIngredients((prev) => [...prev, ...newIngredients]);
+            })
+            .catch((error: Error) => {
+                errorHandler(error);
+            });
     };
 
     const deleteIngredient = (id: string) => {
-        ingredientsService.deleteById(id).then(() => {
-            console.log(`Ingredient with id ${id} deleted successfully`);
-            setIngredients((prev) => prev.filter((ingredient) => ingredient.id !== id));
-        }).catch((error: Error) => {
-            errorHandler(error);
-        });
+        ingredientsService
+            .deleteById(id)
+            .then(() => {
+                console.log(`Ingredient with id ${id} deleted successfully`);
+                setIngredients((prev) => prev.filter((ingredient) => ingredient.id !== id));
+            })
+            .catch((error: Error) => {
+                errorHandler(error);
+            });
     };
 
     useEffect(() => {
         console.log("Dashboard mounted, fetching ingredients...");
         // Fetch ingredients from the API
-        ingredientsService.getAll()
+        ingredientsService
+            .getAll()
             .then((fetchedIngredients) => {
                 setIngredients(fetchedIngredients);
             })
@@ -136,10 +143,7 @@ const Dashboard = () => {
 
             {/* Modals */}
             {showAddIngredientModal && (
-                <AddIngredientModal
-                    onClose={() => setShowAddIngredientModal(false)}
-                    onAdd={addIngredient}
-                />
+                <AddIngredientModal onClose={() => setShowAddIngredientModal(false)} onAdd={addIngredient} />
             )}
         </div>
     );

@@ -70,8 +70,10 @@ const AddIngredientModal = ({ onClose, onAdd }: AddIngredientModalProps) => {
 
                         <div className="space-y-2">
                             <Label htmlFor="unit">Unit</Label>
-                            <Select value={formData.unit}
-                                    onValueChange={(value: any) => setFormData({ ...formData, unit: value })}>
+                            <Select
+                                value={formData.unit}
+                                onValueChange={(value: any) => setFormData({ ...formData, unit: value })}
+                            >
                                 <SelectTrigger className="border-gray-200 focus:border-green-500">
                                     <SelectValue />
                                 </SelectTrigger>
@@ -85,18 +87,10 @@ const AddIngredientModal = ({ onClose, onAdd }: AddIngredientModalProps) => {
                     </div>
 
                     <div className="flex gap-3 pt-4">
-                        <Button
-                            type="button"
-                            variant="outline"
-                            onClick={onClose}
-                            className="flex-1"
-                        >
+                        <Button type="button" variant="outline" onClick={onClose} className="flex-1">
                             Cancel
                         </Button>
-                        <Button
-                            type="submit"
-                            className="flex-1 bg-green-600 hover:bg-green-700 text-white"
-                        >
+                        <Button type="submit" className="flex-1 bg-green-600 hover:bg-green-700 text-white">
                             Add Ingredient
                         </Button>
                     </div>
