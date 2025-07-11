@@ -12,9 +12,11 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.Optional;
@@ -69,7 +71,8 @@ public class ImagesController {
             result = Optional.ofNullable(userId).orElse("dev-user");
         }
         if (result == null || result.isEmpty()) {
-            throw new RuntimeException("The proxy should have set the user id in the X-User-Id header");
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
+                "The proxy should have set the user id in the X-User-Id header");
         }
         return userId;
     }

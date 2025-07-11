@@ -12,8 +12,10 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -120,7 +122,8 @@ public class IngredientsController {
             result = Optional.ofNullable(userId).orElse("dev-user");
         }
         if (result == null || result.isEmpty()) {
-            throw new RuntimeException("The proxy should have set the user id in the X-User-Id header");
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
+                "The proxy should have set the user id in the X-User-Id header");
         }
         return userId;
     }
