@@ -15,8 +15,6 @@ services:
         condition: service_healthy
       recipes:
         condition: service_healthy
-      genai:
-        condition: service_healthy
     networks:
       - web
 
@@ -113,6 +111,8 @@ services:
     depends_on:
       users:
         condition: service_healthy
+      genai:
+        condition: service_healthy
     environment:
       DB_HOST: db
     networks:
@@ -130,7 +130,7 @@ services:
     container_name: genai
     image: ghcr.io/aet-devops25/team-404-name-not-found/genai:${BRANCH:-main}
     healthcheck:
-      test: [ "CMD", "wget", "-q", "--spider", "http://localhost:8000/api/genai/v1/health" ]
+      test: ["CMD", "curl", "-s", "-o", "/dev/null", "http://localhost:8000/api/genai/v1/health"]
       interval: 10s
       timeout: 15s
       retries: 5
