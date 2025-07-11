@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,9 +41,7 @@ public class RecipeController {
     public ResponseEntity<List<Recipe>> generateRecipe(@RequestBody List<Ingredient> ingredients,
             @PathVariable int numRecipes,
             @Parameter(description = "User ID from proxy") @RequestHeader(value = "X-User-Id", required = false) String userId) {
-        if (mode.equalsIgnoreCase("dev")) {
-            userId = Optional.ofNullable(userId).orElse("dev-user");
-        }
+        userId = configureUserId(userId);
 
         List<Recipe> recipes = recipeService.generateRecipe(ingredients, numRecipes, userId);
         return ResponseEntity.ok(recipes);
@@ -55,9 +54,7 @@ public class RecipeController {
     public ResponseEntity<List<Recipe>> exploreRecipe(@RequestBody List<Ingredient> ingredients,
             @PathVariable int numRecipes,
             @Parameter(description = "User ID from proxy") @RequestHeader(value = "X-User-Id", required = false) String userId) {
-        if (mode.equalsIgnoreCase("dev")) {
-            userId = Optional.ofNullable(userId).orElse("dev-user");
-        }
+        userId = configureUserId(userId);
 
         List<Recipe> recipes = recipeService.exploreRecipe(ingredients, numRecipes, userId);
         return ResponseEntity.ok(recipes);
@@ -67,10 +64,8 @@ public class RecipeController {
     public ResponseEntity<Recipe> saveRecipe(@RequestBody Recipe recipe,
             @Parameter(description = "User ID from proxy") @RequestHeader(value = "X-User-Id", required = false) String userId) {
 
-        if (mode.equalsIgnoreCase("dev")) {
-            String realUserId = Optional.ofNullable(userId).orElse("dev-user");
-            recipe.setUserId(realUserId);
-        }
+        userId = configureUserId(userId);
+        recipe.setUserId(userId);
 
         Recipe savedRecipe = recipeService.saveRecipe(recipe);
         return ResponseEntity.status(HttpStatus.CREATED).body(savedRecipe);
@@ -80,10 +75,8 @@ public class RecipeController {
     public ResponseEntity<Recipe> alterRecipe(@RequestBody Recipe recipe,
             @Parameter(description = "User ID from proxy") @RequestHeader(value = "X-User-Id", required = false) String userId) {
 
-        if (mode.equalsIgnoreCase("dev")) {
-            String realUserId = Optional.ofNullable(userId).orElse("dev-user");
-            recipe.setUserId(realUserId);
-        }
+        userId = configureUserId(userId);
+        recipe.setUserId(userId);
 
         Recipe updatedRecipe = recipeService.alterRecipe(recipe);
         return ResponseEntity.ok(updatedRecipe);
@@ -98,16 +91,10 @@ public class RecipeController {
     public ResponseEntity<?> getRecipeById(@PathVariable String id,
             @Parameter(description = "User ID from proxy") @RequestHeader(value = "X-User-Id", required = false) String userId) {
 
-        if (mode.equalsIgnoreCase("dev")) {
-            userId = Optional.ofNullable(userId).orElse("dev-user");
-        }
+        userId = configureUserId(userId);
 
         if (id == null || id.isEmpty()) {
             return ResponseEntity.badRequest().build();
-        }
-        if (userId == null || userId.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("The proxy should have set the user id in the Subject header");
         }
         Recipe recipe = recipeService.getRecipeById(id, userId);
         if (recipe == null) {
@@ -120,14 +107,8 @@ public class RecipeController {
     public ResponseEntity<List<Recipe>> getAllRecipesForUser(
             @RequestHeader(value = "X-User-Id", required = false) String userId) {
 
-        if (mode.equalsIgnoreCase("dev")) {
-            userId = Optional.ofNullable(userId).orElse("dev-user");
-        }
+        userId = configureUserId(userId);
 
-        if (userId == null || userId.isEmpty()) {
-            System.out.println("The proxy should have set the user email in the Subject header");
-            return ResponseEntity.internalServerError().body(new ArrayList<>());
-        }
         List<Recipe> recipes = recipeService.getRecipesByUser(userId);
         return ResponseEntity.ok(recipes);
     }
@@ -136,16 +117,10 @@ public class RecipeController {
     public ResponseEntity<String> deleteRecipe(@PathVariable String id,
             @RequestHeader(value = "X-User-Id", required = false) String userId) {
 
-        if (mode.equalsIgnoreCase("dev")) {
-            userId = Optional.ofNullable(userId).orElse("dev-user");
-        }
+        userId = configureUserId(userId);
 
         if (id == null || id.isEmpty()) {
             return ResponseEntity.badRequest().build();
-        }
-        if (userId == null || userId.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("The proxy should have set the user email in the Subject header");
         }
         Recipe recipe = recipeService.getRecipeById(id, userId);
         if (recipe == null) {
@@ -153,5 +128,17 @@ public class RecipeController {
         }
         recipeService.deleteRecipe(id, userId);
         return ResponseEntity.noContent().build();
+    }
+
+    private String configureUserId(String userId) {
+        String result = userId;
+        if (mode.equalsIgnoreCase("dev")) {
+            result = Optional.ofNullable(userId).orElse("dev-user");
+        }
+        if (result == null || result.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
+                "The proxy should have set the user id in the X-User-Id header");
+        }
+        return userId;
     }
 }
