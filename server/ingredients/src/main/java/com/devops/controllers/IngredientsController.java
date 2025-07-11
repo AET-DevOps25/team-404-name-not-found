@@ -36,10 +36,8 @@ public class IngredientsController {
     public ResponseEntity<List<Ingredient>> saveIngredients(@RequestBody List<Ingredient> ingredients,
             @RequestHeader(value = "X-User-Id", required = false) String userId) {
 
-        if (mode.equalsIgnoreCase("dev")) {
-            String realUserId = Optional.ofNullable(userId).orElse("dev-user");
-            ingredients.forEach(ingredient -> ingredient.setUserId(realUserId));
-        }
+        final String configuredUserId = configureUserId(userId);
+        ingredients.forEach(ingredient -> ingredient.setUserId(configuredUserId));
 
         List<Ingredient> savedIngredients = ingredientService.saveIngredients(ingredients);
         return ResponseEntity.status(HttpStatus.CREATED).body(savedIngredients);
@@ -49,10 +47,8 @@ public class IngredientsController {
     public ResponseEntity<Ingredient> alterIngredient(@RequestBody Ingredient ingredient,
             @RequestHeader(value = "X-User-Id", required = false) String userId) {
 
-        if (mode.equalsIgnoreCase("dev")) {
-            String realUserId = Optional.ofNullable(userId).orElse("dev-user");
-            ingredient.setUserId(realUserId);
-        }
+        userId = configureUserId(userId);
+        ingredient.setUserId(userId);
 
         Ingredient updatedIngredient = ingredientService.alterIngredient(ingredient);
         return ResponseEntity.ok(updatedIngredient);
@@ -67,9 +63,7 @@ public class IngredientsController {
     public ResponseEntity<?> getIngredientById(@PathVariable String id,
             @Parameter(description = "User ID from proxy") @RequestHeader(value = "X-User-Id", required = false) String userId) {
 
-        if (mode.equalsIgnoreCase("dev")) {
-            userId = Optional.ofNullable(userId).orElse("dev-user");
-        }
+        userId = configureUserId(userId);
 
         if (id == null || id.isEmpty()) {
             return ResponseEntity.badRequest().build();
@@ -89,9 +83,7 @@ public class IngredientsController {
     public ResponseEntity<List<Ingredient>> getAllIngredientsForUser(
             @RequestHeader(value = "X-User-Id", required = false) String userId) {
 
-        if (mode.equalsIgnoreCase("dev")) {
-            userId = Optional.ofNullable(userId).orElse("dev-user");
-        }
+        userId = configureUserId(userId);
 
         if (userId == null || userId.isEmpty()) {
             System.out.println("The proxy should have set the user email in the Subject header");
@@ -105,9 +97,7 @@ public class IngredientsController {
     public ResponseEntity<String> deleteIngredient(@PathVariable String id,
             @RequestHeader(value = "X-User-Id", required = false) String userId) {
 
-        if (mode.equalsIgnoreCase("dev")) {
-            userId = Optional.ofNullable(userId).orElse("dev-user");
-        }
+        userId = configureUserId(userId);
 
         if (id == null || id.isEmpty()) {
             return ResponseEntity.badRequest().build();
@@ -122,5 +112,16 @@ public class IngredientsController {
         }
         ingredientService.deleteIngredient(id, userId);
         return ResponseEntity.noContent().build();
+    }
+
+    private String configureUserId(String userId) {
+        String result = userId;
+        if (mode.equalsIgnoreCase("dev")) {
+            result = Optional.ofNullable(userId).orElse("dev-user");
+        }
+        if (result == null || result.isEmpty()) {
+            throw new RuntimeException("The proxy should have set the user id in the X-User-Id header");
+        }
+        return userId;
     }
 }

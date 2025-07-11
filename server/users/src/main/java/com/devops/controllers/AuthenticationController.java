@@ -58,7 +58,7 @@ public class AuthenticationController {
 
     /**
      * Forwards login requests to github
-     * 
+     *
      * @param None
      * @return A redirect to GitHub
      */
@@ -163,7 +163,7 @@ public class AuthenticationController {
 
         if (mode.equalsIgnoreCase("dev")) {
             HttpHeaders headers = new HttpHeaders();
-            headers.add("X-User-Id", "dev-user-id");
+            headers.add("X-User-Id", "dev-user");
             return new ResponseEntity<>(headers, HttpStatus.OK);
         }
 
@@ -185,7 +185,7 @@ public class AuthenticationController {
 
     /**
      * An endpoint to prevent abusing the other endpoints for token checking
-     * 
+     *
      * @param subject A Header value being set by the proxy after successful
      *                validation of the JWT
      * @return that same header value
