@@ -35,9 +35,6 @@ import org.springframework.web.client.RestTemplate;
 public class AuthenticationController {
 
     @Autowired
-    private AuthenticationManager authenticationManager;
-
-    @Autowired
     private UserRepository userRepository;
 
     @Autowired
@@ -51,6 +48,9 @@ public class AuthenticationController {
 
     @Value("${github.redirect-uri}")
     private String redirectUri;
+
+    @Value("${vars.host}")
+    private String host;
 
     /**
      * Forwards login requests to github
@@ -103,7 +103,7 @@ public class AuthenticationController {
     }
 
     @GetMapping("/callback")
-    public ResponseEntity<Map<String, String>> callback(@RequestParam String code) {
+    public ResponseEntity<Void> callback(@RequestParam String code) {
         System.out.println("GitHub reached out to the callback!");
         // 1. Exchange code for access token
         HttpHeaders headers = new HttpHeaders();
@@ -120,7 +120,8 @@ public class AuthenticationController {
                 Map.class);
 
         if (!response.getStatusCode().is2xxSuccessful()) {
-            return ResponseEntity.status(401).body(Map.of("error", "Failed to get access token from GitHub"));
+            System.out.println("Failed to get access token from GitHub");
+            return ResponseEntity.status(401).build();
         }
 
         System.out.println("Here is the response to the query for the access token: " + response.getBody());
@@ -138,12 +139,18 @@ public class AuthenticationController {
                 Map.class);
 
         if (!userResponse.getStatusCode().is2xxSuccessful()) {
-            return ResponseEntity.status(401).body(Map.of("error", "Failed to get user info from GitHub"));
+            System.out.println("Failed to get user info from GitHub");
+            return ResponseEntity.status(401).build();
         }
 
         Map userInfo = userResponse.getBody();
         String jwt = fetchUserToken(userInfo);
-        return ResponseEntity.ok(Map.of("token", jwt));
+
+        // 3. Redirect to frontend with token
+        String redirectUrl = "http://" + host + "/ui/v1/callback?token=" + jwt;
+        HttpHeaders redirectHeaders = new HttpHeaders();
+        redirectHeaders.setLocation(URI.create(redirectUrl));
+        return new ResponseEntity<>(redirectHeaders, HttpStatus.FOUND); // 302 Redirect
     }
 
     @GetMapping("/auth")

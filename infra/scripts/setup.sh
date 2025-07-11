@@ -17,7 +17,7 @@ helm install \
 echo "#################################################################################"
 
 # this assumes you are running the script from project root
-helm upgrade --install fridge ./infra/fridge --namespace team-404-name-not-found --create-namespace --atomic -f infra/fridge/values.deploy.yaml
+helm upgrade --install fridge ./infra/fridge --namespace team-404-name-not-found --create-namespace --atomic -f infra/fridge/values.local.yaml
 
 kubectl get pods -A
 echo "#################################################################################"

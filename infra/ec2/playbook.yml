@@ -1,0 +1,59 @@
+---
+- name: Basic setup
+  hosts: all
+  become: true
+  gather_facts: true
+  vars:
+    vm_user: admin
+  environment:
+    ANSIBLE_FORCE_COLOR: "true"
+  vars_files:
+    - packages.yml
+    - keys.yml
+    - token.yml
+  tasks:
+    - name: Add repositories
+      ansible.builtin.deb822_repository:
+        name: "{{ item.name }}"
+        types: [deb]
+        uris: "{{ item.uri }}"
+        signed_by: "{{ item.key }}"
+        suites: ["{{ item.suite }}"]
+        components: ["{{ item.component }}"]
+        state: present
+        enabled: true
+      loop: "{{ key_list }}"
+      loop_control:
+        label: "{{ item.name }}"
+
+    - name: Update apt cache
+      ansible.builtin.apt:
+        update_cache: true
+        force_apt_get: true
+
+    - name: Install packages
+      ansible.builtin.apt:
+        name: "{{ packages }}"
+        state: present
+        update_cache: true
+        force_apt_get: true
+
+    - name: Login to CR
+      community.docker.docker_login:
+        registry: "ghcr.io"
+        username: "{{ cr_username }}"
+        password: "{{ token }}"
+        state: present
+
+    - name: Gimme repo
+      ansible.builtin.git:
+        repo: https://github.com/AET-DevOps25/team-404-name-not-found.git
+        dest: /home/{{ vm_user }}/repo
+        version: deploy-aet-cluster
+
+    - name: Run app
+      environment:
+        BRANCH: deploy-aet-cluster
+      ansible.builtin.command:
+        cmd: docker compose -f /home/{{ vm_user }}/repo/compose.yml up
+      changed_when: false
