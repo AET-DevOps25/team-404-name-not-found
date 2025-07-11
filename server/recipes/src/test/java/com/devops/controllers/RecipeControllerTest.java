@@ -41,6 +41,7 @@ class RecipeControllerTest {
         return List.of(new Recipe(
             UUID.randomUUID().toString(),
             "Test Recipe",
+            "This is a test recipe description.",
             Difficulty.MEDIUM,
             30,
             List.of("Step 1", "Step 2"),

@@ -6,6 +6,7 @@ import com.devops.services.RecipeService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -35,7 +36,7 @@ public class RecipeController {
     }
 
     @Operation(summary = "Generate a recipe using AI from a list of ingredients. The result will try its best to match your given ingredient list", requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(content = @Content(mediaType = "application/json")), responses = {
-            @ApiResponse(responseCode = "200", description = "Generated Recipe", content = @Content(schema = @Schema(implementation = Recipe.class)))
+            @ApiResponse(responseCode = "200", description = "Generated Recipes", content = @Content(array = @ArraySchema(schema = @Schema(implementation = Recipe.class))))
     })
     @PostMapping("/ai/match/{numRecipes}")
     public ResponseEntity<List<Recipe>> generateRecipe(@RequestBody List<Ingredient> ingredients,
@@ -48,7 +49,7 @@ public class RecipeController {
     }
 
     @Operation(summary = "Generate a recipe using AI from a list of ingredients. The AI can experiment with your given ingredient list, leading to potential recipes you can't cook right away", requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(content = @Content(mediaType = "application/json")), responses = {
-            @ApiResponse(responseCode = "200", description = "Generated Recipe", content = @Content(schema = @Schema(implementation = Recipe.class)))
+        @ApiResponse(responseCode = "200", description = "Generated Recipes", content = @Content(array = @ArraySchema(schema = @Schema(implementation = Recipe.class))))
     })
     @PostMapping("/ai/explore/{numRecipes}")
     public ResponseEntity<List<Recipe>> exploreRecipe(@RequestBody List<Ingredient> ingredients,
