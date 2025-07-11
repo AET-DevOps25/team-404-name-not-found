@@ -36,6 +36,14 @@ recipesProbe:
   periodSeconds: 10
   failureThreshold: 30
 
+genaiProbe:
+  httpGet:
+    path: /api/genai/v1/health
+    port: 8000
+  initialDelaySeconds: 15
+  periodSeconds: 10
+  failureThreshold: 30
+
 host: fridge.example
 
 grafanaUser: admin
