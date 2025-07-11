@@ -38,18 +38,16 @@ export interface paths {
         trace?: never;
     };
 }
-
 export type webhooks = Record<string, never>;
-
 export interface components {
     schemas: {
         Ingredient: {
             id?: string;
-            name?: string;
+            name: string;
             /** Format: int32 */
-            amount?: number;
+            amount: number;
             /** @enum {string} */
-            unit?: "pcs" | "ml" | "g";
+            unit: "pcs" | "ml" | "g";
             userId?: string;
         };
     };
@@ -59,9 +57,7 @@ export interface components {
     headers: never;
     pathItems: never;
 }
-
 export type $defs = Record<string, never>;
-
 export interface operations {
     getAllIngredientsForUser: {
         parameters: {

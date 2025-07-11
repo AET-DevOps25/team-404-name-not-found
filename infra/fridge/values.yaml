@@ -3,7 +3,7 @@
 # Declare variables to be passed into your templates.
 
 namespace: team-404-name-not-found
-currentBranch: fix-userid-not-set
+currentBranch: ingredients-handling
 
 # default login vars for postgres
 postgresUser: postgres

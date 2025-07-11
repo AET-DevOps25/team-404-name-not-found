@@ -20,7 +20,6 @@ const authTokenMiddleware: Middleware = {
 const unauthorizedResponseRedirectMiddleware: Middleware = {
     async onResponse({ response }) {
         if (response.status === 401 || response.status === 403) {
-            // Handle unauthorized access, e.g., redirect to login
             console.warn("Unauthorized access - token may be invalid or expired. Redirecting to login.");
             window.location.replace("/");
         }

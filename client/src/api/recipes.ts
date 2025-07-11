@@ -76,22 +76,22 @@ export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
         Ingredient: {
-            name?: string;
+            name: string;
             /** Format: int32 */
-            amount?: number;
+            amount: number;
             /** @enum {string} */
-            unit?: "pcs" | "ml" | "g";
+            unit: "pcs" | "ml" | "g";
         };
         Recipe: {
             id?: string;
-            title?: string;
+            title: string;
             /** @enum {string} */
-            difficulty?: "easy" | "medium" | "advanced";
+            difficulty: "easy" | "medium" | "advanced";
             /** Format: int32 */
-            cookingTime?: number;
-            instructions?: string[];
-            ingredients?: components["schemas"]["Ingredient"][];
-            neededIngredients?: components["schemas"]["Ingredient"][];
+            cookingTime: number;
+            instructions: string[];
+            ingredients: components["schemas"]["Ingredient"][];
+            neededIngredients: components["schemas"]["Ingredient"][];
             userId?: string;
         };
     };
