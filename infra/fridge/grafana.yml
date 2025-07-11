@@ -30,6 +30,7 @@ dashboardProviders:
 dashboardsConfigMaps:
   jvm-grafana-dashboard: "jvm-grafana-dashboard"
   spring-boot-grafana-dashboard: "spring-boot-grafana-dashboard"
+  genai-grafana-dashboard: "genai-grafana-dashboard"
 
 extraConfigmapMounts:
   - name: jvm-dashboards
@@ -40,6 +41,11 @@ extraConfigmapMounts:
   - name: spring-boot-dashboards
     configMap: spring-boot-grafana-dashboard
     mountPath: /var/lib/grafana/dashboards/default/springboot
+    subPath: ""
+    readOnly: true
+  - name: genai-boot-dashboards
+    configMap: genai-boot-grafana-dashboard
+    mountPath: /var/lib/grafana/dashboards/default/genai
     subPath: ""
     readOnly: true
 

@@ -52,6 +52,9 @@ spec:
             - name: springboot-dashboards
               mountPath: /var/lib/grafana/dashboards/default/springboot
               readOnly: true
+            - name: genai-dashboards
+              mountPath: /var/lib/grafana/dashboards/default/genai
+              readOnly: true
           securityContext:
             allowPrivilegeEscalation: false
             capabilities:
@@ -81,3 +84,6 @@ spec:
         - name: springboot-dashboards
           configMap:
             name: spring-boot-grafana-dashboard
+        - name: genai-dashboards
+          configMap:
+            name: genai-grafana-dashboard
