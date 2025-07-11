@@ -119,6 +119,10 @@ services:
   ui:
     image: ealen/echo-server:0.9.2
     container_name: ui
+    ports:
+      - 7070:80
+    networks:
+      - web
 
   genai:
     container_name: genai
@@ -130,7 +134,6 @@ services:
       retries: 5
       start_period: 10s
     ports:
-      - 7070:80
       - "8000:8000"
     env_file:
       - genai/.env
