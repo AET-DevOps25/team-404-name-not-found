@@ -7,6 +7,7 @@ from langchain_openai import ChatOpenAI
 from app.models.ingredients import Ingredients
 from app.models.recipe import Recipe
 from app.models.recipes import Recipes
+from app.utils.prometheus_token_callback import PrometheusTokenCallback
 
 logger = logging.getLogger(__name__)
 
@@ -14,7 +15,9 @@ logger = logging.getLogger(__name__)
 class RecipeService:
 
     def __init__(self):
-        self.llm = ChatOpenAI(model="gemma3:27b", temperature=0.1)
+        self.llm = ChatOpenAI(
+            model="gemma3:27b", temperature=0.1, callbacks=[PrometheusTokenCallback()]
+        )
         self.llm = self.llm.with_structured_output(Recipe, strict=True)
 
     async def get_recipes_matching(self, num_recipes: int, ingredients: Ingredients):
