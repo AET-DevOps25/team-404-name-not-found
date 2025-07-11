@@ -15,6 +15,8 @@ services:
         condition: service_healthy
       recipes:
         condition: service_healthy
+      genai:
+        condition: service_healthy
     networks:
       - web
 
