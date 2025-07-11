@@ -122,7 +122,7 @@ services:
 
   genai:
     container_name: genai
-    image: ghcr.io/aet-devops25/team-404-name-not-found/genai:latest
+    image: ghcr.io/aet-devops25/team-404-name-not-found/genai:${BRANCH:-main}
     healthcheck:
       test: [ "CMD", "wget", "-q", "--spider", "http://localhost:8000/api/genai/v1/health" ]
       interval: 10s
