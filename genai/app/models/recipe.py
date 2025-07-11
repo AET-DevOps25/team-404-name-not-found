@@ -12,7 +12,7 @@ class Difficulty(Enum):
 
 class Recipe(BaseModel):
     title: str = Field(description="Title of recipe")
-    description: str = Field(description="Description of recipe")
+    description: str = Field(description="Description of recipe", max_length=200)
     difficulty: Difficulty = Field(description="Difficulty of recipe")
     cook_time: int = Field(description="Time needed for recipe")
     ingredients: list[Ingredient] = Field(
