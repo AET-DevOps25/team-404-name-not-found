@@ -3,7 +3,7 @@
 # Declare variables to be passed into your templates.
 
 namespace: team-404-name-not-found
-currentBranch: main
+currentBranch: 8-initial-genai-mocked
 
 # default login vars for postgres
 postgresUser: postgres
