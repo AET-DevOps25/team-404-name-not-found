@@ -403,4 +403,3 @@ hosts.ini
 !genai.json
 infra/fridge/genai_api_base
 infra/fridge/genai_api_key
-
