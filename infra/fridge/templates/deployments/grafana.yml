@@ -57,6 +57,8 @@ spec:
               readOnly: true
             - name: grafana-alerts
               mountPath: /etc/grafana/provisioning
+            - name: genai-dashboards
+              mountPath: /var/lib/grafana/dashboards/default/genai
               readOnly: true
           securityContext:
             allowPrivilegeEscalation: false
@@ -93,3 +95,6 @@ spec:
         - name: grafana-alerts
           configMap:
             name: grafana-alerts
+        - name: genai-dashboards
+          configMap:
+            name: genai-grafana-dashboard

@@ -27,3 +27,10 @@ scrape_configs:
     static_configs:
       - targets:
           - "ingredients:8080"
+  - job_name: genai
+    metrics_path: "/api/genai/v1/metrics"
+    scheme: http
+    follow_redirects: true
+    static_configs:
+      - targets:
+          - "genai:8000"

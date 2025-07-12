@@ -1,17 +1,20 @@
 import base64
 import logging
 
-from dotenv import load_dotenv
 from langchain_openai import ChatOpenAI
 
 from app.models.ingredients import Ingredients
+from app.utils.prometheus_token_callback import PrometheusTokenCallback
 
 logger = logging.getLogger(__name__)
 
 
 class ImageService:
+
     def __init__(self):
-        self.llm = ChatOpenAI(model="gemma3:27b", temperature=0.1)
+        self.llm = ChatOpenAI(
+            model="gemma3:27b", temperature=0.1, callbacks=[PrometheusTokenCallback()]
+        )
         self.llm = self.llm.with_structured_output(Ingredients, strict=True)
 
     async def analyze_fridge(self, image_base64: str) -> Ingredients:

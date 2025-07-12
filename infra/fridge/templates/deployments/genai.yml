@@ -1,4 +1,4 @@
-# k8s/base/genai/deployment.yaml
+# k8s/base/users/deployment.yaml
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -25,16 +25,16 @@ spec:
           ports:
             - containerPort: 8000
           env:
-            - name: OPENAI_API_KEY
-              valueFrom:
-                secretKeyRef:
-                  name: genai-openai-creds
-                  key: openaiApiKey
             - name: OPENAI_API_BASE
               valueFrom:
                 secretKeyRef:
-                  name: genai-openai-creds
-                  key: openaiApiBase
+                  name: genai-env-variables
+                  key: OPENAI_API_BASE
+            - name: OPENAI_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: genai-env-variables
+                  key: OPENAI_API_KEY
           startupProbe:
 {{ toYaml .Values.genaiProbe | indent 12 }}
           livenessProbe:

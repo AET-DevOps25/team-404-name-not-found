@@ -399,3 +399,7 @@ hosts.ini
 *.png
 *.jpg
 *.jpeg
+
+!genai.json
+infra/fridge/genai_api_base
+infra/fridge/genai_api_key
