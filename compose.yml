@@ -111,8 +111,11 @@ services:
   genai:
     container_name: genai
     image: ghcr.io/aet-devops25/team-404-name-not-found/genai:${BRANCH:-main}
+    build:
+      context: genai
+      dockerfile: Dockerfile
     healthcheck:
-      test: [ "CMD", "curl", "-s", "-o", "/dev/null", "http://localhost:8000/api/genai/v1/health" ]
+      test: ["CMD", "curl", "-s", "-o", "/dev/null", "http://localhost:8000/api/genai/v1/health"]
       interval: 10s
       timeout: 15s
       retries: 5
