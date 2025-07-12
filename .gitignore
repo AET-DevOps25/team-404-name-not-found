@@ -394,6 +394,7 @@ hosts.ini
 !spring_boot.json
 !openapi.json
 */charts
+fridge.localhost.crt
 
 # do not push pictures to git!
 *.png
@@ -403,3 +404,4 @@ hosts.ini
 !genai.json
 infra/fridge/genai_api_base
 infra/fridge/genai_api_key
+
