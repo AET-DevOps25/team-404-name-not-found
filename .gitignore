@@ -389,9 +389,17 @@ token.yml
 hosts.ini
 *.ansible
 *.json
+!api-specification/*.json
 !jvm.json
 !spring_boot.json
-!genai.json
+!openapi.json
 */charts
+
+# do not push pictures to git!
+*.png
+*.jpg
+*.jpeg
+
+!genai.json
 infra/fridge/genai_api_base
 infra/fridge/genai_api_key

@@ -11,6 +11,8 @@ spec:
       app: genai
   template:
     metadata:
+      annotations:
+        image-deployment: {{ now | date "Mon, 02/01/06, 03:04PM" }}
       labels:
         app: genai
     spec:

@@ -52,4 +52,5 @@ management:
       enabled: true
 
 vars:
+  mode: ${MODE:prod}
   host: ${HOST:fridge.example}

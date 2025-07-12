@@ -11,6 +11,7 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -49,12 +50,15 @@ public class AuthenticationController {
     @Value("${github.redirect-uri}")
     private String redirectUri;
 
+    @Value("${vars.mode}")
+    private String mode;
+
     @Value("${vars.host}")
     private String host;
 
     /**
      * Forwards login requests to github
-     * 
+     *
      * @param None
      * @return A redirect to GitHub
      */
@@ -156,6 +160,13 @@ public class AuthenticationController {
     @GetMapping("/auth")
     public ResponseEntity<Object> validateToken(
             @RequestHeader(value = "Authorization", required = false) String authHeader) {
+
+        if (mode.equalsIgnoreCase("dev")) {
+            HttpHeaders headers = new HttpHeaders();
+            headers.add("X-User-Id", "dev-user");
+            return new ResponseEntity<>(headers, HttpStatus.OK);
+        }
+
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             return ResponseEntity.status(401).body("Missing or invalid Authorization header");
         }
@@ -174,13 +185,21 @@ public class AuthenticationController {
 
     /**
      * An endpoint to prevent abusing the other endpoints for token checking
-     * 
+     *
      * @param subject A Header value being set by the proxy after successful
      *                validation of the JWT
      * @return that same header value
      */
     @GetMapping("/whoami")
-    public ResponseEntity<UserId> whoAmI(@RequestHeader("X-User-Id") String subject) {
-        return ResponseEntity.ok(new UserId(subject));
+    public ResponseEntity<UserId> whoAmI(@RequestHeader(value = "X-User-Id", required = false) String subject) {
+
+        UserId id = new UserId(subject);
+
+        if (mode.equalsIgnoreCase("dev")) {
+            String realSubject = Optional.ofNullable(subject).orElse("dev-user");
+            id = new UserId(realSubject);
+        }
+
+        return ResponseEntity.ok(id);
     }
 }

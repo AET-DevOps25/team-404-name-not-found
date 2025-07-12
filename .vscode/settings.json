@@ -1,5 +1,6 @@
 {
     "java.compile.nullAnalysis.mode": "disabled",
     "java.configuration.updateBuildConfiguration": "automatic",
-    "ansible.python.interpreterPath": "/bin/python"
+    "ansible.python.interpreterPath": "/bin/python",
+    "java.dependency.syncWithFolderExplorer": true
 }

@@ -8,12 +8,19 @@ services:
       - "80:80"
     volumes:
       - ./infra/nginx/default.conf:/etc/nginx/conf.d/default.conf
+      - ./infra/nginx/cors.conf:/etc/nginx/cors.conf
       - ./infra/nginx/fridge.localhost.crt:/etc/nginx/certs/fridge.localhost.crt
       - ./infra/nginx/fridge.localhost.key:/etc/nginx/certs/fridge.localhost.key
     depends_on:
       users:
         condition: service_healthy
       recipes:
+        condition: service_healthy
+      ingredients:
+        condition: service_healthy
+      images:
+        condition: service_healthy
+      genai:
         condition: service_healthy
     networks:
       - web
@@ -31,6 +38,8 @@ services:
   grafana:
     image: grafana/grafana@sha256:fe89b739a264c78f2111d68221a1d51db67135ec50885dc93b59a981a7a5d4d5
     container_name: grafana
+    depends_on:
+      - prometheus
     ports:
       - "3000:3000"
     environment:
@@ -39,11 +48,15 @@ services:
       GF_SERVER_DOMAIN: fridge.localhost
       GF_SERVER_ROOT_URL: "https://fridge.localhost/grafana"
       GF_SERVER_SERVE_FROM_SUB_PATH: "true"
+      GF_LOG_LEVEL: warn
+      GF_FEATURE_TOGGLES_ENABLE: ngalert
     volumes:
       - ./infra/fridge/datasources.yml:/etc/grafana/provisioning/datasources/datasources.yaml
       - ./infra/fridge/dashboardproviders.yml:/etc/grafana/provisioning/dashboards/dashboardproviders.yaml
       - ./infra/fridge/jvm.json:/var/lib/grafana/dashboards/default/jvm/jvm.json
       - ./infra/fridge/spring_boot.json:/var/lib/grafana/dashboards/default/springboot/spring_boot.json
+      - ./infra/fridge/alerting.yml:/etc/grafana/provisioning/alerting.yaml
+      - ./infra/fridge/custom_alerts.yml:/etc/grafana/provisioning/alerting/custom_alerts.yaml
     networks:
       - web
 
@@ -88,25 +101,10 @@ services:
       HOST: fridge.localhost
       CLIENT_ID:  Ov23liW7lTaWxDdnscNp
       CLIENT_SECRET: 12072402f08ae298d376b1b28e20823c582d8d93
+      MODE: ${MODE:-dev}
     volumes:
       - ./infra/fridge/public.pem:/etc/keys/public.pem
       - ./infra/fridge/private.pem:/etc/keys/private.pem
-    networks:
-      - web
-
-  genai:
-    container_name: genai
-    image: ghcr.io/aet-devops25/team-404-name-not-found/genai:${BRANCH:-main}
-    healthcheck:
-      test: [ "CMD", "curl", "-s", "-o", "/dev/null", "http://localhost:8000/api/genai/v1/health" ]
-      interval: 10s
-      timeout: 15s
-      retries: 5
-      start_period: 10s
-    ports:
-      - "8000:8000"
-    env_file:
-      - genai/.env
     networks:
       - web
 
@@ -131,14 +129,90 @@ services:
         condition: service_healthy
     environment:
       DB_HOST: db
+      MODE: ${MODE:-dev}
+      AI_HOST: genai:8000
     networks:
       - web
 
-  ui:
-    image: ealen/echo-server:0.9.2
-    container_name: ui
+  ingredients:
+    container_name: ingredients
+    image: ghcr.io/aet-devops25/team-404-name-not-found/ingredients:${BRANCH:-main}
+    build:
+      context: server
+      dockerfile: ingredients/Dockerfile
+    healthcheck:
+      test: ["CMD", "wget", "-q", "--spider", "http://localhost:8080/api/ingredients/v1/actuator/health"]
+      interval: 10s
+      timeout: 15s
+      retries: 5
+      start_period: 10s
     ports:
-      - 7070:80
+      - "8084:8080"
+    depends_on:
+      users:
+        condition: service_healthy
+    environment:
+      DB_HOST: db
+      MODE: ${MODE:-dev}
+    networks:
+      - web
+
+  images:
+    container_name: images
+    image: ghcr.io/aet-devops25/team-404-name-not-found/images:${BRANCH:-main}
+    build:
+      context: server
+      dockerfile: images/Dockerfile
+    healthcheck:
+      test: ["CMD", "wget", "-q", "--spider", "http://localhost:8080/api/images/v1/actuator/health"]
+      interval: 10s
+      timeout: 15s
+      retries: 5
+      start_period: 10s
+    ports:
+      - "8083:8080"
+    depends_on:
+      recipes:
+        condition: service_healthy
+      genai:
+        condition: service_healthy
+    environment:
+      DB_HOST: db
+      MODE: ${MODE:-dev}
+    networks:
+      - web
+
+  genai:
+    container_name: genai
+    image: ghcr.io/aet-devops25/team-404-name-not-found/genai:${BRANCH:-main}
+    build:
+      context: genai
+      dockerfile: Dockerfile
+    healthcheck:
+      # wget performs a HEAD request before, which fastapi seems not to like
+      test: ["CMD", "curl", "-s", "-o", "/dev/null", "http://localhost:8000/api/genai/v1/health"]
+      interval: 10s
+      timeout: 15s
+      retries: 5
+      start_period: 10s
+    ports:
+      - "8000:8000"
+    env_file:
+      - genai/.env
+    networks:
+      - web
+
+  client:
+    container_name: client
+    image: ghcr.io/aet-devops25/team-404-name-not-found/client:${BRANCH:-main}
+    build:
+      context: client
+      dockerfile: Dockerfile
+    ports:
+      - "8085:80"
+    environment:
+      VITE_MODE: ${MODE:-dev}
+      VITE_API_BASE_URL: /api
     networks:
       - web
 

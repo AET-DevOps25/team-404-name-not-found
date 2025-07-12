@@ -1,6 +1,7 @@
 package com.devops.entities;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -21,23 +22,50 @@ public class Recipe {
     private String id;
 
     @Column(nullable = false)
+    @NotNull
     private String title;
 
     @Column(nullable = false)
+    @NotNull
+    private String description;
+
+    @Column(nullable = false)
     @Enumerated(EnumType.STRING)
+    @NotNull
     private Difficulty difficulty;
 
     @Column(nullable = false)
+    @NotNull
     private int cookingTime;
 
     @ElementCollection
     @Column(nullable = false, columnDefinition = "TEXT")
-    private List<String> instructions;
+    @NotNull
+    private List<@NotNull String> instructions;
 
     @ElementCollection
-    @Column(nullable = false)
-    private List<String> ingredients;
+    @CollectionTable(name = "recipe_ingredients", joinColumns = @JoinColumn(name = "recipe_id"))
+    @NotNull
+    private List<@NotNull Ingredient> ingredients;
 
-    @Column(nullable = false)
+    @ElementCollection
+    @CollectionTable(name = "recipe_needed_ingredients", joinColumns = @JoinColumn(name = "recipe_id"))
+    @NotNull
+    private List<@NotNull Ingredient> neededIngredients;
+
+    @Column(nullable = true)
     private String userId;
+
+    public static Recipe fromAiRecipeDTO(AiRecipeDTO recipeDTO, String userId) {
+        Recipe recipe = new Recipe();
+        recipe.setTitle(recipeDTO.getTitle());
+        recipe.setDescription(recipeDTO.getDescription());
+        recipe.setInstructions(recipeDTO.getSteps());
+        recipe.setIngredients(recipeDTO.getIngredients());
+        recipe.setNeededIngredients(recipeDTO.getNeededIngredients());
+        recipe.setDifficulty(recipeDTO.getDifficulty());
+        recipe.setCookingTime(recipeDTO.getCookingTime());
+        recipe.setUserId(userId);
+        return recipe;
+    }
 }

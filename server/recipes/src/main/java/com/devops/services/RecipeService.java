@@ -1,7 +1,10 @@
 package com.devops.services;
 
-import com.devops.entities.Difficulty;
+import com.devops.entities.AiRecipeRequest;
+import com.devops.entities.Ingredient;
 import com.devops.entities.Recipe;
+import com.devops.entities.AiRecipeDTO;
+import com.devops.entities.RecipeResponseDTO;
 import com.devops.repositories.RecipeRepository;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -9,6 +12,7 @@ import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -22,30 +26,43 @@ public class RecipeService {
         this.restTemplate = new RestTemplate();
     }
 
-    @Value("${vars.HOST}")
-    public String host;
+    @Value("${vars.ai-host}")
+    public String aiHost;
 
-    public Recipe generateRecipe(List<String> ingredients, String userId) {
+    public List<Recipe> generateRecipe(List<Ingredient> ingredients, int numRecipes, String userId) {
+        return fetchRecipe(ingredients, numRecipes, userId, "/matching/");
+    }
+
+    public List<Recipe> exploreRecipe(List<Ingredient> ingredients, int numRecipes, String userId) {
+        return fetchRecipe(ingredients, numRecipes, userId, "/exploratory/");
+    }
+
+    private List<Recipe> fetchRecipe(List<Ingredient> ingredients, int numRecipes, String userId,
+            String aiEndpoint) {
+
         try {
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
 
-            HttpEntity<List<String>> request = new HttpEntity<>(ingredients, headers);
-            ResponseEntity<Recipe> response = restTemplate.postForEntity(
-                    "http://" + host + "/api/genai/recipe", request, Recipe.class);
+            AiRecipeRequest aiRecipeRequest = new AiRecipeRequest(ingredients);
+            HttpEntity<AiRecipeRequest> request = new HttpEntity<>(aiRecipeRequest, headers);
+            ResponseEntity<RecipeResponseDTO> response = restTemplate.postForEntity(
+                    "http://" + aiHost + "/api/genai/v1/recipe" + aiEndpoint + String.valueOf(numRecipes), request,
+                    RecipeResponseDTO.class);
 
-            return recipeRepository.save(response.getBody());
+            List<Recipe> recipes = new ArrayList<>();
+            for (AiRecipeDTO recipeDTO : response.getBody().getRecipes()) {
+                Recipe toSave = Recipe.fromAiRecipeDTO(recipeDTO, userId);
+                recipeRepository.save(toSave);
+                recipes.add(toSave);
+            }
+            return recipes;
         } catch (Exception e) {
+            System.out.println("Something went horribly wrong! " + e);
             // Fallback
-            Recipe fallback = new Recipe();
-            fallback.setTitle("Fallback Recipe");
-            fallback.setInstructions(List.of("Mix all ingredients", "Cook for 20 minutes"));
-            fallback.setIngredients(ingredients);
-            fallback.setDifficulty(Difficulty.EASY);
-            fallback.setCookingTime(30);
-            fallback.setUserId(userId);
-            return fallback;
+            return new ArrayList<Recipe>();
         }
+
     }
 
     public List<Recipe> getRecipesByUser(String userId) {

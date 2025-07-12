@@ -24,6 +24,8 @@ jobs:
       uses: medyagh/setup-minikube@latest
       with:
         addons: ingress,default-storageclass,storage-provisioner
+        cpus: max
+        memory: max
 
     - name: Set up jwt keys
       run: |

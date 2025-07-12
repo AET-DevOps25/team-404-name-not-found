@@ -3,7 +3,7 @@
 # Declare variables to be passed into your templates.
 
 namespace: team-404-name-not-found
-currentBranch: 8-initial-genai-mocked
+currentBranch: integrate-image-service
 
 # default login vars for postgres
 postgresUser: postgres
@@ -14,7 +14,7 @@ replicaCount: 1
 
 resources:
   requests:
-    cpu: 1
+    cpu: 500m
     memory: 100Mi
   limits:
     cpu: 2
@@ -48,3 +48,6 @@ host: fridge.example
 
 grafanaUser: admin
 grafanaPass: admin
+
+openaiApiKey: sk-5e897d1335dc4ef490b08838acb668dc
+openaiApiBase: https://gpu.aet.cit.tum.de/api
