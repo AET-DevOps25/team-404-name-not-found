@@ -394,7 +394,6 @@ hosts.ini
 !spring_boot.json
 !openapi.json
 */charts
-fridge.localhost.crt
 
 # do not push pictures to git!
 *.png
