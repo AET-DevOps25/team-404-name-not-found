@@ -6,5 +6,5 @@ metadata:
   labels:
     grafana_dashboard: "1"
 data:
-  jvm.json: |
+  genai.json: |
 {{ .Files.Get "genai.json" | indent 4 }}

@@ -1,6 +1,6 @@
 name: Integration tests with minikube
 
-on:   
+on:
   workflow_call:
     secrets:
       KUBECONF:
@@ -31,6 +31,11 @@ jobs:
       run: |
         echo -e "${{ secrets.JWT_PRIV }}" | base64 -d > ${{ github.workspace }}/infra/fridge/private.pem
         echo -e "${{ secrets.JWT_PUB }}" | base64 -d > ${{ github.workspace }}/infra/fridge/public.pem
+
+    - name: Set up genai env variables
+      run: |
+        echo -e "${{ secrets.OPENAI_API_BASE }}" > ${{ github.workspace }}/infra/fridge/genai_api_base
+        echo -e "${{ secrets.OPENAI_API_KEY }}" > ${{ github.workspace }}/infra/fridge/genai_api_key
 
     - name: Set up docker daemon config
       run: |
