@@ -26,6 +26,10 @@ public class Recipe {
     private String title;
 
     @Column(nullable = false)
+    @NotNull
+    private String description;
+
+    @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     @NotNull
     private Difficulty difficulty;
@@ -55,6 +59,7 @@ public class Recipe {
     public static Recipe fromAiRecipeDTO(AiRecipeDTO recipeDTO, String userId) {
         Recipe recipe = new Recipe();
         recipe.setTitle(recipeDTO.getTitle());
+        recipe.setDescription(recipeDTO.getDescription());
         recipe.setInstructions(recipeDTO.getSteps());
         recipe.setIngredients(recipeDTO.getIngredients());
         recipe.setNeededIngredients(recipeDTO.getNeededIngredients());

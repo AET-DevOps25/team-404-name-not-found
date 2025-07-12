@@ -164,11 +164,14 @@
         },
         "responses": {
           "200": {
-            "description": "Generated Recipe",
+            "description": "Generated Recipes",
             "content": {
               "*/*": {
                 "schema": {
-                  "$ref": "#/components/schemas/Recipe"
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Recipe"
+                  }
                 }
               }
             }
@@ -218,11 +221,14 @@
         },
         "responses": {
           "200": {
-            "description": "Generated Recipe",
+            "description": "Generated Recipes",
             "content": {
               "*/*": {
                 "schema": {
-                  "$ref": "#/components/schemas/Recipe"
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Recipe"
+                  }
                 }
               }
             }
@@ -363,6 +369,9 @@
           "title": {
             "type": "string"
           },
+          "description": {
+            "type": "string"
+          },
           "difficulty": {
             "type": "string",
             "enum": [
@@ -399,6 +408,7 @@
         },
         "required": [
           "cookingTime",
+          "description",
           "difficulty",
           "ingredients",
           "instructions",
