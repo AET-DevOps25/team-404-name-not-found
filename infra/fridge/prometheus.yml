@@ -13,6 +13,20 @@ scrape_configs:
     static_configs:
       - targets:
           - "recipes:8080"
+  - job_name: images
+    metrics_path: "/api/images/v1/actuator/prometheus"
+    scheme: http
+    follow_redirects: true
+    static_configs:
+      - targets:
+          - "images:8080"
+  - job_name: ingredients
+    metrics_path: "/api/ingredients/v1/actuator/prometheus"
+    scheme: http
+    follow_redirects: true
+    static_configs:
+      - targets:
+          - "ingredients:8080"
   - job_name: genai
     metrics_path: "/api/genai/v1/metrics"
     scheme: http

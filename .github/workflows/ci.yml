@@ -23,6 +23,7 @@ jobs:
     name: typescript
     uses: ./.github/workflows/typescript.yml
   docker:
+    permissions: write-all
     needs:
       - dockerfile_linting
       - java

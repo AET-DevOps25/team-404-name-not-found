@@ -39,7 +39,7 @@ jobs:
 
       - name: Execute tests in the running services
         run: |
-          for service in users recipes; do
+          for service in users recipes images; do
             status=$(docker inspect --format='{{ .State.Health.Status }}' "$service")
             if [ "$status" != "healthy" ]; then
               echo "❌ $service is not healthy (status: $status)"

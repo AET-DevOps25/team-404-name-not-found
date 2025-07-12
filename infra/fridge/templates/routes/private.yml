@@ -16,6 +16,9 @@ metadata:
     # nginx
     nginx.ingress.kubernetes.io/auth-url: "http://users.{{ .Values.namespace }}.svc.cluster.local:8080/api/users/auth"
     nginx.ingress.kubernetes.io/auth-response-headers: "X-User-Id"
+    nginx.ingress.kubernetes.io/proxy-connect-timeout: "90"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "90"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "90"
 spec:
   ingressClassName: nginx
   tls:
@@ -38,5 +41,19 @@ spec:
             backend:
               service:
                 name: recipes
+                port:
+                  number: 8080
+          - path: /api/images/v1
+            pathType: Prefix
+            backend:
+              service:
+                name: images
+                port:
+                  number: 8080
+          - path: /api/ingredients/v1
+            pathType: Prefix
+            backend:
+              service:
+                name: ingredients
                 port:
                   number: 8080

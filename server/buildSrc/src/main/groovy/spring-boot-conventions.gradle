@@ -38,6 +38,7 @@ dependencies {
 	implementation 'io.swagger.core.v3:swagger-annotations:2.2.31'
 	implementation 'org.springframework.boot:spring-boot-starter-actuator'
 	implementation 'io.micrometer:micrometer-registry-prometheus'
+	implementation 'jakarta.validation:jakarta.validation-api:3.0.2'
 }
 
 tasks.named('test') {

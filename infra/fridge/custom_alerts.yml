@@ -1,0 +1,88 @@
+apiVersion: 1
+
+groups:
+  - name: app-alerts
+    folder: "Application Alerts"
+    interval: 1m
+    rules:
+      - uid: jvm_heap_high
+        title: JVM Heap Usage > 500MB
+        condition: C
+        data:
+          - refId: A
+            relativeTimeRange:
+              from: 60
+              to: 0
+            datasourceUid: prometheus
+            model:
+              expr: sum(jvm_memory_used_bytes{area="heap"})
+              interval: ""
+              datasource:
+                type: prometheus
+                uid: prometheus
+              format: time_series
+              instant: true
+              refId: A
+
+          - refId: C
+            relativeTimeRange:
+              from: 60
+              to: 0
+            datasourceUid: prometheus
+            model:
+              expr: sum(jvm_memory_used_bytes{area="heap"}) > 500 * 1024 * 1024
+              interval: ""
+              datasource:
+                type: prometheus
+                uid: prometheus
+              format: time_series
+              instant: true
+              refId: C
+
+        noDataState: NoData
+        execErrorState: Error
+        for: 2m
+        annotations:
+          summary: "High JVM heap usage"
+          description: "Heap usage is above 500MB"
+
+      - uid: high_request_duration
+        title: Request Duration > 60s (P99)
+        condition: C
+        data:
+          - refId: A
+            relativeTimeRange:
+              from: 60
+              to: 0
+            datasourceUid: prometheus
+            model:
+              expr: histogram_quantile(0.99, sum(rate(http_server_requests_seconds_bucket[5m])) by (le, uri))
+              interval: ""
+              datasource:
+                type: prometheus
+                uid: prometheus
+              format: time_series
+              instant: true
+              refId: A
+
+          - refId: C
+            relativeTimeRange:
+              from: 60
+              to: 0
+            datasourceUid: prometheus
+            model:
+              expr: histogram_quantile(0.99, sum(rate(http_server_requests_seconds_bucket[5m])) by (le, uri)) > 60
+              interval: ""
+              datasource:
+                type: prometheus
+                uid: prometheus
+              format: time_series
+              instant: true
+              refId: C
+
+        noDataState: NoData
+        execErrorState: Error
+        for: 1m
+        annotations:
+          summary: "Slow request duration"
+          description: "99th percentile request duration > 60s"

@@ -1,21 +1,26 @@
 package com.devops.controllers;
 
+import com.devops.entities.Ingredient;
 import com.devops.entities.Recipe;
 import com.devops.services.RecipeService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping
@@ -23,28 +28,57 @@ public class RecipeController {
 
     private final RecipeService recipeService;
 
+    @Value("${vars.mode}")
+    private String mode;
+
     public RecipeController(RecipeService recipeService) {
         this.recipeService = recipeService;
     }
 
-    @Operation(summary = "Generate a recipe using AI from a list of ingredients", requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(content = @Content(mediaType = "application/json", examples = @ExampleObject(name = "Ingredients list", value = "[\"tomato\", \"cheese\", \"basil\"]"))), responses = {
-            @ApiResponse(responseCode = "200", description = "Generated Recipe", content = @Content(schema = @Schema(implementation = Recipe.class)))
+    @Operation(summary = "Generate a recipe using AI from a list of ingredients. The result will try its best to match your given ingredient list", requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(content = @Content(mediaType = "application/json")), responses = {
+            @ApiResponse(responseCode = "200", description = "Generated Recipes", content = @Content(array = @ArraySchema(schema = @Schema(implementation = Recipe.class))))
     })
-    @PostMapping("/ai")
-    public ResponseEntity<Recipe> generateRecipe(@RequestBody List<String> ingredients,
-            @Parameter(description = "User ID from proxy") @RequestHeader("X-User-Id") String userId) {
-        Recipe recipe = recipeService.generateRecipe(ingredients, userId);
-        return ResponseEntity.ok(recipe);
+    @PostMapping("/ai/match/{numRecipes}")
+    public ResponseEntity<List<Recipe>> generateRecipe(@RequestBody List<Ingredient> ingredients,
+            @PathVariable int numRecipes,
+            @Parameter(description = "User ID from proxy") @RequestHeader(value = "X-User-Id", required = false) String userId) {
+        userId = configureUserId(userId);
+
+        List<Recipe> recipes = recipeService.generateRecipe(ingredients, numRecipes, userId);
+        return ResponseEntity.ok(recipes);
+    }
+
+    @Operation(summary = "Generate a recipe using AI from a list of ingredients. The AI can experiment with your given ingredient list, leading to potential recipes you can't cook right away", requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(content = @Content(mediaType = "application/json")), responses = {
+        @ApiResponse(responseCode = "200", description = "Generated Recipes", content = @Content(array = @ArraySchema(schema = @Schema(implementation = Recipe.class))))
+    })
+    @PostMapping("/ai/explore/{numRecipes}")
+    public ResponseEntity<List<Recipe>> exploreRecipe(@RequestBody List<Ingredient> ingredients,
+            @PathVariable int numRecipes,
+            @Parameter(description = "User ID from proxy") @RequestHeader(value = "X-User-Id", required = false) String userId) {
+        userId = configureUserId(userId);
+
+        List<Recipe> recipes = recipeService.exploreRecipe(ingredients, numRecipes, userId);
+        return ResponseEntity.ok(recipes);
     }
 
     @PostMapping("/")
-    public ResponseEntity<Recipe> saveRecipe(@RequestBody Recipe recipe) {
+    public ResponseEntity<Recipe> saveRecipe(@RequestBody Recipe recipe,
+            @Parameter(description = "User ID from proxy") @RequestHeader(value = "X-User-Id", required = false) String userId) {
+
+        userId = configureUserId(userId);
+        recipe.setUserId(userId);
+
         Recipe savedRecipe = recipeService.saveRecipe(recipe);
         return ResponseEntity.status(HttpStatus.CREATED).body(savedRecipe);
     }
 
     @PutMapping("/")
-    public ResponseEntity<Recipe> alterRecipe(@RequestBody Recipe recipe) {
+    public ResponseEntity<Recipe> alterRecipe(@RequestBody Recipe recipe,
+            @Parameter(description = "User ID from proxy") @RequestHeader(value = "X-User-Id", required = false) String userId) {
+
+        userId = configureUserId(userId);
+        recipe.setUserId(userId);
+
         Recipe updatedRecipe = recipeService.alterRecipe(recipe);
         return ResponseEntity.ok(updatedRecipe);
     }
@@ -56,13 +90,12 @@ public class RecipeController {
     })
     @GetMapping("/{id}")
     public ResponseEntity<?> getRecipeById(@PathVariable String id,
-            @Parameter(description = "User ID from proxy") @RequestHeader("X-User-Id") String userId) {
+            @Parameter(description = "User ID from proxy") @RequestHeader(value = "X-User-Id", required = false) String userId) {
+
+        userId = configureUserId(userId);
+
         if (id == null || id.isEmpty()) {
             return ResponseEntity.badRequest().build();
-        }
-        if (userId == null || userId.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("The proxy should have set the user id in the Subject header");
         }
         Recipe recipe = recipeService.getRecipeById(id, userId);
         if (recipe == null) {
@@ -72,23 +105,23 @@ public class RecipeController {
     }
 
     @GetMapping("/")
-    public ResponseEntity<List<Recipe>> getAllRecipesForUser(@RequestHeader("X-User-Id") String userId) {
-        if (userId == null || userId.isEmpty()) {
-            System.out.println("The proxy should have set the user email in the Subject header");
-            return ResponseEntity.internalServerError().body(new ArrayList<>());
-        }
+    public ResponseEntity<List<Recipe>> getAllRecipesForUser(
+            @RequestHeader(value = "X-User-Id", required = false) String userId) {
+
+        userId = configureUserId(userId);
+
         List<Recipe> recipes = recipeService.getRecipesByUser(userId);
         return ResponseEntity.ok(recipes);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteRecipe(@PathVariable String id, @RequestHeader("X-User-Id") String userId) {
+    public ResponseEntity<String> deleteRecipe(@PathVariable String id,
+            @RequestHeader(value = "X-User-Id", required = false) String userId) {
+
+        userId = configureUserId(userId);
+
         if (id == null || id.isEmpty()) {
             return ResponseEntity.badRequest().build();
-        }
-        if (userId == null || userId.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("The proxy should have set the user email in the Subject header");
         }
         Recipe recipe = recipeService.getRecipeById(id, userId);
         if (recipe == null) {
@@ -96,5 +129,17 @@ public class RecipeController {
         }
         recipeService.deleteRecipe(id, userId);
         return ResponseEntity.noContent().build();
+    }
+
+    private String configureUserId(String userId) {
+        String result = userId;
+        if (mode.equalsIgnoreCase("dev")) {
+            result = Optional.ofNullable(userId).orElse("dev-user");
+        }
+        if (result == null || result.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
+                "The proxy should have set the user id in the X-User-Id header");
+        }
+        return userId;
     }
 }

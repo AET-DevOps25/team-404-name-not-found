@@ -6,3 +6,8 @@ skinparam
 vectordb
 Apollon
 shadcn
+genai
+cpus
+kubelet
+Yeet
+envsubst

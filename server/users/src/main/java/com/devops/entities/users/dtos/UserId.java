@@ -1,4 +1,6 @@
 package com.devops.entities.users.dtos;
 
-public record UserId(String userId) {
+import jakarta.validation.constraints.NotNull;
+
+public record UserId(@NotNull String userId) {
 }

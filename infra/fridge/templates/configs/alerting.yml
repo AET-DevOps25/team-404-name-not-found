@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: grafana-alerts
+  namespace: {{ .Values.namespace }}
+data:
+  alerting.yml: |
+{{ .Files.Get "alerting.yml" | indent 4 }}

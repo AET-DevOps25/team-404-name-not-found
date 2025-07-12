@@ -42,3 +42,5 @@ management:
 
 vars:
   HOST: ${HOST:localhost}
+  mode: ${MODE:prod}
+  ai-host: ${AI_HOST:genai:8000}
