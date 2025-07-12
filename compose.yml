@@ -198,26 +198,6 @@ services:
     networks:
       - web
 
-  genai:
-    container_name: genai
-    image: ghcr.io/aet-devops25/team-404-name-not-found/genai:${BRANCH:-main}
-    build:
-      context: genai
-      dockerfile: Dockerfile
-    healthcheck:
-      # wget performs a HEAD request before, which fastapi seems not to like
-      test: ["CMD", "curl", "-s", "-o", "/dev/null", "http://localhost:8000/api/genai/v1/health"]
-      interval: 10s
-      timeout: 15s
-      retries: 5
-      start_period: 10s
-    ports:
-      - "8000:8000"
-    env_file:
-      - genai/.env
-    networks:
-      - web
-
   client:
     container_name: client
     image: ghcr.io/aet-devops25/team-404-name-not-found/client:${BRANCH:-main}
