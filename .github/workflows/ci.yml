@@ -16,6 +16,9 @@ jobs:
   java:
     name: java
     uses: ./.github/workflows/java.yml
+  python-formatting:
+    name: python-formatting
+    uses: ./.github/workflows/python-black-formatting.yml
   typescript:
     name: typescript
     uses: ./.github/workflows/typescript.yml
@@ -50,3 +53,5 @@ jobs:
       JWT_PRIV: ${{ secrets.JWT_PRIV }}
       JWT_PUB: ${{ secrets.JWT_PUB}}
       DOCKER_CONFIG: ${{ secrets.DOCKER_CONFIG }}
+      OPENAI_API_BASE: ${{ secrets.OPENAI_API_BASE }}
+      OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}

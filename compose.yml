@@ -94,6 +94,22 @@ services:
     networks:
       - web
 
+  genai:
+    container_name: genai
+    image: ghcr.io/aet-devops25/team-404-name-not-found/genai:${BRANCH:-main}
+    healthcheck:
+      test: [ "CMD", "curl", "-s", "-o", "/dev/null", "http://localhost:8000/api/genai/v1/health" ]
+      interval: 10s
+      timeout: 15s
+      retries: 5
+      start_period: 10s
+    ports:
+      - "8000:8000"
+    env_file:
+      - genai/.env
+    networks:
+      - web
+
   recipes:
     container_name: recipes
     image: ghcr.io/aet-devops25/team-404-name-not-found/recipes:${BRANCH:-main}
@@ -110,6 +126,8 @@ services:
       - "8082:8080"
     depends_on:
       users:
+        condition: service_healthy
+      genai:
         condition: service_healthy
     environment:
       DB_HOST: db

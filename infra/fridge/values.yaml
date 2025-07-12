@@ -3,7 +3,7 @@
 # Declare variables to be passed into your templates.
 
 namespace: team-404-name-not-found
-currentBranch: main
+currentBranch: 8-initial-genai-mocked
 
 # default login vars for postgres
 postgresUser: postgres
@@ -32,6 +32,14 @@ recipesProbe:
   httpGet:
     path: /api/recipes/actuator/health
     port: 8080
+  initialDelaySeconds: 15
+  periodSeconds: 10
+  failureThreshold: 30
+
+genaiProbe:
+  httpGet:
+    path: /api/genai/v1/health
+    port: 8000
   initialDelaySeconds: 15
   periodSeconds: 10
   failureThreshold: 30

@@ -391,4 +391,7 @@ hosts.ini
 *.json
 !jvm.json
 !spring_boot.json
+!genai.json
 */charts
+infra/fridge/genai_api_base
+infra/fridge/genai_api_key
