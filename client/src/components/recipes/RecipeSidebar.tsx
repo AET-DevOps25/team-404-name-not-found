@@ -2,7 +2,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Clock, ChefHat } from "lucide-react";
 import RecipesLoadingSpinner from "@/components/recipes/RecipesLoadingSpinner";
-import { AvailabilityScore, Recipe } from "@/types/recipeTypes";
+import { Recipe } from "@/types/recipeTypes";
+import { AvailabilityScore } from "@/types/availabilityScore";
 
 interface RecipesSidebarProps {
     loading: boolean;
@@ -11,7 +12,9 @@ interface RecipesSidebarProps {
 }
 
 const RecipesSidebar = ({ loading, recipes, onRecipeSelect }: RecipesSidebarProps) => {
-    const getAvailabilityBadge = (score: AvailabilityScore) => {
+    const getAvailabilityBadge = (score?: AvailabilityScore) => {
+        if (!score) return null;
+
         const colors = {
             good: "bg-green-100 text-green-800 border-green-200",
             medium: "bg-yellow-100 text-yellow-800 border-yellow-200",

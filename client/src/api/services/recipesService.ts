@@ -25,8 +25,7 @@ const mapToRecipe = (recipe: ApiRecipe): RecipeNoAvailabilityScore => {
         description: recipe.description,
         cookingTime: recipe.cookingTime,
         difficulty: recipe.difficulty,
-        ingredients: recipe.ingredients.map(mapToIngredient),
-        neededIngredients: recipe.neededIngredients.map(mapToIngredient),
+        ingredients: [...recipe.ingredients.map(mapToIngredient), ...recipe.neededIngredients.map(mapToIngredient)],
         instructions: recipe.instructions,
     };
 };
@@ -47,7 +46,7 @@ const mapToApiRecipe = (recipe: RecipeNoAvailabilityScoreAndId): ApiRecipe => {
         difficulty: recipe.difficulty as Difficulty,
         instructions: recipe.instructions,
         ingredients: recipe.ingredients.map(mapToApiIngredient),
-        neededIngredients: recipe.neededIngredients.map(mapToApiIngredient),
+        neededIngredients: [],
     };
 };
 

@@ -6,6 +6,8 @@ import { Separator } from "@/components/ui/separator";
 import { Clock, ChefHat, Users } from "lucide-react";
 import { Recipe } from "@/types/recipeTypes";
 import { Ingredient } from "@/types/ingredientTypes";
+import { calculateIngredientAvailabilityForRecipe } from "@/utils/calculateAvailability";
+import { AvailabilityScore } from "@/types/availabilityScore";
 
 interface RecipeDetailModalProps {
     recipe: Recipe;
@@ -15,38 +17,36 @@ interface RecipeDetailModalProps {
 }
 
 const RecipeDetailModal = ({ recipe, onClose, onCook, availableIngredients }: RecipeDetailModalProps) => {
-    const checkIngredientAvailability = (recipeIngredient: { name: string; quantity: number; unit: string }) => {
-        const available = availableIngredients.find(
-            (ing) => ing.name.toLowerCase() === recipeIngredient.name.toLowerCase()
-        );
+    const ingredientsWithAvailabilityScore = recipe.ingredients.map((ingredient) => {
+        return {
+            ...ingredient,
+            availabilityScore: calculateIngredientAvailabilityForRecipe(ingredient, availableIngredients),
+        };
+    });
 
-        if (!available) return "missing";
-        if (available.quantity >= recipeIngredient.quantity) return "sufficient";
-        return "insufficient";
-    };
-
-    const getIngredientStatusColor = (status: string) => {
-        switch (status) {
-            case "sufficient":
+    const getIngredientStatusColor = (availability: AvailabilityScore) => {
+        switch (availability) {
+            case "good":
                 return "text-green-600";
-            case "insufficient":
+            case "medium":
                 return "text-yellow-600";
-            case "missing":
+            case "bad":
                 return "text-red-600";
             default:
                 return "text-gray-600";
         }
     };
 
-    const getMissingIngredients = () => {
-        return recipe.ingredients.filter((ing) => {
-            const status = checkIngredientAvailability(ing);
-            return status === "missing" || status === "insufficient";
-        });
+    const getIngredientStatusBadge = (availability: AvailabilityScore) => {
+        return (
+            <Badge variant="outline" className={`${getIngredientStatusColor(availability)} border-current`}>
+                {availability === "good" ? "✓" : availability === "medium" ? "!" : "✗"}
+            </Badge>
+        );
     };
 
-    const missingIngredients = getMissingIngredients();
-    const hasMissingIngredients = missingIngredients.length > 0;
+    const hasMissingIngredients =
+        ingredientsWithAvailabilityScore.filter(({ availabilityScore }) => availabilityScore === "bad").length > 0;
 
     return (
         <Dialog open={true} onOpenChange={onClose}>
@@ -80,28 +80,20 @@ const RecipeDetailModal = ({ recipe, onClose, onCook, availableIngredients }: Re
                     <div>
                         <h3 className="text-lg font-semibold text-gray-900 mb-4">Ingredients</h3>
                         <div className="space-y-2">
-                            {recipe.ingredients.map((ingredient, index) => {
-                                const status = checkIngredientAvailability(ingredient);
-                                return (
-                                    <div
-                                        key={index}
-                                        className="flex items-center justify-between py-2 px-3 rounded-lg bg-gray-50"
-                                    >
-                                        <span className="text-gray-900">{ingredient.name}</span>
-                                        <div className="flex items-center gap-2">
-                                            <span className="text-gray-600">
-                                                {ingredient.quantity} {ingredient.unit}
-                                            </span>
-                                            <Badge
-                                                variant="outline"
-                                                className={`${getIngredientStatusColor(status)} border-current`}
-                                            >
-                                                {status === "sufficient" ? "✓" : status === "insufficient" ? "!" : "✗"}
-                                            </Badge>
-                                        </div>
+                            {ingredientsWithAvailabilityScore.map((ingredient, index) => (
+                                <div
+                                    key={index}
+                                    className="flex items-center justify-between py-2 px-3 rounded-lg bg-gray-50"
+                                >
+                                    <span className="text-gray-900">{ingredient.name}</span>
+                                    <div className="flex items-center gap-2">
+                                        <span className="text-gray-600">
+                                            {ingredient.quantity} {ingredient.unit}
+                                        </span>
+                                        {getIngredientStatusBadge(ingredient.availabilityScore)}
                                     </div>
-                                );
-                            })}
+                                </div>
+                            ))}
                         </div>
                     </div>
 

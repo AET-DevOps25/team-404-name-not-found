@@ -1,7 +1,7 @@
 import { IngredientNoId } from "@/types/ingredientTypes";
+import { AvailabilityScore } from "@/types/availabilityScore";
 
 export type Difficulty = "easy" | "medium" | "advanced";
-export type AvailabilityScore = "bad" | "medium" | "good";
 
 export interface Recipe {
     id: string;
@@ -10,7 +10,6 @@ export interface Recipe {
     cookingTime: number;
     difficulty: Difficulty;
     ingredients: IngredientNoId[];
-    neededIngredients: IngredientNoId[];
     instructions: string[];
     availabilityScore: AvailabilityScore;
 }

@@ -13,6 +13,7 @@ import { Recipe } from "@/types/recipeTypes";
 import recipesService from "@/api/services/recipesService";
 import { dummyRecipes } from "@/dummyRecipes";
 import RecipeDetailModal from "@/components/recipes/RecipeDetailModal";
+import { calculateRecipeAvailability } from "@/utils/calculateAvailability";
 
 const Dashboard = () => {
     const { logout } = useAuth();
@@ -81,12 +82,15 @@ const Dashboard = () => {
             .generateRecipes(3, explore, ingredients)
             .then((recipes) => {
                 console.log("Recipes generated successfully:", recipes);
-                setRecipes(
-                    recipes.map((recipe) => ({
+                // Calculate availability scores for the generated recipes
+                const recipesWithAvailability = recipes.map((recipe) => {
+                    const availabilityScore = calculateRecipeAvailability(recipe, ingredients);
+                    return {
                         ...recipe,
-                        availabilityScore: "bad", // Ensure availabilityScore is set
-                    }))
-                );
+                        availabilityScore,
+                    };
+                });
+                setRecipes(recipesWithAvailability);
             })
             .catch((error: Error) => {
                 errorHandler(error);
@@ -108,6 +112,26 @@ const Dashboard = () => {
                 errorHandler(error);
             });
     }, []);
+
+    // Update recipe availability scores whenever ingredients or recipes change
+    useEffect(() => {
+        recipes.forEach((recipe) => {
+            const updatedAvailabilityScore = calculateRecipeAvailability(recipe, ingredients);
+
+            if (updatedAvailabilityScore === recipe.availabilityScore) {
+                // No change in availability score, skip update
+                return;
+            }
+
+            const updatedRecipe = {
+                ...recipe,
+                availabilityScore: updatedAvailabilityScore,
+            };
+            setRecipes((prev) => prev.map((r) => (r.id === recipe.id ? updatedRecipe : r)));
+
+            console.log("Updated recipe availability score:", updatedRecipe.title);
+        });
+    }, [ingredients]);
 
     return (
         <div className="min-h-screen bg-gray-50 dark:bg-gray-900">

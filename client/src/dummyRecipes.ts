@@ -8,14 +8,11 @@ export const dummyRecipes: Recipe[] = [
         description: "This vibrant salad combines the freshness of cucumber and tomato with a simple, ",
         difficulty: "easy",
         cookingTime: 20,
-        availabilityScore: "bad",
         ingredients: [
             { name: "Salad", quantity: 0, unit: "pcs" },
             { name: "Cucumber", quantity: 0, unit: "pcs" },
             { name: "Tomato", quantity: 3, unit: "pcs" },
             { name: "Oil", quantity: 60, unit: "ml" },
-        ],
-        neededIngredients: [
             { name: "Feta Cheese", quantity: 100, unit: "g" },
             { name: "Red Onion", quantity: 0, unit: "pcs" },
             { name: "Fresh Mint", quantity: 15, unit: "g" },
@@ -37,14 +34,11 @@ export const dummyRecipes: Recipe[] = [
         description: "A vibrant and refreshing salad that balances the sweetness of tomatoes with the ",
         difficulty: "easy",
         cookingTime: 20,
-        availabilityScore: "bad",
         ingredients: [
             { name: "Salad", quantity: 1, unit: "pcs" },
             { name: "Cucumber", quantity: 0, unit: "pcs" },
             { name: "Tomato", quantity: 3, unit: "pcs" },
             { name: "Oil", quantity: 50, unit: "ml" },
-        ],
-        neededIngredients: [
             { name: "Red Onion", quantity: 0, unit: "pcs" },
             { name: "Jalapeño Pepper", quantity: 0, unit: "pcs" },
             { name: "Fresh Cilantro", quantity: 1, unit: "pcs" },
@@ -71,14 +65,11 @@ export const dummyRecipes: Recipe[] = [
         description: "A refreshing and simple salad highlighting the freshness of tomatoes and cool,  ",
         difficulty: "easy",
         cookingTime: 15,
-        availabilityScore: "bad",
         ingredients: [
             { name: "Salad", quantity: 1, unit: "pcs" },
             { name: "Cucumber", quantity: 1, unit: "pcs" },
             { name: "Tomato", quantity: 3, unit: "pcs" },
             { name: "Oil", quantity: 200, unit: "ml" },
-        ],
-        neededIngredients: [
             { name: "Greek Yogurt", quantity: 200, unit: "g" },
             { name: "Fresh Dill", quantity: 2, unit: "g" },
             { name: "Lemon", quantity: 0, unit: "pcs" },
