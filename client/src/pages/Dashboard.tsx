@@ -9,11 +9,12 @@ import { toast } from "@/hooks/use-toast";
 import AddIngredientModal from "@/components/ingredients/AddIngredientModal";
 import EditIngredientModal from "@/components/ingredients/EditIngredientModal";
 import RecipesSidebar from "@/components/recipes/RecipeSidebar";
-import { Recipe } from "@/types/recipeTypes";
+import { Recipe, RecipeNoAvailabilityScore } from "@/types/recipeTypes";
 import recipesService from "@/api/services/recipesService";
 import { dummyRecipes } from "@/dummyRecipes";
 import RecipeDetailModal from "@/components/recipes/RecipeDetailModal";
 import { calculateRecipeAvailability } from "@/utils/calculateAvailability";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 
 const Dashboard = () => {
     const { logout } = useAuth();
@@ -22,9 +23,14 @@ const Dashboard = () => {
     const [showAddIngredientModal, setShowAddIngredientModal] = useState(false);
     const [editingIngredient, setEditingIngredient] = useState<Ingredient | null>(null);
 
-    const [recipes, setRecipes] = useState<Recipe[]>(dummyRecipes);
+    const [activeRecipeTab, setActiveRecipeTab] = useState("suggestions");
+
+    const [recipeSuggestions, setRecipeSuggestions] = useState<Recipe[]>(dummyRecipes);
     const [recipesLoading, setRecipesLoading] = useState(false);
     const [selectedRecipe, setSelectedRecipe] = useState<Recipe | null>(null);
+
+    // @ts-ignore
+    const [savedRecipes, setSavedRecipes] = useState<Recipe[]>([]);
 
     const errorHandler = (error: Error) => {
         toast({
@@ -76,21 +82,31 @@ const Dashboard = () => {
             });
     };
 
+    const removeZeroQuantityIngredients = (recipe: RecipeNoAvailabilityScore): RecipeNoAvailabilityScore => {
+        return {
+            ...recipe,
+            ingredients: recipe.ingredients.filter((ingredient) => ingredient.quantity > 0),
+        };
+    };
+
+    const addAvaiabilityScore = (recipe: RecipeNoAvailabilityScore): Recipe => {
+        const availabilityScore = calculateRecipeAvailability(recipe, ingredients);
+        return {
+            ...recipe,
+            availabilityScore,
+        };
+    };
+
     const generateRecipes = (explore: boolean) => {
         setRecipesLoading(true);
         recipesService
             .generateRecipes(3, explore, ingredients)
             .then((recipes) => {
                 console.log("Recipes generated successfully:", recipes);
-                // Calculate availability scores for the generated recipes
-                const recipesWithAvailability = recipes.map((recipe) => {
-                    const availabilityScore = calculateRecipeAvailability(recipe, ingredients);
-                    return {
-                        ...recipe,
-                        availabilityScore,
-                    };
-                });
-                setRecipes(recipesWithAvailability);
+                const cleanedRecipes = recipes
+                    .map((recipe) => removeZeroQuantityIngredients(recipe))
+                    .map((recipe) => addAvaiabilityScore(recipe));
+                setRecipeSuggestions(cleanedRecipes);
             })
             .catch((error: Error) => {
                 errorHandler(error);
@@ -100,8 +116,48 @@ const Dashboard = () => {
             });
     };
 
+    const saveRecipe = (recipe: Recipe) => {
+        recipesService
+            .save(recipe)
+            .then((savedRecipe) => {
+                console.log("Recipe saved successfully:", savedRecipe);
+                const withAvailabilityScore = addAvaiabilityScore(savedRecipe);
+                setSavedRecipes((prev) => [...prev, addAvaiabilityScore(withAvailabilityScore)]);
+                setSelectedRecipe(withAvailabilityScore); // Must be set because id changes!
+            })
+            .catch((error: Error) => {
+                errorHandler(error);
+            });
+    };
+
+    const deleteRecipe = (id: string) => {
+        recipesService
+            .deleteById(id)
+            .then(() => {
+                console.log(`Recipe with id ${id} deleted successfully`);
+                setSavedRecipes((prev) => prev.filter((recipe) => recipe.id !== id));
+            })
+            .catch((error: Error) => {
+                errorHandler(error);
+            });
+    };
+
+    const isRecipeSaved = (recipe: Recipe): boolean => {
+        return savedRecipes.some((r) => r.id === recipe.id);
+    };
+
+    const toggleRecipeSaved = (recipe: Recipe) => {
+        if (isRecipeSaved(recipe)) {
+            // Recipe is already saved, delete it
+            deleteRecipe(recipe.id);
+        } else {
+            // Recipe is not saved, save it
+            saveRecipe(recipe);
+        }
+    };
+
     useEffect(() => {
-        console.log("Dashboard mounted, fetching ingredients...");
+        console.log("Dashboard mounted, fetching ingredients and saved recipes...");
         // Fetch ingredients from the API
         ingredientsService
             .getAll()
@@ -111,11 +167,29 @@ const Dashboard = () => {
             .catch((error: Error) => {
                 errorHandler(error);
             });
+
+        recipesService
+            .getAll()
+            .then((recipes) => {
+                console.log("Fetched saved recipes:", recipes);
+                // Calculate availability scores for the generated recipes
+                const recipesWithAvailability = recipes.map((recipe) => {
+                    const availabilityScore = calculateRecipeAvailability(recipe, ingredients);
+                    return {
+                        ...recipe,
+                        availabilityScore,
+                    };
+                });
+                setSavedRecipes(recipesWithAvailability);
+            })
+            .catch((error: Error) => {
+                errorHandler(error);
+            });
     }, []);
 
     // Update recipe availability scores whenever ingredients or recipes change
     useEffect(() => {
-        recipes.forEach((recipe) => {
+        recipeSuggestions.forEach((recipe) => {
             const updatedAvailabilityScore = calculateRecipeAvailability(recipe, ingredients);
 
             if (updatedAvailabilityScore === recipe.availabilityScore) {
@@ -127,7 +201,7 @@ const Dashboard = () => {
                 ...recipe,
                 availabilityScore: updatedAvailabilityScore,
             };
-            setRecipes((prev) => prev.map((r) => (r.id === recipe.id ? updatedRecipe : r)));
+            setRecipeSuggestions((prev) => prev.map((r) => (r.id === recipe.id ? updatedRecipe : r)));
 
             console.log("Updated recipe availability score:", updatedRecipe.title);
         });
@@ -199,18 +273,38 @@ const Dashboard = () => {
 
                     {/* Recipes Sidebar - 1/3 width */}
                     <div className="w-96">
-                        <div className="flex items-center justify-between mb-6">
-                            <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Recipe Suggestions</h2>
-                            <Button
-                                variant="outline"
-                                size="sm"
-                                onClick={() => {}} // TODO Show settings
-                                className="text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white"
-                            >
-                                <Settings className="w-4 h-4" />
-                            </Button>
-                        </div>
-                        <RecipesSidebar loading={recipesLoading} recipes={recipes} onRecipeSelect={setSelectedRecipe} />
+                        <Tabs value={activeRecipeTab} onValueChange={setActiveRecipeTab} className="w-full">
+                            <div className="flex items-center justify-between mb-4">
+                                <TabsList>
+                                    <TabsTrigger value="suggestions">Suggestions</TabsTrigger>
+                                    <TabsTrigger value="saved">Saved Recipes</TabsTrigger>
+                                </TabsList>
+                                <Button
+                                    variant="outline"
+                                    size="sm"
+                                    onClick={() => {}} // TODO: Open settings
+                                    className="text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white"
+                                >
+                                    <Settings className="w-4 h-4" />
+                                </Button>
+                            </div>
+
+                            <TabsContent value="suggestions">
+                                <RecipesSidebar
+                                    loading={recipesLoading}
+                                    recipes={recipeSuggestions}
+                                    onRecipeSelect={setSelectedRecipe}
+                                />
+                            </TabsContent>
+
+                            <TabsContent value="saved">
+                                <RecipesSidebar
+                                    loading={false}
+                                    recipes={savedRecipes}
+                                    onRecipeSelect={setSelectedRecipe}
+                                />
+                            </TabsContent>
+                        </Tabs>
                     </div>
                 </div>
             </div>
@@ -254,6 +348,8 @@ const Dashboard = () => {
                 <RecipeDetailModal
                     recipe={selectedRecipe}
                     availableIngredients={ingredients}
+                    isSaved={isRecipeSaved(selectedRecipe)}
+                    onToggleSave={() => toggleRecipeSaved(selectedRecipe)}
                     onClose={() => setSelectedRecipe(null)}
                     onCook={(recipe) => {
                         console.log("Cooking recipe:", recipe);

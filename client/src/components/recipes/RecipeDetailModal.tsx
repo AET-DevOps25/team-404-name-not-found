@@ -1,9 +1,9 @@
 import ReactMarkdown from "react-markdown";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import { Clock, ChefHat, Users } from "lucide-react";
+import { Clock, ChefHat, Users, BookmarkCheck, Bookmark } from "lucide-react";
 import { Recipe } from "@/types/recipeTypes";
 import { Ingredient } from "@/types/ingredientTypes";
 import { calculateIngredientAvailabilityForRecipe } from "@/utils/calculateAvailability";
@@ -11,12 +11,21 @@ import { AvailabilityScore } from "@/types/availabilityScore";
 
 interface RecipeDetailModalProps {
     recipe: Recipe;
+    isSaved: boolean;
     onClose: () => void;
     onCook: (recipe: Recipe) => void;
+    onToggleSave: () => void;
     availableIngredients: Ingredient[];
 }
 
-const RecipeDetailModal = ({ recipe, onClose, onCook, availableIngredients }: RecipeDetailModalProps) => {
+const RecipeDetailModal = ({
+    recipe,
+    isSaved,
+    onToggleSave,
+    onClose,
+    onCook,
+    availableIngredients,
+}: RecipeDetailModalProps) => {
     const ingredientsWithAvailabilityScore = recipe.ingredients.map((ingredient) => {
         return {
             ...ingredient,
@@ -50,12 +59,34 @@ const RecipeDetailModal = ({ recipe, onClose, onCook, availableIngredients }: Re
 
     return (
         <Dialog open={true} onOpenChange={onClose}>
-            <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
-                <DialogHeader>
-                    <DialogTitle className="text-2xl font-bold text-gray-900">{recipe.title}</DialogTitle>
-                </DialogHeader>
+            <DialogContent className="max-w-2xl max-h-[90vh] p-0 overflow-hidden">
+                {/* Sticky Header */}
+                <div className="sticky top-0 z-10 bg-white border-b px-6 pt-6 pb-4 flex items-start justify-between shadow-sm">
+                    <h2 className="text-2xl font-bold text-gray-900 pr-10">{recipe.title}</h2>
+                    <div className="flex items-center gap-2">
+                        <Button
+                            variant="ghost"
+                            size="icon"
+                            className="text-gray-600 hover:text-gray-900"
+                            onClick={onToggleSave}
+                            aria-label={isSaved ? "Unsave recipe" : "Save recipe"}
+                        >
+                            {isSaved ? <BookmarkCheck className="w-5 h-5" /> : <Bookmark className="w-5 h-5" />}
+                        </Button>
+                        <Button
+                            variant="ghost"
+                            size="icon"
+                            className="text-gray-600 hover:text-gray-900"
+                            onClick={onClose}
+                            aria-label="Close"
+                        >
+                            <span className="text-lg">&times;</span>
+                        </Button>
+                    </div>
+                </div>
 
-                <div className="space-y-6">
+                {/* Scrollable content only */}
+                <div className="overflow-y-auto max-h-[calc(90vh-80px)] px-6 pb-6 pt-4 space-y-6">
                     {/* Recipe Info */}
                     <div className="flex items-center gap-4 text-sm text-gray-600">
                         <div className="flex items-center">
