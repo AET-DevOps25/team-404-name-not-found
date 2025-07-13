@@ -16,11 +16,13 @@ import RecipeDetailModal from "@/components/recipes/RecipeDetailModal";
 
 const Dashboard = () => {
     const { logout } = useAuth();
+
     const [ingredients, setIngredients] = useState<Ingredient[]>([]);
-    const [recipes, setRecipes] = useState<Recipe[]>(dummyRecipes);
     const [showAddIngredientModal, setShowAddIngredientModal] = useState(false);
     const [editingIngredient, setEditingIngredient] = useState<Ingredient | null>(null);
-    // @ts-ignore
+
+    const [recipes, setRecipes] = useState<Recipe[]>(dummyRecipes);
+    const [recipesLoading, setRecipesLoading] = useState(false);
     const [selectedRecipe, setSelectedRecipe] = useState<Recipe | null>(null);
 
     const errorHandler = (error: Error) => {
@@ -74,6 +76,7 @@ const Dashboard = () => {
     };
 
     const generateRecipes = (explore: boolean) => {
+        setRecipesLoading(true);
         recipesService
             .generateRecipes(3, explore, ingredients)
             .then((recipes) => {
@@ -87,6 +90,9 @@ const Dashboard = () => {
             })
             .catch((error: Error) => {
                 errorHandler(error);
+            })
+            .finally(() => {
+                setRecipesLoading(false);
             });
     };
 
@@ -180,7 +186,7 @@ const Dashboard = () => {
                                 <Settings className="w-4 h-4" />
                             </Button>
                         </div>
-                        <RecipesSidebar recipes={recipes} onRecipeSelect={setSelectedRecipe} />
+                        <RecipesSidebar loading={recipesLoading} recipes={recipes} onRecipeSelect={setSelectedRecipe} />
                     </div>
                 </div>
             </div>
@@ -188,6 +194,7 @@ const Dashboard = () => {
             {/* Floating AI Buttons */}
             <div className="fixed bottom-6 right-6 z-50 flex flex-col gap-4 w-72">
                 <Button
+                    disabled={recipesLoading}
                     variant="default"
                     className="text-base py-5 rounded-2xl shadow-lg hover:shadow-xl transition"
                     onClick={() => {
@@ -197,7 +204,8 @@ const Dashboard = () => {
                     🍳 Match My Ingredients
                 </Button>
                 <Button
-                    variant="secondary"
+                    disabled={recipesLoading}
+                    variant="outline"
                     className="text-base py-5 rounded-2xl shadow-lg hover:shadow-xl transition"
                     onClick={() => {
                         generateRecipes(true);
