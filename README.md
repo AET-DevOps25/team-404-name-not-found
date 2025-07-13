@@ -168,7 +168,7 @@ The `server` directory contains a multi-project gradle-based spring boot applica
 
 #### Users
 
-This is the first interaction point with the system. Frontends must call the `/api/users/login` endpoint and listen on `/ui/v1/callback`. The JWT will be provided as a query parameter with the key `token`. This service also offers the `/api/users/callback` endpoint to GitHub as our OAuth provider. In addition, the service uses `/api/users/auth` as an internal endpoint for token validation and to return a userId from the token. This endpoint is meant to be queried by proxies as their `auth_request`.
+This is the first interaction point with the system. Clients must call the `/api/users/login` endpoint and listen on `/ui/v1/callback`. The JWT will be provided as a query parameter with the key `token`. This service also offers the `/api/users/callback` endpoint to GitHub as our OAuth provider. In addition, the service uses `/api/users/auth` as an internal endpoint for token validation and to return a userId from the token. This endpoint is meant to be queried by proxies as their `auth_request`.
 
 Lastly, this service offers `/api/users/whoami` for conveniently checking the userID. For this, clients will need to provide the token from the login endpoint.
 

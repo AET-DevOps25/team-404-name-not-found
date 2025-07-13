@@ -11,3 +11,11 @@ cpus
 kubelet
 Yeet
 envsubst
+Langchain
+dockerfiles
+dorny
+burrunan
+spotbugs
+jacoco
+medyagh
+kubeconfig
