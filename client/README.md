@@ -9,7 +9,7 @@
     - Creates components via CLI: `npx shadcn@latest add <name>`
     - Components are statically saved to `src/components/ui`
 - Tailwind for styling
-- Vite: fast build tool and development server
+- Vite: fast build tool and development server with hot reloading
 - NGINX for serving the client. The built client only consists of static files.
 
 ## Available NPM Scripts
@@ -72,6 +72,24 @@ and the rest of the application (server etc.) with docker compose, as we can't u
 the OAuth login flow because the callback URL that the
 server uses, will be on the HOST (e.g. `fridge.localhost`) of the docker compose and not localhost. Keep in mind that
 the server services must be run with `MODE=dev` for this to work.
+
+## Local Development with dev server for client and backend services from docker compose
+- Create a `.env` file in the root of the client directory and set the environment variables as needed.  
+  See `.env.template` for an example.
+- Install & Start dev server for the client:
+    ```bash
+    npm run install
+    npm run dev
+    ```
+- Start the backend services with docker compose (see `docs/local-development.md` for more information):
+    ```bash
+    # From root of the project
+    BRANCH=<branchname> MODE=dev docker compose -f compose.yml up   
+    ```    
+  Note: `MODE=dev` is needed to enable the mocked login flow in the backend services, so that the client can use the `dev-user`.
+- This will also start a client container but we just ignore it and access the server via the Vite dev server on `localhost:8080`.
+- You have to open the browser with the URL `https://fridge.localhost` and accept the self-signed certificate, otherwise the calls to the backend services from the dev server may fail due to certificate errors.
+- Now you can develop the client with hot reloading on `localhost:8080` and the backend services running in docker compose.
 
 ## FAQ
 
