@@ -1,3 +1,4 @@
+import ReactMarkdown from "react-markdown";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -115,7 +116,9 @@ const RecipeDetailModal = ({ recipe, onClose, onCook, availableIngredients }: Re
                                     <span className="flex-shrink-0 w-6 h-6 bg-green-600 text-white rounded-full flex items-center justify-center text-sm font-medium">
                                         {index + 1}
                                     </span>
-                                    <span className="text-gray-700 pt-0.5">{instruction}</span>
+                                    <span className="text-gray-700 pt-0.5">
+                                        <ReactMarkdown>{instruction}</ReactMarkdown>
+                                    </span>
                                 </li>
                             ))}
                         </ol>
