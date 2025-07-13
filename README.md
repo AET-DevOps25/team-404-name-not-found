@@ -210,6 +210,38 @@ Our `imagePullPolicy` is `Always`, but we reference images based on tags rather 
 
 Other folders are `ec2`, `nginx` and `scripts`. The latter is a collection of convenience scripts for developers. As one could guess, we picked `nginx` as our proxy. The decision was enforced due to lacking support for the GatewayAPI and the default usage of the nginx ingress controller on the provided cluster. The last folder contains the terraform and ansible configuration to provision an EC2 instance and deploy our docker compose application there.
 
+### CI/CD
+
+![Main CI](docs/img/main_ci.png)
+
+Our CI initially performs some basic spellchecks, linting and formatting for java, python and typescript projects. In addition, we also lint our k8s manifests and dockerfiles. In the following we will go into some of the most notable aspects of the pipeline:
+
+#### Main CI
+
+We go big on reusable workflows! The whole point is to write code once and reuse it, should the need arise. The only exception from this rule are the EC2 deployment steps. Since the session we are given is ephemeral, the actions aren't automatic, but have to be manually triggered. Lastly, the workflows restrict themselves to run only on changes to corresponding files. Since github doesn't support checking for such files out of the box, we utilize the [dorny/paths-filter@v3](https://github.com/dorny/paths-filter/tree/v3/) action.
+
+#### Java
+
+This workflow heavily relies on [burrunan/gradle-cache-action@v3](https://github.com/burrunan/gradle-cache-action). It creates a layered gradle cache using github's artifacts to speed up pipeline runs of gradle-based projects. We lint the java files and the gradle files themselves with [checkstyle](https://checkstyle.org/index.html), check for common bugs using [spotbugs](https://spotbugs.github.io/), run the tests and upload a [jacoco](https://www.jacoco.org/jacoco/trunk/doc/) test report.
+
+#### Docker
+
+Instead of going for the base docker workflow, we use for more configurable `bake` interface and the corresponding action: [docker/bake-action@v4](https://github.com/docker/bake-action/tree/v4/). Our bake configuration is in the root of this project: `docker-bake.hcl`. The most interesting part of that is configuring the cache options in the same file as the build logic and context. Despite the HCL providing some convenience functions, I couldn't find a DRYier way of defining the image name and tag.
+
+#### Compose
+
+This is a minimalistic workflow that starts a base integration test. It deploys the docker compose application on the VM hosting the runner from the newly built images. It then proceeds to check whether the running containers are healthy.
+
+#### Minikube
+
+The core action from this is [medyagh/setup-minikube@latest](https://github.com/medyagh/setup-minikube/tree/latest/). It spins up a minikube cluster in the runner itself! The action is maintained by the official minikube maintainers. After the cluster is up, we install the CRDs and tools we need and start the tests. The integration test logic for the minikube cluster is the same as the one for the compose workflow.
+
+The interesting thing here is that our repo got to be an official example of the action and thus referenced into their readme! :D
+
+#### Deployment
+
+The deployment then ensues to the AET Rancher cluster. The steps are the exact same as the minikube cluster, with the exception that we no longer spin up a cluster here, but rather point the kubeconfig to the correct one.
+
 ## 🧪 Future Improvements
 
 - Add retry logic on inter-service communication
