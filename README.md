@@ -1,4 +1,4 @@
-# Team 404 - Name Not Found
+# What's In My Fridge?
 
 
 ![Build](https://img.shields.io/github/actions/workflow/status/AET-DevOps25/team-404-name-not-found/ci.yml)
@@ -9,7 +9,7 @@
 
 > *"We went looking for a snack and found an error instead."*
 
-A full-stack AI-powered recipe suggestion platform for anyone overwhelmed by decision fatigue or plagued with a lack ofcreativity. Users can manually input ingredients or upload fridge images to receive tailored recipe suggestions based on those ingredients. Built with a microservice architecture and deployed to [Rancher](https://rancher.ase.cit.tum.de/dashboard/home) with monitoring, authentication, and modern DevOps best practices.
+A full-stack AI-powered recipe suggestion platform for anyone overwhelmed by decision fatigue or plagued with a lack of creativity. Users can manually input ingredients or upload fridge images to receive tailored recipe suggestions based on those ingredients. Built with a microservice architecture and deployed to [Rancher](https://rancher.ase.cit.tum.de/dashboard/home) with monitoring, authentication, and modern DevOps best practices.
 
 ## 🧠 Team
 
@@ -19,8 +19,9 @@ A full-stack AI-powered recipe suggestion platform for anyone overwhelmed by dec
 
 ## 🧪 Technologies Used
 
-* **Frontend:** React + TailwindCSS
+* **Frontend:** React
 * **Backend:** Spring Boot (Java 21)
+* **GenAI**: FastAPI + Langchain
 * **Containerization:** Docker
 * **Observability:** Prometheus, Grafana
 * **Auth:** GitHub OAuth + JWT
@@ -161,7 +162,53 @@ infra/
 
 ### Server
 
-TODO: describe microservice responsabilities, how they interact, your buildSrc logic and how you build the docker images
+TODO: describe microservice responsibilities, how they interact, your buildSrc logic and how you build the docker images
+
+The `server` directory contains a multi-project gradle-based spring boot application. The `settings.gradle` file references the underlying applications. To refactor common dependencies and save ourselves some writing efforts, a custom spring boot plugin was written. To have a look into the common dependencies, look into the `buildSrc` folder. The projects themselves however still are in control: they can define other dependencies to include next to the pre-defined ones, or exclude some of the pre-defines ones. Other than this, each service looks and is structured just like any other spring boot project. 
+
+#### Users
+
+This is the first interaction point with the system. Frontends must call the `/api/users/login` endpoint and listen on `/ui/v1/callback`. The JWT will be provided as a query parameter with the key `token`. This service also offers the `/api/users/callback` endpoint to GitHub as our OAuth provider. In addition, the service uses `/api/users/auth` as an internal endpoint for token validation and to return a userId from the token. This endpoint is meant to be queried by proxies as their `auth_request`.
+
+Lastly, this service offers `/api/users/whoami` for conveniently checking the userID. For this, clients will need to provide the token from the login endpoint.
+
+#### Recipes
+
+A simple service offering CRUD operations under the `/api/recipes` prefix. The service manages recipes for each user. In addition, it wraps calls to the AI service. Due to the basic nature of this service, the ingredients will have to be input manually.
+
+#### Ingredients
+
+A simple service offering CRUD operations under the `/api/ingredients/v1` prefix. It manages the ingredients currently available in a user's fridge. This isn't bound to the recipes a user generates, since those can also be suggestions or favorites.
+
+#### Images
+
+A simpler service serving under the `/api/images/v1` prefix. This service wraps the image-related calls to the AI service. Its existence is justified by the fact that the AI service accepts base64 encoded strings as images, whereas browsers can inherently support uploading of `multipart/form-data`. This services takes care of converting between the two.
+
+After it receives the ingredient list from the AI service, it saves those ingredients with the ingredients service. Then, it queries the recipes service for a recipe and returns the suggestions to the calling client. It is worth noting that while the ingredients are saved by default, the recipes **are NOT**.
+
+### Client
+
+TODO: do the thing
+
+### GenAI
+
+TODO: do the thing
+
+### Infra
+
+This folder contains the entire configuration of our deployment infrastructure. The `fridge` folder contains a helm chart of the application. We tried to extract almost everything into code, which is why many grafana dashboard configurations and prometheus sources can be found in the root. The `templates` subdir contains our manifests. We follow a plain deployment --> service --> ingress rule path. `ConfigMap`s or `Secret`s are defined as needed. Each `Deployment` specifies all available probes to make sure the application is healthy. In addition, resource limitations are also set, to make sure we do not overhaul all memory. Furthermore, the below annotation is also provided in the container spec template:
+
+```yml
+spec:
+  template:
+    metadata:
+      annotations:
+        image-deployment: {{ now | date "Mon, 02/01/06, 03:04PM" }}
+```
+
+Our `imagePullPolicy` is `Always`, but we reference images based on tags rather than digests. This was done to make developing locally easier. However, when pushing a new image under the same tag, the kubelet won't update it when redeploying. In the lack of a proper CD tool like Flux, we go for this workaround: when redeploying or upgrading, the timestamp will change, causing the pod template to change, causing the image to be pulled anew.
+
+Other folders are `ec2`, `nginx` and `scripts`. The latter is a collection of convenience scripts for developers. As one could guess, we picked `nginx` as our proxy. The decision was enforced due to lacking support for the GatewayAPI and the default usage of the nginx ingress controller on the provided cluster. The last folder contains the terraform and ansible configuration to provision an EC2 instance and deploy our docker compose application there.
 
 ## 🧪 Future Improvements
 
@@ -171,7 +218,7 @@ TODO: describe microservice responsabilities, how they interact, your buildSrc l
 - Better error handling & fallback recipes
 - A proper GitOps approach and sops
 
-## 🐛 Frequenctly Encountered Errors
+## 🐛 Frequently Encountered Errors
 
 Here is a summary of sanity checks to go through when debugging an error. The list isn't exhaustive, but rather a compilation of what we came through often.
 
