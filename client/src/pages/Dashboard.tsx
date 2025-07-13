@@ -1,19 +1,25 @@
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Refrigerator, Camera, Plus, LogOut, Settings } from "lucide-react";
+import { Camera, LogOut, Plus, Refrigerator, Settings } from "lucide-react";
 import IngredientGrid from "@/components/ingredients/IngredientGrid";
 import { Ingredient, IngredientNoId } from "@/types/ingredientTypes";
 import { useAuth } from "@/context/AuthContext";
-import ingredientsService from "@/api/services/ingredientsService.ts";
+import ingredientsService from "@/api/services/ingredientsService";
 import { toast } from "@/hooks/use-toast.ts";
-import AddIngredientModal from "@/components/ingredients/AddIngredientModal.tsx";
-import EditIngredientModal from "@/components/ingredients/EditIngredientModal.tsx";
+import AddIngredientModal from "@/components/ingredients/AddIngredientModal";
+import EditIngredientModal from "@/components/ingredients/EditIngredientModal";
+import RecipesSidebar from "@/components/recipes/RecipeSidebar";
+import { Recipe } from "@/types/recipeTypes";
+import recipesService from "@/api/services/recipesService.ts";
 
 const Dashboard = () => {
     const { logout } = useAuth();
     const [ingredients, setIngredients] = useState<Ingredient[]>([]);
+    const [recipes, setRecipes] = useState<Recipe[]>([]);
     const [showAddIngredientModal, setShowAddIngredientModal] = useState(false);
     const [editingIngredient, setEditingIngredient] = useState<Ingredient | null>(null);
+    // @ts-ignore
+    const [selectedRecipe, setSelectedRecipe] = useState<Recipe | null>(null);
 
     const errorHandler = (error: Error) => {
         toast({
@@ -58,6 +64,23 @@ const Dashboard = () => {
                 console.log("Ingredient updated successfully:", updatedIngredient);
                 setIngredients((prev) =>
                     prev.map((ing) => (ing.id === updatedIngredient.id ? updatedIngredient : ing))
+                );
+            })
+            .catch((error: Error) => {
+                errorHandler(error);
+            });
+    };
+
+    const generateRecipes = (explore: boolean) => {
+        recipesService
+            .generateRecipes(3, explore, ingredients)
+            .then((recipes) => {
+                console.log("Recipes generated successfully:", recipes);
+                setRecipes(
+                    recipes.map((recipe) => ({
+                        ...recipe,
+                        availabilityScore: "bad", // Ensure availabilityScore is set
+                    }))
                 );
             })
             .catch((error: Error) => {
@@ -155,8 +178,31 @@ const Dashboard = () => {
                                 <Settings className="w-4 h-4" />
                             </Button>
                         </div>
+                        <RecipesSidebar recipes={recipes} onRecipeSelect={setSelectedRecipe} />
                     </div>
                 </div>
+            </div>
+
+            {/* Floating AI Buttons */}
+            <div className="fixed bottom-6 right-6 z-50 flex flex-col gap-4 w-72">
+                <Button
+                    variant="default"
+                    className="text-base py-5 rounded-2xl shadow-lg hover:shadow-xl transition"
+                    onClick={() => {
+                        generateRecipes(false);
+                    }}
+                >
+                    🍳 Match My Ingredients
+                </Button>
+                <Button
+                    variant="secondary"
+                    className="text-base py-5 rounded-2xl shadow-lg hover:shadow-xl transition"
+                    onClick={() => {
+                        generateRecipes(true);
+                    }}
+                >
+                    🌟 Explorative AI Mode
+                </Button>
             </div>
 
             {/* Modals */}
