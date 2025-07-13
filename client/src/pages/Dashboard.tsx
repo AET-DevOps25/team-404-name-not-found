@@ -12,6 +12,7 @@ import RecipesSidebar from "@/components/recipes/RecipeSidebar";
 import { Recipe } from "@/types/recipeTypes";
 import recipesService from "@/api/services/recipesService";
 import { dummyRecipes } from "@/dummyRecipes";
+import RecipeDetailModal from "@/components/recipes/RecipeDetailModal";
 
 const Dashboard = () => {
     const { logout } = useAuth();
@@ -215,6 +216,16 @@ const Dashboard = () => {
                     ingredient={editingIngredient}
                     onClose={() => setEditingIngredient(null)}
                     onSave={editIngredient}
+                />
+            )}
+            {selectedRecipe && (
+                <RecipeDetailModal
+                    recipe={selectedRecipe}
+                    availableIngredients={ingredients}
+                    onClose={() => setSelectedRecipe(null)}
+                    onCook={(recipe) => {
+                        console.log("Cooking recipe:", recipe);
+                    }}
                 />
             )}
         </div>
