@@ -40,20 +40,22 @@ const RecipesSidebar = ({ recipes, onRecipeSelect }: RecipesSidebarProps) => {
                     <CardHeader className="pb-2">
                         <div className="flex justify-between items-start">
                             <CardTitle className="text-lg leading-tight">{recipe.title}</CardTitle>
-                            {getAvailabilityBadge(recipe.availabilityScore)}
                         </div>
                     </CardHeader>
                     <CardContent className="pt-0">
                         <p className="text-gray-600 text-sm mb-3 line-clamp-2">{recipe.description}</p>
                         <div className="flex items-center justify-between text-sm text-gray-500">
-                            <div className="flex items-center">
-                                <Clock className="w-4 h-4 mr-1" />
-                                {recipe.cookingTime} min
+                            <div className="flex items-center space-x-1.5">
+                                <div className="flex items-center">
+                                    <Clock className="w-4 h-4 mr-1" />
+                                    {recipe.cookingTime} min
+                                </div>
+                                <div className="flex items-center">
+                                    <ChefHat className="w-4 h-4 mr-1" />
+                                    {recipe.difficulty}
+                                </div>
                             </div>
-                            <div className="flex items-center">
-                                <ChefHat className="w-4 h-4 mr-1" />
-                                {recipe.difficulty}
-                            </div>
+                            <div className="flex items-center">{getAvailabilityBadge(recipe.availabilityScore)}</div>
                         </div>
                     </CardContent>
                 </Card>

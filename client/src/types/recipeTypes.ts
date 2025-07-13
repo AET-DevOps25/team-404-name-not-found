@@ -16,3 +16,4 @@ export interface Recipe {
 }
 
 export type RecipeNoAvailabilityScore = Omit<Recipe, "availabilityScore">;
+export type RecipeNoAvailabilityScoreAndId = Omit<Recipe, "availabilityScore" | "id">;

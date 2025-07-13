@@ -1,7 +1,8 @@
 import { recipesClient } from "@/api/fetchClients";
-import { Difficulty, RecipeNoAvailabilityScore } from "@/types/recipeTypes";
+import { Difficulty, RecipeNoAvailabilityScore, RecipeNoAvailabilityScoreAndId } from "@/types/recipeTypes";
 import { IngredientNoId } from "@/types/ingredientTypes.ts";
 import { components } from "@/api/recipes";
+import { v4 as uuidv4 } from "uuid";
 
 type ApiRecipe = components["schemas"]["Recipe"];
 type ApiIngredient = components["schemas"]["Ingredient"];
@@ -16,12 +17,12 @@ const mapToIngredient = (ingredient: ApiIngredient): IngredientNoId => {
 
 const mapToRecipe = (recipe: ApiRecipe): RecipeNoAvailabilityScore => {
     if (!recipe.id) {
-        throw new Error("Recipe must have an id");
+        recipe.id = uuidv4(); // Generate a temporary ID if not present
     }
     return {
         id: recipe.id,
         title: recipe.title,
-        description: "", //recipe.description,
+        description: recipe.description,
         cookingTime: recipe.cookingTime,
         difficulty: recipe.difficulty,
         ingredients: recipe.ingredients.map(mapToIngredient),
@@ -38,9 +39,8 @@ const mapToApiIngredient = (ingredient: IngredientNoId): ApiIngredient => {
     };
 };
 
-const mapToApiRecipe = (recipe: RecipeNoAvailabilityScore): ApiRecipe => {
+const mapToApiRecipe = (recipe: RecipeNoAvailabilityScoreAndId): ApiRecipe => {
     return {
-        id: recipe.id,
         title: recipe.title,
         description: recipe.description,
         cookingTime: recipe.cookingTime,
@@ -68,7 +68,7 @@ class RecipesService {
         return result.data.map(mapToRecipe);
     }
 
-    async save(recipe: RecipeNoAvailabilityScore): Promise<RecipeNoAvailabilityScore> {
+    async save(recipe: RecipeNoAvailabilityScoreAndId): Promise<RecipeNoAvailabilityScore> {
         const apiRecipe = mapToApiRecipe(recipe);
         const result = await recipesClient.POST("/", {
             body: apiRecipe,
