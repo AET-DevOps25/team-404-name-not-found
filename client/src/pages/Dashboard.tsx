@@ -5,17 +5,18 @@ import IngredientGrid from "@/components/ingredients/IngredientGrid";
 import { Ingredient, IngredientNoId } from "@/types/ingredientTypes";
 import { useAuth } from "@/context/AuthContext";
 import ingredientsService from "@/api/services/ingredientsService";
-import { toast } from "@/hooks/use-toast.ts";
+import { toast } from "@/hooks/use-toast";
 import AddIngredientModal from "@/components/ingredients/AddIngredientModal";
 import EditIngredientModal from "@/components/ingredients/EditIngredientModal";
 import RecipesSidebar from "@/components/recipes/RecipeSidebar";
 import { Recipe } from "@/types/recipeTypes";
-import recipesService from "@/api/services/recipesService.ts";
+import recipesService from "@/api/services/recipesService";
+import { dummyRecipes } from "@/dummyRecipes";
 
 const Dashboard = () => {
     const { logout } = useAuth();
     const [ingredients, setIngredients] = useState<Ingredient[]>([]);
-    const [recipes, setRecipes] = useState<Recipe[]>([]);
+    const [recipes, setRecipes] = useState<Recipe[]>(dummyRecipes);
     const [showAddIngredientModal, setShowAddIngredientModal] = useState(false);
     const [editingIngredient, setEditingIngredient] = useState<Ingredient | null>(null);
     // @ts-ignore
