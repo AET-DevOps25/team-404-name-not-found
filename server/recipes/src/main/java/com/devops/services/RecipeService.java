@@ -53,7 +53,6 @@ public class RecipeService {
             List<Recipe> recipes = new ArrayList<>();
             for (AiRecipeDTO recipeDTO : response.getBody().getRecipes()) {
                 Recipe toSave = Recipe.fromAiRecipeDTO(recipeDTO, userId);
-                recipeRepository.save(toSave);
                 recipes.add(toSave);
             }
             return recipes;
