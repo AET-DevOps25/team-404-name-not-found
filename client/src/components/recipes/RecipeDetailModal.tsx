@@ -3,11 +3,12 @@ import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import { Clock, ChefHat, Users, BookmarkCheck, Bookmark } from "lucide-react";
+import { Clock, ChefHat, Users, Bookmark } from "lucide-react";
 import { Recipe } from "@/types/recipeTypes";
 import { Ingredient } from "@/types/ingredientTypes";
 import { calculateIngredientAvailabilityForRecipe } from "@/utils/calculateAvailability";
 import { AvailabilityScore } from "@/types/availabilityScore";
+import { LucideBookmarkFilled } from "@/components/recipes/LucideBookmarkFilled";
 
 interface RecipeDetailModalProps {
     recipe: Recipe;
@@ -71,7 +72,7 @@ const RecipeDetailModal = ({
                             onClick={onToggleSave}
                             aria-label={isSaved ? "Unsave recipe" : "Save recipe"}
                         >
-                            {isSaved ? <BookmarkCheck className="w-5 h-5" /> : <Bookmark className="w-5 h-5" />}
+                            {isSaved ? <LucideBookmarkFilled className="w-5 h-5" /> : <Bookmark className="w-5 h-5" />}
                         </Button>
                         <Button
                             variant="ghost"
@@ -111,9 +112,9 @@ const RecipeDetailModal = ({
                     <div>
                         <h3 className="text-lg font-semibold text-gray-900 mb-4">Ingredients</h3>
                         <div className="space-y-2">
-                            {ingredientsWithAvailabilityScore.map((ingredient, index) => (
+                            {ingredientsWithAvailabilityScore.map((ingredient) => (
                                 <div
-                                    key={index}
+                                    key={ingredient.name}
                                     className="flex items-center justify-between py-2 px-3 rounded-lg bg-gray-50"
                                 >
                                     <span className="text-gray-900">{ingredient.name}</span>
@@ -135,7 +136,7 @@ const RecipeDetailModal = ({
                         <h3 className="text-lg font-semibold text-gray-900 mb-4">Instructions</h3>
                         <ol className="space-y-3">
                             {recipe.instructions.map((instruction, index) => (
-                                <li key={index} className="flex gap-3">
+                                <li key={instruction} className="flex gap-3">
                                     <span className="flex-shrink-0 w-6 h-6 bg-green-600 text-white rounded-full flex items-center justify-center text-sm font-medium">
                                         {index + 1}
                                     </span>

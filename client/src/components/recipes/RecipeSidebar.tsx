@@ -1,17 +1,39 @@
+import { useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Clock, ChefHat } from "lucide-react";
+import { Clock, ChefHat, Trash, Bookmark } from "lucide-react";
 import RecipesLoadingSpinner from "@/components/recipes/RecipesLoadingSpinner";
 import { Recipe } from "@/types/recipeTypes";
 import { AvailabilityScore } from "@/types/availabilityScore";
+import { Button } from "@/components/ui/button";
+import { LucideBookmarkFilled } from "@/components/recipes/LucideBookmarkFilled";
+import { useHoveredElementId } from "@/hooks/useHoveredElementId";
+
+interface RecipeSaving {
+    onToggleSave: (recipe: Recipe) => void;
+    savedRecipes: Recipe[];
+}
 
 interface RecipesSidebarProps {
     loading: boolean;
     recipes: Recipe[];
     onRecipeSelect: (recipe: Recipe) => void;
+    onDelete?: (id: string) => void;
+    recipeSaving?: RecipeSaving;
 }
 
-const RecipesSidebar = ({ loading, recipes, onRecipeSelect }: RecipesSidebarProps) => {
+const RecipesSidebar = ({ loading, recipes, onRecipeSelect, onDelete, recipeSaving }: RecipesSidebarProps) => {
+    const { hoveredId, setHoveredId, reevaluateHoveredId } = useHoveredElementId("data-recipe-id");
+
+    // Re-evaluate hoveredId when recipes change
+    useEffect(() => {
+        reevaluateHoveredId();
+    }, [recipes, reevaluateHoveredId]);
+
+    const isRecipeSaved = (recipe: Recipe) => {
+        return recipeSaving ? recipeSaving.savedRecipes.some((saved) => saved.id === recipe.id) : false;
+    };
+
     const getAvailabilityBadge = (score?: AvailabilityScore) => {
         if (!score) return null;
 
@@ -38,9 +60,48 @@ const RecipesSidebar = ({ loading, recipes, onRecipeSelect }: RecipesSidebarProp
         return recipes.map((recipe) => (
             <Card
                 key={recipe.id}
-                className="cursor-pointer hover:shadow-md transition-shadow duration-200 bg-white"
+                data-recipe-id={recipe.id}
+                className="relative cursor-pointer hover:shadow-md transition-shadow duration-200 bg-white"
                 onClick={() => onRecipeSelect(recipe)}
+                onMouseEnter={() => setHoveredId(recipe.id)}
+                onMouseMove={() => setHoveredId(recipe.id)}
+                onMouseLeave={() => setHoveredId(null)}
             >
+                {hoveredId === recipe.id && (
+                    <div className="absolute top-2 right-2 z-10 flex gap-1">
+                        {recipeSaving && (
+                            <Button
+                                size="sm"
+                                variant="outline"
+                                className="h-8 w-8 p-0 bg-white/90 hover:bg-white text-gray-600 hover:text-gray-900"
+                                onClick={(e) => {
+                                    e.stopPropagation(); // Prevent card click, dont open modal
+                                    recipeSaving.onToggleSave(recipe);
+                                }}
+                            >
+                                {isRecipeSaved(recipe) ? (
+                                    <LucideBookmarkFilled className="w-3 h-3" />
+                                ) : (
+                                    <Bookmark className="w-3 h-3" />
+                                )}
+                            </Button>
+                        )}
+                        {onDelete && (
+                            <Button
+                                size="sm"
+                                variant="outline"
+                                className="h-8 w-8 p-0 bg-white/90 hover:bg-white text-red-600 hover:text-red-700"
+                                onClick={(e) => {
+                                    e.stopPropagation(); // Prevent card click, dont open modal
+                                    onDelete(recipe.id);
+                                }}
+                            >
+                                <Trash className="w-3 h-3" />
+                            </Button>
+                        )}
+                    </div>
+                )}
+
                 <CardHeader className="pb-2">
                     <div className="flex justify-between items-start">
                         <CardTitle className="text-lg leading-tight">{recipe.title}</CardTitle>

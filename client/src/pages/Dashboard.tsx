@@ -1,4 +1,4 @@
-import { SetStateAction, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Camera, LogOut, Plus, Refrigerator, Settings } from "lucide-react";
 import IngredientGrid from "@/components/ingredients/IngredientGrid";
@@ -88,7 +88,7 @@ const Dashboard = () => {
         };
     };
 
-    const addAvaiabilityScore = (recipe: RecipeNoAvailabilityScore): Recipe => {
+    const addAvailabilityScore = (recipe: RecipeNoAvailabilityScore): Recipe => {
         const availabilityScore = calculateRecipeAvailability(recipe, ingredients);
         return {
             ...recipe,
@@ -97,7 +97,7 @@ const Dashboard = () => {
     };
 
     const addAvailabilityScoresAndCleanRecipes = (recipes: RecipeNoAvailabilityScore[]): Recipe[] => {
-        return recipes.map(removeZeroQuantityIngredients).map(addAvaiabilityScore);
+        return recipes.map(removeZeroQuantityIngredients).map(addAvailabilityScore);
     };
 
     const generateRecipes = (explore: boolean) => {
@@ -117,16 +117,17 @@ const Dashboard = () => {
     };
 
     const saveRecipe = (recipe: Recipe) => {
-        recipesService
+        return recipesService
             .save(recipe)
             .then((savedRecipe) => {
                 console.log("Recipe saved successfully:", savedRecipe);
-                const withAvailabilityScore = addAvaiabilityScore(savedRecipe);
+                const withAvailabilityScore = addAvailabilityScore(savedRecipe);
                 setSavedRecipes((prev) => [...prev, withAvailabilityScore]);
-                setSelectedRecipe(withAvailabilityScore); // Must be set because id changes!
+                return withAvailabilityScore;
             })
             .catch((error: Error) => {
                 errorHandler(error);
+                throw error; // Re-throw to handle in the calling function
             });
     };
 
@@ -146,13 +147,28 @@ const Dashboard = () => {
         return savedRecipes.some((r) => r.id === recipe.id);
     };
 
-    const toggleRecipeSaved = (recipe: Recipe) => {
-        if (isRecipeSaved(recipe)) {
+    const toggleRecipeSavedFromSuggestions = (recipeToSave: Recipe) => {
+        if (isRecipeSaved(recipeToSave)) {
             // Recipe is already saved, delete it
-            deleteRecipe(recipe.id);
+            deleteRecipe(recipeToSave.id);
         } else {
             // Recipe is not saved, save it
-            saveRecipe(recipe);
+            saveRecipe(recipeToSave).then((savedRecipe) => {
+                // Update the recipeSuggestions state to reflect the saved recipe
+                setRecipeSuggestions((prev) => prev.map((r) => (r.id === recipeToSave.id ? savedRecipe : r)));
+            });
+        }
+    };
+
+    const toggleRecipeSavedFromDetailModal = (recipeToSave: Recipe) => {
+        if (isRecipeSaved(recipeToSave)) {
+            // Recipe is already saved, delete it
+            deleteRecipe(recipeToSave.id);
+        } else {
+            // Recipe is not saved, save it
+            saveRecipe(recipeToSave).then((savedRecipe) => {
+                setSelectedRecipe(savedRecipe); // Must be set because id changes!
+            });
         }
     };
 
@@ -181,22 +197,20 @@ const Dashboard = () => {
             });
     };
 
-    const updateAvailabilityScores = (recipes: Recipe[], callback: (value: SetStateAction<Recipe[]>) => void) => {
-        recipes.forEach((recipe) => {
+    const updateAvailabilityScores = (recipes: Recipe[]): Recipe[] => {
+        return recipes.map((recipe) => {
             const updatedAvailabilityScore = calculateRecipeAvailability(recipe, ingredients);
 
             if (updatedAvailabilityScore === recipe.availabilityScore) {
-                // No change in availability score, skip update
-                return;
+                // No change in availability score, return the recipe as is
+                return recipe;
             }
+            console.log("Updated recipe availability score:", recipe.title);
 
-            const updatedRecipe = {
+            return {
                 ...recipe,
                 availabilityScore: updatedAvailabilityScore,
             };
-            callback((prev) => prev.map((r) => (r.id === recipe.id ? updatedRecipe : r)));
-
-            console.log("Updated recipe availability score:", updatedRecipe.title);
         });
     };
 
@@ -212,8 +226,8 @@ const Dashboard = () => {
     // Update recipe availability scores whenever ingredients change
     useEffect(() => {
         console.log("Ingredients changed, updating recipe availability scores...");
-        updateAvailabilityScores(recipeSuggestions, setRecipeSuggestions);
-        updateAvailabilityScores(savedRecipes, setSavedRecipes);
+        setRecipeSuggestions((prev) => updateAvailabilityScores(prev));
+        setSavedRecipes((prev) => updateAvailabilityScores(prev));
     }, [ingredients]);
 
     return (
@@ -303,11 +317,16 @@ const Dashboard = () => {
                                     loading={recipesLoading}
                                     recipes={recipeSuggestions}
                                     onRecipeSelect={setSelectedRecipe}
+                                    recipeSaving={{
+                                        onToggleSave: toggleRecipeSavedFromSuggestions,
+                                        savedRecipes: savedRecipes,
+                                    }}
                                 />
                             </TabsContent>
 
                             <TabsContent value="saved">
                                 <RecipesSidebar
+                                    onDelete={deleteRecipe}
                                     loading={false}
                                     recipes={savedRecipes}
                                     onRecipeSelect={setSelectedRecipe}
@@ -358,7 +377,7 @@ const Dashboard = () => {
                     recipe={selectedRecipe}
                     availableIngredients={ingredients}
                     isSaved={isRecipeSaved(selectedRecipe)}
-                    onToggleSave={() => toggleRecipeSaved(selectedRecipe)}
+                    onToggleSave={() => toggleRecipeSavedFromDetailModal(selectedRecipe)}
                     onClose={() => setSelectedRecipe(null)}
                     onCook={(recipe) => {
                         console.log("Cooking recipe:", recipe);

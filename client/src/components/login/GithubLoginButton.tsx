@@ -5,6 +5,7 @@ interface GithubLoginButtonProps {
 const GitHubLoginButton = ({ onClick }: GithubLoginButtonProps) => {
     return (
         <button
+            type="button"
             onClick={onClick}
             className="w-full flex items-center justify-center gap-3 px-5 py-2.5 bg-green-600 text-white rounded-2xl shadow-md hover:bg-green-700 transition-all duration-200"
         >
