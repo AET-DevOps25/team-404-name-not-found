@@ -12,7 +12,7 @@ import RecipesSidebar from "@/components/recipes/RecipeSidebar";
 import { RecipeWithAvailabilityAndId, RecipeWithId } from "@/types/recipeTypes";
 import recipesService from "@/api/services/recipesService";
 import RecipeDetailModal from "@/components/recipes/RecipeDetailModal";
-import { calculateRecipeAvailability } from "@/utils/calculateAvailability";
+import { calculateRecipeAvailability, IngredientMatchingResult } from "@/utils/ingredientMatching";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import RecipeSettingsModal from "@/components/recipes/RecipeSettingsModal";
 import { getNumberOfRecipesToGenerate } from "@/utils/settings";
@@ -29,6 +29,7 @@ const Dashboard = () => {
     const [recipeSuggestions, setRecipeSuggestions] = useState<RecipeWithAvailabilityAndId[]>([]);
     const [recipeSuggestionsLoading, setRecipeSuggestionsLoading] = useState(false);
     const [openedRecipe, setOpenedRecipe] = useState<RecipeWithAvailabilityAndId | null>(null);
+    const [recipeDetailModalIngredients, setRecipeDetailModalIngredients] = useState<IngredientWithId[] | null>([]);
 
     const [savedRecipes, setSavedRecipes] = useState<RecipeWithAvailabilityAndId[]>([]);
     const [showRecipeSettingsModal, setShowRecipeSettingsModal] = useState(false);
@@ -174,6 +175,28 @@ const Dashboard = () => {
                 }
             });
         }
+    };
+
+    const openRecipeDetailModal = (recipe: RecipeWithAvailabilityAndId) => {
+        setOpenedRecipe(recipe);
+        setRecipeDetailModalIngredients([...ingredients]);
+    };
+
+    const deleteUsedIngredients = (matchingResult: IngredientMatchingResult) => {
+        console.log("Deleting used ingredients:", matchingResult.usedIngredients);
+
+        matchingResult.usedIngredients.forEach((ingredient) => {
+            const fridgeIngredient = ingredients.find((ing) => ing.id === ingredient.id);
+            if (!fridgeIngredient) {
+                console.error(`Ingredient with id ${ingredient.id} not found in fridge ingredients.`);
+                return;
+            }
+            const updatedIngredient = {
+                ...fridgeIngredient,
+                quantity: fridgeIngredient.quantity - ingredient.quantity,
+            };
+            editIngredient(updatedIngredient);
+        });
     };
 
     const fetchIngredients = () => {
@@ -322,7 +345,7 @@ const Dashboard = () => {
                                 <RecipesSidebar
                                     loading={recipeSuggestionsLoading}
                                     recipes={recipeSuggestions}
-                                    onRecipeSelect={setOpenedRecipe}
+                                    onRecipeSelect={openRecipeDetailModal}
                                     recipeSaving={{
                                         onToggleSave: toggleRecipeSaved,
                                         savedRecipes: savedRecipes,
@@ -335,7 +358,7 @@ const Dashboard = () => {
                                     onDelete={deleteRecipe}
                                     loading={false}
                                     recipes={savedRecipes}
-                                    onRecipeSelect={setOpenedRecipe}
+                                    onRecipeSelect={openRecipeDetailModal}
                                 />
                             </TabsContent>
                         </Tabs>
@@ -378,16 +401,14 @@ const Dashboard = () => {
                     onSave={editIngredient}
                 />
             )}
-            {openedRecipe && (
+            {openedRecipe && recipeDetailModalIngredients && (
                 <RecipeDetailModal
                     recipe={openedRecipe}
-                    availableIngredients={ingredients}
+                    availableIngredients={recipeDetailModalIngredients}
                     isSaved={isRecipeSaved(openedRecipe)}
                     onToggleSave={() => toggleRecipeSaved(openedRecipe)}
                     onClose={() => setOpenedRecipe(null)}
-                    onCook={(recipe) => {
-                        console.log("Cooking recipe:", recipe);
-                    }}
+                    onDeleteUsedIngredients={deleteUsedIngredients}
                 />
             )}
             {showRecipeSettingsModal && <RecipeSettingsModal onClose={() => setShowRecipeSettingsModal(false)} />}

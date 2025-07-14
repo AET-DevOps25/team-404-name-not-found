@@ -4,7 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Trash, Pen } from "lucide-react";
 import { IngredientWithId } from "@/types/ingredientTypes";
-import { calculateIngredientAvailability } from "@/utils/calculateAvailability";
+import { calculateIngredientAvailability } from "@/utils/ingredientMatching";
 import { useHoveredElementId } from "@/hooks/useHoveredElementId";
 
 interface IngredientGridProps {
