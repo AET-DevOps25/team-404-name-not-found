@@ -73,6 +73,7 @@ public class RecipeService {
 
             AiSearchRequest searchRequest = new AiSearchRequest(query, count);
             HttpEntity<AiSearchRequest> request = new HttpEntity<>(searchRequest, headers);
+            System.out.println("Querying with these params: query: " + query + " count: " + count);
             ResponseEntity<RecipeResponseDTO> response = restTemplate.postForEntity(
                     "http://" + aiHost + "/api/genai/v1/recipe/search", request,
                     RecipeResponseDTO.class);
@@ -82,6 +83,7 @@ public class RecipeService {
                 Recipe toSave = Recipe.fromAiRecipeDTO(recipeDTO, userId);
                 recipes.add(toSave);
             }
+            System.out.println("Here's the received list: " + recipes);
             return recipes;
         } catch (Exception e) {
             System.out.println("Something went horribly wrong! " + e);
