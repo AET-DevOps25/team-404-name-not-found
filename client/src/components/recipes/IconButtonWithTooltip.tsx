@@ -27,6 +27,7 @@ export const IconButtonWithTooltip: FC<IconButtonWithTooltipProps> = ({
                 onClick={onClick}
                 disabled={disabled}
                 aria-label={ariaLabel}
+                tabIndex={-1}
                 className={`text-gray-600 hover:text-gray-900 ${className}`}
             >
                 {children}
