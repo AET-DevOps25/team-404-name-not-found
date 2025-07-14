@@ -112,9 +112,9 @@ const RecipeDetailModal = ({
                     <div>
                         <h3 className="text-lg font-semibold text-gray-900 mb-4">Ingredients</h3>
                         <div className="space-y-2">
-                            {ingredientsWithAvailabilityScore.map((ingredient) => (
+                            {ingredientsWithAvailabilityScore.map((ingredient, index) => (
                                 <div
-                                    key={ingredient.name}
+                                    key={`${index}-${ingredient.name}`}
                                     className="flex items-center justify-between py-2 px-3 rounded-lg bg-gray-50"
                                 >
                                     <span className="text-gray-900">{ingredient.name}</span>
@@ -136,7 +136,7 @@ const RecipeDetailModal = ({
                         <h3 className="text-lg font-semibold text-gray-900 mb-4">Instructions</h3>
                         <ol className="space-y-3">
                             {recipe.instructions.map((instruction, index) => (
-                                <li key={instruction} className="flex gap-3">
+                                <li key={`${index}-${instruction}`} className="flex gap-3">
                                     <span className="flex-shrink-0 w-6 h-6 bg-green-600 text-white rounded-full flex items-center justify-center text-sm font-medium">
                                         {index + 1}
                                     </span>

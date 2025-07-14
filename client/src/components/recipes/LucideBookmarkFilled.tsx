@@ -13,9 +13,9 @@ export const LucideBookmarkFilled = ({ className }: LucideBookmarkFilledProps) =
             viewBox="0 0 24 24"
             fill="currentColor"
             stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
             className={cn("lucide lucide-bookmark", className)}
             aria-hidden="true"
         >

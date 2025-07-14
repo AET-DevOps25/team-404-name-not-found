@@ -26,9 +26,8 @@ const Dashboard = () => {
 
     const [recipeSuggestions, setRecipeSuggestions] = useState<Recipe[]>([]);
     const [recipesLoading, setRecipesLoading] = useState(false);
-    const [selectedRecipe, setSelectedRecipe] = useState<Recipe | null>(null);
+    const [openedRecipe, setOpenedRecipe] = useState<Recipe | null>(null);
 
-    // @ts-ignore
     const [savedRecipes, setSavedRecipes] = useState<Recipe[]>([]);
 
     const errorHandler = (error: Error) => {
@@ -151,8 +150,8 @@ const Dashboard = () => {
         return recipeSuggestions.some((r) => r.id === recipe.id);
     };
 
-    const isRecipeSelected = (recipe: Recipe): boolean => {
-        return selectedRecipe ? selectedRecipe.id === recipe.id : false;
+    const isRecipeOpened = (recipe: Recipe): boolean => {
+        return openedRecipe ? openedRecipe.id === recipe.id : false;
     };
 
     const toggleRecipeSaved = (recipeToSave: Recipe) => {
@@ -166,9 +165,9 @@ const Dashboard = () => {
                     // Update the recipeSuggestions state to reflect the saved recipe, id changes after saving
                     setRecipeSuggestions((prev) => prev.map((r) => (r.id === recipeToSave.id ? savedRecipe : r)));
                 }
-                if (isRecipeSelected(recipeToSave)) {
-                    // If the selected recipe is the one being saved, update it because the id changes after saving
-                    setSelectedRecipe(savedRecipe);
+                if (isRecipeOpened(recipeToSave)) {
+                    // If the recipe to be saved is opened, we need to update the openedRecipe because its id has changed after saving
+                    setOpenedRecipe(savedRecipe);
                 }
             });
         }
@@ -318,7 +317,7 @@ const Dashboard = () => {
                                 <RecipesSidebar
                                     loading={recipesLoading}
                                     recipes={recipeSuggestions}
-                                    onRecipeSelect={setSelectedRecipe}
+                                    onRecipeSelect={setOpenedRecipe}
                                     recipeSaving={{
                                         onToggleSave: toggleRecipeSaved,
                                         savedRecipes: savedRecipes,
@@ -331,7 +330,7 @@ const Dashboard = () => {
                                     onDelete={deleteRecipe}
                                     loading={false}
                                     recipes={savedRecipes}
-                                    onRecipeSelect={setSelectedRecipe}
+                                    onRecipeSelect={setOpenedRecipe}
                                 />
                             </TabsContent>
                         </Tabs>
@@ -340,7 +339,7 @@ const Dashboard = () => {
             </div>
 
             {/* Floating AI Buttons */}
-            <div className="fixed bottom-6 right-6 z-50 flex flex-col gap-4 w-72">
+            <div className="fixed bottom-6 right-6 z-50 flex flex-col gap-4 w-45">
                 <Button
                     disabled={recipesLoading}
                     variant="default"
@@ -374,13 +373,13 @@ const Dashboard = () => {
                     onSave={editIngredient}
                 />
             )}
-            {selectedRecipe && (
+            {openedRecipe && (
                 <RecipeDetailModal
-                    recipe={selectedRecipe}
+                    recipe={openedRecipe}
                     availableIngredients={ingredients}
-                    isSaved={isRecipeSaved(selectedRecipe)}
-                    onToggleSave={() => toggleRecipeSaved(selectedRecipe)}
-                    onClose={() => setSelectedRecipe(null)}
+                    isSaved={isRecipeSaved(openedRecipe)}
+                    onToggleSave={() => toggleRecipeSaved(openedRecipe)}
+                    onClose={() => setOpenedRecipe(null)}
                     onCook={(recipe) => {
                         console.log("Cooking recipe:", recipe);
                     }}
