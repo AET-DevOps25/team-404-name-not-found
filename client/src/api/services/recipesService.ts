@@ -16,11 +16,9 @@ const mapToIngredient = (ingredient: ApiIngredient): IngredientNoId => {
 };
 
 const mapToRecipe = (recipe: ApiRecipe): RecipeNoAvailabilityScore => {
-    if (!recipe.id) {
-        recipe.id = uuidv4(); // Generate a temporary ID if not present
-    }
+    const id = recipe.id || uuidv4(); // Generate a temporary ID if not present
     return {
-        id: recipe.id,
+        id: id,
         title: recipe.title,
         description: recipe.description,
         cookingTime: recipe.cookingTime,
