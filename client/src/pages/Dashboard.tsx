@@ -97,9 +97,7 @@ const Dashboard = () => {
     };
 
     const addAvailabilityScoresAndCleanRecipes = (recipes: RecipeNoAvailabilityScore[]): Recipe[] => {
-        return recipes
-            .map((recipe) => removeZeroQuantityIngredients(recipe))
-            .map((recipe) => addAvaiabilityScore(recipe));
+        return recipes.map(removeZeroQuantityIngredients).map(addAvaiabilityScore);
     };
 
     const generateRecipes = (explore: boolean) => {
@@ -171,11 +169,12 @@ const Dashboard = () => {
     };
 
     const fetchSavedRecipes = () => {
-        recipesService
+        return recipesService
             .getAll()
             .then((recipes) => {
-                console.log("Successfully fetched saved recipes:", recipes);
-                setSavedRecipes(addAvailabilityScoresAndCleanRecipes(recipes));
+                const withAvailabilityScores = addAvailabilityScoresAndCleanRecipes(recipes);
+                console.log("Successfully fetched saved recipes:", withAvailabilityScores);
+                setSavedRecipes(withAvailabilityScores);
             })
             .catch((error: Error) => {
                 errorHandler(error);
@@ -203,13 +202,16 @@ const Dashboard = () => {
 
     useEffect(() => {
         console.log("Dashboard mounted, fetching ingredients and saved recipes...");
-        // Fetch ingredients from the API
-        fetchIngredients();
-        fetchSavedRecipes();
+        // Fetch saves recipes and ingredients from the API
+        // Recipes must be fetched first so their availability scores can be updated by the ingredients update hook
+        fetchSavedRecipes().finally(() => {
+            fetchIngredients();
+        });
     }, []);
 
-    // Update recipe availability scores whenever ingredients or recipes change
+    // Update recipe availability scores whenever ingredients change
     useEffect(() => {
+        console.log("Ingredients changed, updating recipe availability scores...");
         updateAvailabilityScores(recipeSuggestions, setRecipeSuggestions);
         updateAvailabilityScores(savedRecipes, setSavedRecipes);
     }, [ingredients]);
