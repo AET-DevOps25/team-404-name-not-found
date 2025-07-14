@@ -5,7 +5,7 @@ import IngredientGrid from "@/components/ingredients/IngredientGrid";
 import { Ingredient, IngredientNoId } from "@/types/ingredientTypes";
 import { useAuth } from "@/context/AuthContext";
 import ingredientsService from "@/api/services/ingredientsService";
-import { toast } from "@/hooks/use-toast";
+import { toast } from "@/hooks/useToast";
 import AddIngredientModal from "@/components/ingredients/AddIngredientModal";
 import EditIngredientModal from "@/components/ingredients/EditIngredientModal";
 import RecipesSidebar from "@/components/recipes/RecipeSidebar";
@@ -14,6 +14,8 @@ import recipesService from "@/api/services/recipesService";
 import RecipeDetailModal from "@/components/recipes/RecipeDetailModal";
 import { calculateRecipeAvailability } from "@/utils/calculateAvailability";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import RecipeSettingsModal from "@/components/recipes/RecipeSettingsModal";
+import { getNumberOfRecipesToGenerate } from "@/utils/settings";
 
 const Dashboard = () => {
     const { logout } = useAuth();
@@ -25,10 +27,11 @@ const Dashboard = () => {
     const [activeRecipeTab, setActiveRecipeTab] = useState("suggestions");
 
     const [recipeSuggestions, setRecipeSuggestions] = useState<Recipe[]>([]);
-    const [recipesLoading, setRecipesLoading] = useState(false);
+    const [recipeSuggestionsLoading, setRecipeSuggestionsLoading] = useState(false);
     const [openedRecipe, setOpenedRecipe] = useState<Recipe | null>(null);
 
     const [savedRecipes, setSavedRecipes] = useState<Recipe[]>([]);
+    const [showRecipeSettingsModal, setShowRecipeSettingsModal] = useState(false);
 
     const errorHandler = (error: Error) => {
         toast({
@@ -100,9 +103,9 @@ const Dashboard = () => {
     };
 
     const generateRecipes = (explore: boolean) => {
-        setRecipesLoading(true);
+        setRecipeSuggestionsLoading(true);
         recipesService
-            .generateRecipes(3, explore, ingredients)
+            .generateRecipes(getNumberOfRecipesToGenerate(), explore, ingredients)
             .then((recipes) => {
                 console.log("Recipes generated successfully:", recipes);
                 setRecipeSuggestions(addAvailabilityScoresAndCleanRecipes(recipes));
@@ -111,7 +114,7 @@ const Dashboard = () => {
                 errorHandler(error);
             })
             .finally(() => {
-                setRecipesLoading(false);
+                setRecipeSuggestionsLoading(false);
             });
     };
 
@@ -306,7 +309,9 @@ const Dashboard = () => {
                                 <Button
                                     variant="outline"
                                     size="sm"
-                                    onClick={() => {}} // TODO: Open settings
+                                    onClick={() => {
+                                        setShowRecipeSettingsModal(true);
+                                    }}
                                     className="text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white"
                                 >
                                     <Settings className="w-4 h-4" />
@@ -315,7 +320,7 @@ const Dashboard = () => {
 
                             <TabsContent value="suggestions">
                                 <RecipesSidebar
-                                    loading={recipesLoading}
+                                    loading={recipeSuggestionsLoading}
                                     recipes={recipeSuggestions}
                                     onRecipeSelect={setOpenedRecipe}
                                     recipeSaving={{
@@ -341,7 +346,7 @@ const Dashboard = () => {
             {/* Floating AI Buttons */}
             <div className="fixed bottom-6 right-6 z-50 flex flex-col gap-4 w-45">
                 <Button
-                    disabled={recipesLoading}
+                    disabled={recipeSuggestionsLoading}
                     variant="default"
                     className="text-base py-5 rounded-2xl shadow-lg hover:shadow-xl transition"
                     onClick={() => {
@@ -351,7 +356,7 @@ const Dashboard = () => {
                     🍳 Match My Ingredients
                 </Button>
                 <Button
-                    disabled={recipesLoading}
+                    disabled={recipeSuggestionsLoading}
                     variant="outline"
                     className="text-base py-5 rounded-2xl shadow-lg hover:shadow-xl transition"
                     onClick={() => {
@@ -385,6 +390,7 @@ const Dashboard = () => {
                     }}
                 />
             )}
+            {showRecipeSettingsModal && <RecipeSettingsModal onClose={() => setShowRecipeSettingsModal(false)} />}
         </div>
     );
 };
