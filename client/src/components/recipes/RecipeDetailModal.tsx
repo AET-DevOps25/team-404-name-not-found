@@ -64,31 +64,28 @@ const RecipeDetailModal = ({
 
     const ingredientMatchingResult = determineUsedAndMissingIngredients(recipe, availableIngredients);
 
-    const getShoppingList = () => {
-        console.log("Generating shopping list with missing ingredients:", ingredientMatchingResult.missingIngredients);
-        return (
-            <>
-                <div>
-                    <h3 className="text-lg font-semibold text-gray-900 mb-4">Shopping List</h3>
-                    <ul className="space-y-2">
-                        {ingredientMatchingResult.missingIngredients.map((ingredient, index) => (
-                            <li
-                                key={`${index}-${ingredient.name}`}
-                                className="flex items-center justify-between py-2 px-3 rounded-lg bg-gray-50"
-                            >
-                                <span className="text-gray-900">{ingredient.name}</span>
-                                <span className="text-gray-600">
-                                    {ingredient.quantity} {ingredient.unit}{" "}
-                                    {ingredient.unitMismatch ? "(unit mismatch)" : ""}
-                                </span>
-                            </li>
-                        ))}
-                    </ul>
-                </div>
-                <Separator />
-            </>
-        );
-    };
+    const shoppingList = (
+        <>
+            <div>
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">Shopping List</h3>
+                <ul className="space-y-2">
+                    {ingredientMatchingResult.missingIngredients.map((ingredient, index) => (
+                        <li
+                            key={`${index}-${ingredient.name}`}
+                            className="flex items-center justify-between py-2 px-3 rounded-lg bg-gray-50"
+                        >
+                            <span className="text-gray-900">{ingredient.name}</span>
+                            <span className="text-gray-600">
+                                {ingredient.quantity} {ingredient.unit}{" "}
+                                {ingredient.unitMismatch ? "(unit mismatch)" : ""}
+                            </span>
+                        </li>
+                    ))}
+                </ul>
+            </div>
+            <Separator />
+        </>
+    );
 
     const shareRecipe = () => {
         const text =
@@ -220,7 +217,7 @@ const RecipeDetailModal = ({
                     <Separator />
 
                     {/* Shopping List */}
-                    {showSoppingList && getShoppingList()}
+                    {showSoppingList && shoppingList}
 
                     {/* Instructions */}
                     <div>
@@ -238,6 +235,7 @@ const RecipeDetailModal = ({
                             ))}
                         </ol>
                     </div>
+                    <div className="h-1" />
                 </div>
             </DialogContent>
         </Dialog>
