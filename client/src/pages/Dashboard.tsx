@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { SetStateAction, useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Camera, LogOut, Plus, Refrigerator, Settings } from "lucide-react";
 import IngredientGrid from "@/components/ingredients/IngredientGrid";
@@ -11,7 +11,6 @@ import EditIngredientModal from "@/components/ingredients/EditIngredientModal";
 import RecipesSidebar from "@/components/recipes/RecipeSidebar";
 import { Recipe, RecipeNoAvailabilityScore } from "@/types/recipeTypes";
 import recipesService from "@/api/services/recipesService";
-import { dummyRecipes } from "@/dummyRecipes";
 import RecipeDetailModal from "@/components/recipes/RecipeDetailModal";
 import { calculateRecipeAvailability } from "@/utils/calculateAvailability";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
@@ -25,7 +24,7 @@ const Dashboard = () => {
 
     const [activeRecipeTab, setActiveRecipeTab] = useState("suggestions");
 
-    const [recipeSuggestions, setRecipeSuggestions] = useState<Recipe[]>(dummyRecipes);
+    const [recipeSuggestions, setRecipeSuggestions] = useState<Recipe[]>([]);
     const [recipesLoading, setRecipesLoading] = useState(false);
     const [selectedRecipe, setSelectedRecipe] = useState<Recipe | null>(null);
 
@@ -97,16 +96,19 @@ const Dashboard = () => {
         };
     };
 
+    const addAvailabilityScoresAndCleanRecipes = (recipes: RecipeNoAvailabilityScore[]): Recipe[] => {
+        return recipes
+            .map((recipe) => removeZeroQuantityIngredients(recipe))
+            .map((recipe) => addAvaiabilityScore(recipe));
+    };
+
     const generateRecipes = (explore: boolean) => {
         setRecipesLoading(true);
         recipesService
             .generateRecipes(3, explore, ingredients)
             .then((recipes) => {
                 console.log("Recipes generated successfully:", recipes);
-                const cleanedRecipes = recipes
-                    .map((recipe) => removeZeroQuantityIngredients(recipe))
-                    .map((recipe) => addAvaiabilityScore(recipe));
-                setRecipeSuggestions(cleanedRecipes);
+                setRecipeSuggestions(addAvailabilityScoresAndCleanRecipes(recipes));
             })
             .catch((error: Error) => {
                 errorHandler(error);
@@ -122,7 +124,7 @@ const Dashboard = () => {
             .then((savedRecipe) => {
                 console.log("Recipe saved successfully:", savedRecipe);
                 const withAvailabilityScore = addAvaiabilityScore(savedRecipe);
-                setSavedRecipes((prev) => [...prev, addAvaiabilityScore(withAvailabilityScore)]);
+                setSavedRecipes((prev) => [...prev, withAvailabilityScore]);
                 setSelectedRecipe(withAvailabilityScore); // Must be set because id changes!
             })
             .catch((error: Error) => {
@@ -156,40 +158,32 @@ const Dashboard = () => {
         }
     };
 
-    useEffect(() => {
-        console.log("Dashboard mounted, fetching ingredients and saved recipes...");
-        // Fetch ingredients from the API
+    const fetchIngredients = () => {
         ingredientsService
             .getAll()
-            .then((fetchedIngredients) => {
-                setIngredients(fetchedIngredients);
+            .then((ingredients) => {
+                console.log("Successfully fetched ingredients:", ingredients);
+                setIngredients(ingredients);
             })
             .catch((error: Error) => {
                 errorHandler(error);
             });
+    };
 
+    const fetchSavedRecipes = () => {
         recipesService
             .getAll()
             .then((recipes) => {
-                console.log("Fetched saved recipes:", recipes);
-                // Calculate availability scores for the generated recipes
-                const recipesWithAvailability = recipes.map((recipe) => {
-                    const availabilityScore = calculateRecipeAvailability(recipe, ingredients);
-                    return {
-                        ...recipe,
-                        availabilityScore,
-                    };
-                });
-                setSavedRecipes(recipesWithAvailability);
+                console.log("Successfully fetched saved recipes:", recipes);
+                setSavedRecipes(addAvailabilityScoresAndCleanRecipes(recipes));
             })
             .catch((error: Error) => {
                 errorHandler(error);
             });
-    }, []);
+    };
 
-    // Update recipe availability scores whenever ingredients or recipes change
-    useEffect(() => {
-        recipeSuggestions.forEach((recipe) => {
+    const updateAvailabilityScores = (recipes: Recipe[], callback: (value: SetStateAction<Recipe[]>) => void) => {
+        recipes.forEach((recipe) => {
             const updatedAvailabilityScore = calculateRecipeAvailability(recipe, ingredients);
 
             if (updatedAvailabilityScore === recipe.availabilityScore) {
@@ -201,10 +195,23 @@ const Dashboard = () => {
                 ...recipe,
                 availabilityScore: updatedAvailabilityScore,
             };
-            setRecipeSuggestions((prev) => prev.map((r) => (r.id === recipe.id ? updatedRecipe : r)));
+            callback((prev) => prev.map((r) => (r.id === recipe.id ? updatedRecipe : r)));
 
             console.log("Updated recipe availability score:", updatedRecipe.title);
         });
+    };
+
+    useEffect(() => {
+        console.log("Dashboard mounted, fetching ingredients and saved recipes...");
+        // Fetch ingredients from the API
+        fetchIngredients();
+        fetchSavedRecipes();
+    }, []);
+
+    // Update recipe availability scores whenever ingredients or recipes change
+    useEffect(() => {
+        updateAvailabilityScores(recipeSuggestions, setRecipeSuggestions);
+        updateAvailabilityScores(savedRecipes, setSavedRecipes);
     }, [ingredients]);
 
     return (
