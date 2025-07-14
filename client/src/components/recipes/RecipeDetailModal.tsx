@@ -4,19 +4,19 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Clock, ChefHat, Users, Bookmark } from "lucide-react";
-import { Recipe } from "@/types/recipeTypes";
-import { Ingredient } from "@/types/ingredientTypes";
+import { RecipeWithAvailabilityAndId } from "@/types/recipeTypes";
+import { IngredientWithId } from "@/types/ingredientTypes";
 import { calculateIngredientAvailabilityForRecipe } from "@/utils/calculateAvailability";
 import { AvailabilityScore } from "@/types/availabilityScore";
 import { LucideBookmarkFilled } from "@/components/recipes/LucideBookmarkFilled";
 
 interface RecipeDetailModalProps {
-    recipe: Recipe;
+    recipe: RecipeWithAvailabilityAndId;
     isSaved: boolean;
     onClose: () => void;
-    onCook: (recipe: Recipe) => void;
+    onCook: (recipe: RecipeWithAvailabilityAndId) => void;
     onToggleSave: () => void;
-    availableIngredients: Ingredient[];
+    availableIngredients: IngredientWithId[];
 }
 
 const RecipeDetailModal = ({

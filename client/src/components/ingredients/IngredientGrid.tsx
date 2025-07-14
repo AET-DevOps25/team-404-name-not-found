@@ -3,13 +3,13 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Trash, Pen } from "lucide-react";
-import { Ingredient } from "@/types/ingredientTypes";
+import { IngredientWithId } from "@/types/ingredientTypes";
 import { calculateIngredientAvailability } from "@/utils/calculateAvailability";
 import { useHoveredElementId } from "@/hooks/useHoveredElementId";
 
 interface IngredientGridProps {
-    ingredients: Ingredient[];
-    onEdit: (ingredient: Ingredient) => void;
+    ingredients: IngredientWithId[];
+    onEdit: (ingredient: IngredientWithId) => void;
     onDelete: (id: string) => void;
 }
 
@@ -21,7 +21,7 @@ const IngredientGrid = ({ ingredients, onEdit, onDelete }: IngredientGridProps) 
         reevaluateHoveredId();
     }, [ingredients, reevaluateHoveredId]);
 
-    const getQuantityColor = (ingredient: Ingredient) => {
+    const getQuantityColor = (ingredient: IngredientWithId) => {
         const availabilityScore = calculateIngredientAvailability(ingredient);
 
         switch (availabilityScore) {

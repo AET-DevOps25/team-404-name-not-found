@@ -1,9 +1,9 @@
-import { Ingredient, IngredientNoId } from "@/types/ingredientTypes";
+import { IngredientWithId, Ingredient } from "@/types/ingredientTypes";
 import { AvailabilityScore } from "@/types/availabilityScore";
 import stringSimilarity from "string-comparison";
-import { RecipeNoAvailabilityScoreAndId } from "@/types/recipeTypes";
+import { Recipe } from "@/types/recipeTypes";
 
-export const calculateIngredientAvailability = (ingredient: IngredientNoId): AvailabilityScore => {
+export const calculateIngredientAvailability = (ingredient: Ingredient): AvailabilityScore => {
     if (!ingredient.name || !ingredient.quantity || ingredient.quantity <= 0) {
         return "bad"; // Ingredient is missing or has no quantity
     }
@@ -19,8 +19,11 @@ export const calculateIngredientAvailability = (ingredient: IngredientNoId): Ava
     return "good"; // Sufficient quantity
 };
 
-const getBestMatchingIngredient = (ingredient: IngredientNoId, ingredients: Ingredient[]): Ingredient | null => {
-    let bestMatch: Ingredient | null = null;
+const getBestMatchingIngredient = (
+    ingredient: Ingredient,
+    ingredients: IngredientWithId[]
+): IngredientWithId | null => {
+    let bestMatch: IngredientWithId | null = null;
     let highestScore = 0;
     let highestNameSimilarity = 0;
 
@@ -44,8 +47,8 @@ const getBestMatchingIngredient = (ingredient: IngredientNoId, ingredients: Ingr
 };
 
 export const calculateIngredientAvailabilityForRecipe = (
-    ingredient: IngredientNoId,
-    ingredients: Ingredient[]
+    ingredient: Ingredient,
+    ingredients: IngredientWithId[]
 ): AvailabilityScore => {
     const foundIngredient = getBestMatchingIngredient(ingredient, ingredients);
 
@@ -64,10 +67,7 @@ export const calculateIngredientAvailabilityForRecipe = (
     return "good"; // Sufficient quantity
 };
 
-export const calculateRecipeAvailability = (
-    recipe: RecipeNoAvailabilityScoreAndId,
-    ingredients: Ingredient[]
-): AvailabilityScore => {
+export const calculateRecipeAvailability = (recipe: Recipe, ingredients: IngredientWithId[]): AvailabilityScore => {
     const ingredientsAvailability = recipe.ingredients.map((ingredient) =>
         calculateIngredientAvailabilityForRecipe(ingredient, ingredients)
     );

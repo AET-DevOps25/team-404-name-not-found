@@ -3,21 +3,21 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Clock, ChefHat, Trash, Bookmark } from "lucide-react";
 import RecipesLoadingSpinner from "@/components/recipes/RecipesLoadingSpinner";
-import { Recipe } from "@/types/recipeTypes";
+import { RecipeWithAvailabilityAndId } from "@/types/recipeTypes";
 import { AvailabilityScore } from "@/types/availabilityScore";
 import { Button } from "@/components/ui/button";
 import { LucideBookmarkFilled } from "@/components/recipes/LucideBookmarkFilled";
 import { useHoveredElementId } from "@/hooks/useHoveredElementId";
 
 interface RecipeSaving {
-    onToggleSave: (recipe: Recipe) => void;
-    savedRecipes: Recipe[];
+    onToggleSave: (recipe: RecipeWithAvailabilityAndId) => void;
+    savedRecipes: RecipeWithAvailabilityAndId[];
 }
 
 interface RecipesSidebarProps {
     loading: boolean;
-    recipes: Recipe[];
-    onRecipeSelect: (recipe: Recipe) => void;
+    recipes: RecipeWithAvailabilityAndId[];
+    onRecipeSelect: (recipe: RecipeWithAvailabilityAndId) => void;
     onDelete?: (id: string) => void;
     recipeSaving?: RecipeSaving;
 }
@@ -30,7 +30,7 @@ const RecipesSidebar = ({ loading, recipes, onRecipeSelect, onDelete, recipeSavi
         reevaluateHoveredId();
     }, [recipes, reevaluateHoveredId]);
 
-    const isRecipeSaved = (recipe: Recipe) => {
+    const isRecipeSaved = (recipe: RecipeWithAvailabilityAndId) => {
         return recipeSaving ? recipeSaving.savedRecipes.some((saved) => saved.id === recipe.id) : false;
     };
 
