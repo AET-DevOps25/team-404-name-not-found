@@ -3,7 +3,7 @@
 # Declare variables to be passed into your templates.
 
 namespace: team-404-name-not-found
-currentBranch: client-generate-recipes-2
+currentBranch: cook-recipes
 
 # default login vars for postgres
 postgresUser: postgres
