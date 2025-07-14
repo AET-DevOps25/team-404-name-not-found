@@ -8,7 +8,3 @@ export interface Ingredient {
 }
 
 export type IngredientNoId = Omit<Ingredient, "id">;
-
-export interface RenderableIngredient extends Ingredient {
-    imageUrl: string;
-}

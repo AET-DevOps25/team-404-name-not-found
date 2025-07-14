@@ -1,9 +1,11 @@
-import { useState } from "react";
+import { useEffect } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Trash, Pen } from "lucide-react";
 import { Ingredient } from "@/types/ingredientTypes";
+import { calculateIngredientAvailability } from "@/utils/calculateAvailability";
+import { useHoveredElementId } from "@/hooks/useHoveredElementId";
 
 interface IngredientGridProps {
     ingredients: Ingredient[];
@@ -12,13 +14,26 @@ interface IngredientGridProps {
 }
 
 const IngredientGrid = ({ ingredients, onEdit, onDelete }: IngredientGridProps) => {
-    const [hoveredId, setHoveredId] = useState<string | null>(null);
+    const { hoveredId, setHoveredId, reevaluateHoveredId } = useHoveredElementId("data-ingredient-id");
 
-    const getQuantityColor = (quantity: number, unit: string) => {
-        if (quantity === 0) return "bg-red-100 text-red-800";
-        if (quantity < 5 && unit === "pcs") return "bg-yellow-100 text-yellow-800";
-        if (quantity < 100 && (unit === "ml" || unit === "g")) return "bg-yellow-100 text-yellow-800";
-        return "bg-green-100 text-green-800";
+    // Re-evaluate hoveredId when ingredients change
+    useEffect(() => {
+        reevaluateHoveredId();
+    }, [ingredients, reevaluateHoveredId]);
+
+    const getQuantityColor = (ingredient: Ingredient) => {
+        const availabilityScore = calculateIngredientAvailability(ingredient);
+
+        switch (availabilityScore) {
+            case "bad":
+                return "bg-red-100 text-red-800";
+            case "medium":
+                return "bg-yellow-100 text-yellow-800";
+            case "good":
+                return "bg-green-100 text-green-800";
+            default:
+                return "bg-gray-100 text-gray-800"; // Fallback color
+        }
     };
 
     if (ingredients.length === 0) {
@@ -35,6 +50,7 @@ const IngredientGrid = ({ ingredients, onEdit, onDelete }: IngredientGridProps) 
             {ingredients.map((ingredient) => (
                 <Card
                     key={ingredient.id}
+                    data-ingredient-id={ingredient.id}
                     className="overflow-hidden hover:shadow-lg transition-shadow duration-200 bg-white relative"
                     onMouseEnter={() => setHoveredId(ingredient.id)}
                     onMouseLeave={() => setHoveredId(null)}
@@ -64,10 +80,7 @@ const IngredientGrid = ({ ingredients, onEdit, onDelete }: IngredientGridProps) 
                     </div>
                     <CardContent className="p-4">
                         <h3 className="font-semibold text-gray-900 mb-2 truncate">{ingredient.name}</h3>
-                        <Badge
-                            variant="outline"
-                            className={`${getQuantityColor(ingredient.quantity, ingredient.unit)} border-0`}
-                        >
+                        <Badge variant="outline" className={`${getQuantityColor(ingredient)} border-0`}>
                             {ingredient.quantity} {ingredient.unit}
                         </Badge>
                     </CardContent>

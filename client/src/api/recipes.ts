@@ -85,6 +85,7 @@ export interface components {
         Recipe: {
             id?: string;
             title: string;
+            description: string;
             /** @enum {string} */
             difficulty: "easy" | "medium" | "advanced";
             /** Format: int32 */
@@ -197,13 +198,13 @@ export interface operations {
             };
         };
         responses: {
-            /** @description Generated Recipe */
+            /** @description Generated Recipes */
             200: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["Recipe"];
+                    "*/*": components["schemas"]["Recipe"][];
                 };
             };
         };
@@ -226,13 +227,13 @@ export interface operations {
             };
         };
         responses: {
-            /** @description Generated Recipe */
+            /** @description Generated Recipes */
             200: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["Recipe"];
+                    "*/*": components["schemas"]["Recipe"][];
                 };
             };
         };
