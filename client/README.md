@@ -42,11 +42,11 @@ To redirect this to something else:
     ```
     When serving a static build like this, you cannot simply change the environment variable in the `.env` file, as it is
     only read at build time.  
-    However, we don't want to rebuild the image every time we change the server URL, so we use a little workaround:  
-    We use the vite plugin `vite-plugin-runtime-env` for the production build, which creates placeholders for all used
+     However, we don't want to rebuild the image every time we change the server URL, so we use a little workaround:  
+     We use the vite plugin `vite-plugin-runtime-env` for the production build, which creates placeholders for all used
     envvars beginning with `VITE_` in the built
     `index.html`  
-    For example:
+     For example:
     ```html
     <script type="application/javascript">
         window.env = JSON.parse('{"VITE_API_BASE_URL":"${VITE_API_BASE_URL}"}');
@@ -74,6 +74,7 @@ server uses, will be on the HOST (e.g. `fridge.localhost`) of the docker compose
 the server services must be run with `MODE=dev` for this to work.
 
 ## Local Development with dev server for client and backend services from docker compose
+
 - Create a `.env` file in the root of the client directory and set the environment variables as needed.  
   See `.env.template` for an example.
 - Install & Start dev server for the client:
@@ -84,9 +85,9 @@ the server services must be run with `MODE=dev` for this to work.
 - Start the backend services with docker compose (see `docs/local-development.md` for more information):
     ```bash
     # From root of the project
-    BRANCH=<branchname> MODE=dev docker compose -f compose.yml up   
-    ```    
-  Note: `MODE=dev` is needed to enable the mocked login flow in the backend services, so that the client can use the `dev-user`.
+    BRANCH=<branchname> MODE=dev docker compose -f compose.yml up
+    ```
+    Note: `MODE=dev` is needed to enable the mocked login flow in the backend services, so that the client can use the `dev-user`.
 - This will also start a client container but we just ignore it and access the server via the Vite dev server on `localhost:8080`.
 - You have to open the browser with the URL `https://fridge.localhost` and accept the self-signed certificate, otherwise the calls to the backend services from the dev server may fail due to certificate errors.
 - Now you can develop the client with hot reloading on `localhost:8080` and the backend services running in docker compose.
