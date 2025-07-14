@@ -147,27 +147,29 @@ const Dashboard = () => {
         return savedRecipes.some((r) => r.id === recipe.id);
     };
 
-    const toggleRecipeSavedFromSuggestions = (recipeToSave: Recipe) => {
-        if (isRecipeSaved(recipeToSave)) {
-            // Recipe is already saved, delete it
-            deleteRecipe(recipeToSave.id);
-        } else {
-            // Recipe is not saved, save it
-            saveRecipe(recipeToSave).then((savedRecipe) => {
-                // Update the recipeSuggestions state to reflect the saved recipe
-                setRecipeSuggestions((prev) => prev.map((r) => (r.id === recipeToSave.id ? savedRecipe : r)));
-            });
-        }
+    const isRecipeInSuggestions = (recipe: Recipe): boolean => {
+        return recipeSuggestions.some((r) => r.id === recipe.id);
     };
 
-    const toggleRecipeSavedFromDetailModal = (recipeToSave: Recipe) => {
+    const isRecipeSelected = (recipe: Recipe): boolean => {
+        return selectedRecipe ? selectedRecipe.id === recipe.id : false;
+    };
+
+    const toggleRecipeSaved = (recipeToSave: Recipe) => {
         if (isRecipeSaved(recipeToSave)) {
             // Recipe is already saved, delete it
             deleteRecipe(recipeToSave.id);
         } else {
             // Recipe is not saved, save it
             saveRecipe(recipeToSave).then((savedRecipe) => {
-                setSelectedRecipe(savedRecipe); // Must be set because id changes!
+                if (isRecipeInSuggestions(recipeToSave)) {
+                    // Update the recipeSuggestions state to reflect the saved recipe, id changes after saving
+                    setRecipeSuggestions((prev) => prev.map((r) => (r.id === recipeToSave.id ? savedRecipe : r)));
+                }
+                if (isRecipeSelected(recipeToSave)) {
+                    // If the selected recipe is the one being saved, update it because the id changes after saving
+                    setSelectedRecipe(savedRecipe);
+                }
             });
         }
     };
@@ -318,7 +320,7 @@ const Dashboard = () => {
                                     recipes={recipeSuggestions}
                                     onRecipeSelect={setSelectedRecipe}
                                     recipeSaving={{
-                                        onToggleSave: toggleRecipeSavedFromSuggestions,
+                                        onToggleSave: toggleRecipeSaved,
                                         savedRecipes: savedRecipes,
                                     }}
                                 />
@@ -377,7 +379,7 @@ const Dashboard = () => {
                     recipe={selectedRecipe}
                     availableIngredients={ingredients}
                     isSaved={isRecipeSaved(selectedRecipe)}
-                    onToggleSave={() => toggleRecipeSavedFromDetailModal(selectedRecipe)}
+                    onToggleSave={() => toggleRecipeSaved(selectedRecipe)}
                     onClose={() => setSelectedRecipe(null)}
                     onCook={(recipe) => {
                         console.log("Cooking recipe:", recipe);

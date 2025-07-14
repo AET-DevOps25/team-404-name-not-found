@@ -1,10 +1,11 @@
-import { useState } from "react";
+import { useEffect } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Trash, Pen } from "lucide-react";
 import { Ingredient } from "@/types/ingredientTypes";
 import { calculateIngredientAvailability } from "@/utils/calculateAvailability";
+import { useHoveredElementId } from "@/hooks/useHoveredElementId";
 
 interface IngredientGridProps {
     ingredients: Ingredient[];
@@ -13,7 +14,12 @@ interface IngredientGridProps {
 }
 
 const IngredientGrid = ({ ingredients, onEdit, onDelete }: IngredientGridProps) => {
-    const [hoveredId, setHoveredId] = useState<string | null>(null);
+    const { hoveredId, setHoveredId, reevaluateHoveredId } = useHoveredElementId("data-ingredient-id");
+
+    // Re-evaluate hoveredId when ingredients change
+    useEffect(() => {
+        reevaluateHoveredId();
+    }, [ingredients, reevaluateHoveredId]);
 
     const getQuantityColor = (ingredient: Ingredient) => {
         const availabilityScore = calculateIngredientAvailability(ingredient);
@@ -44,6 +50,7 @@ const IngredientGrid = ({ ingredients, onEdit, onDelete }: IngredientGridProps) 
             {ingredients.map((ingredient) => (
                 <Card
                     key={ingredient.id}
+                    data-ingredient-id={ingredient.id}
                     className="overflow-hidden hover:shadow-lg transition-shadow duration-200 bg-white relative"
                     onMouseEnter={() => setHoveredId(ingredient.id)}
                     onMouseLeave={() => setHoveredId(null)}
