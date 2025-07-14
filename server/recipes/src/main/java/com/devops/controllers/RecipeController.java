@@ -113,6 +113,17 @@ public class RecipeController {
         return ResponseEntity.ok(recipes);
     }
 
+    @GetMapping("/query")
+    public ResponseEntity<List<Recipe>> getAllRecipesFromQuery(
+            @RequestHeader(value = "X-User-Id", required = false) String userId, @RequestParam String query,
+            @RequestParam int count) {
+
+        userId = configureUserId(userId);
+
+        List<Recipe> recipes = recipeService.getRecipeByQuery(userId, query, count);
+        return ResponseEntity.ok(recipes);
+    }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteRecipe(@PathVariable String id,
             @RequestHeader(value = "X-User-Id", required = false) String userId) {

@@ -1,6 +1,7 @@
 package com.devops.services;
 
 import com.devops.entities.AiRecipeRequest;
+import com.devops.entities.AiSearchRequest;
 import com.devops.entities.Ingredient;
 import com.devops.entities.Recipe;
 import com.devops.entities.AiRecipeDTO;
@@ -48,6 +49,32 @@ public class RecipeService {
             HttpEntity<AiRecipeRequest> request = new HttpEntity<>(aiRecipeRequest, headers);
             ResponseEntity<RecipeResponseDTO> response = restTemplate.postForEntity(
                     "http://" + aiHost + "/api/genai/v1/recipe" + aiEndpoint + String.valueOf(numRecipes), request,
+                    RecipeResponseDTO.class);
+
+            List<Recipe> recipes = new ArrayList<>();
+            for (AiRecipeDTO recipeDTO : response.getBody().getRecipes()) {
+                Recipe toSave = Recipe.fromAiRecipeDTO(recipeDTO, userId);
+                recipes.add(toSave);
+            }
+            return recipes;
+        } catch (Exception e) {
+            System.out.println("Something went horribly wrong! " + e);
+            // Fallback
+            return new ArrayList<Recipe>();
+        }
+
+    }
+
+    public List<Recipe> getRecipeByQuery(String userId, String query, int count) {
+
+        try {
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON);
+
+            AiSearchRequest searchRequest = new AiSearchRequest(query, count);
+            HttpEntity<AiSearchRequest> request = new HttpEntity<>(searchRequest, headers);
+            ResponseEntity<RecipeResponseDTO> response = restTemplate.postForEntity(
+                    "http://" + aiHost + "/api/genai/v1/recipe/search", request,
                     RecipeResponseDTO.class);
 
             List<Recipe> recipes = new ArrayList<>();
