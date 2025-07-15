@@ -4,12 +4,12 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Ingredient } from "@/types/ingredientTypes";
+import { IngredientWithId } from "@/types/ingredientTypes";
 
 interface EditIngredientModalProps {
-    ingredient: Ingredient;
+    ingredient: IngredientWithId;
     onClose: () => void;
-    onSave: (ingredient: Ingredient) => void;
+    onSave: (ingredient: IngredientWithId) => void;
 }
 
 const EditIngredientModal = ({ ingredient, onClose, onSave }: EditIngredientModalProps) => {

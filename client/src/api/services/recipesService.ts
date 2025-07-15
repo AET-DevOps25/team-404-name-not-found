@@ -1,13 +1,13 @@
 import { recipesClient } from "@/api/fetchClients";
-import { Difficulty, RecipeNoAvailabilityScore, RecipeNoAvailabilityScoreAndId } from "@/types/recipeTypes";
-import { IngredientNoId } from "@/types/ingredientTypes.ts";
+import { Difficulty, RecipeWithId, Recipe } from "@/types/recipeTypes";
+import { Ingredient } from "@/types/ingredientTypes.ts";
 import { components } from "@/api/recipes";
 import { v4 as uuidv4 } from "uuid";
 
 type ApiRecipe = components["schemas"]["Recipe"];
 type ApiIngredient = components["schemas"]["Ingredient"];
 
-const mapToIngredient = (ingredient: ApiIngredient): IngredientNoId => {
+const mapToIngredient = (ingredient: ApiIngredient): Ingredient => {
     return {
         name: ingredient.name,
         quantity: ingredient.amount,
@@ -15,7 +15,7 @@ const mapToIngredient = (ingredient: ApiIngredient): IngredientNoId => {
     };
 };
 
-const mapToRecipe = (recipe: ApiRecipe): RecipeNoAvailabilityScore => {
+const mapToRecipe = (recipe: ApiRecipe): RecipeWithId => {
     const id = recipe.id || uuidv4(); // Generate a temporary ID if not present
     return {
         id: id,
@@ -28,7 +28,7 @@ const mapToRecipe = (recipe: ApiRecipe): RecipeNoAvailabilityScore => {
     };
 };
 
-const mapToApiIngredient = (ingredient: IngredientNoId): ApiIngredient => {
+const mapToApiIngredient = (ingredient: Ingredient): ApiIngredient => {
     return {
         name: ingredient.name,
         amount: ingredient.quantity,
@@ -36,7 +36,7 @@ const mapToApiIngredient = (ingredient: IngredientNoId): ApiIngredient => {
     };
 };
 
-const mapToApiRecipe = (recipe: RecipeNoAvailabilityScoreAndId): ApiRecipe => {
+const mapToApiRecipe = (recipe: Recipe): ApiRecipe => {
     return {
         title: recipe.title,
         description: recipe.description,
@@ -49,7 +49,7 @@ const mapToApiRecipe = (recipe: RecipeNoAvailabilityScoreAndId): ApiRecipe => {
 };
 
 class RecipesService {
-    async getAll(): Promise<RecipeNoAvailabilityScore[]> {
+    async getAll(): Promise<RecipeWithId[]> {
         const result = await recipesClient.GET("/");
 
         const errorMessageHeader = "Failed to fetch recipes";
@@ -65,7 +65,7 @@ class RecipesService {
         return result.data.map(mapToRecipe);
     }
 
-    async save(recipe: RecipeNoAvailabilityScoreAndId): Promise<RecipeNoAvailabilityScore> {
+    async save(recipe: Recipe): Promise<RecipeWithId> {
         const apiRecipe = mapToApiRecipe(recipe);
         const result = await recipesClient.POST("/", {
             body: apiRecipe,
@@ -103,11 +103,7 @@ class RecipesService {
         }
     }
 
-    async generateRecipes(
-        numRecipes: number,
-        explore: boolean,
-        ingredients: IngredientNoId[]
-    ): Promise<RecipeNoAvailabilityScore[]> {
+    async generateRecipes(numRecipes: number, explore: boolean, ingredients: Ingredient[]): Promise<RecipeWithId[]> {
         const apiIngredients = ingredients.map(mapToApiIngredient);
 
         const endpoint = explore ? "/ai/explore/{numRecipes}" : "/ai/match/{numRecipes}";
