@@ -16,6 +16,7 @@ import { calculateRecipeAvailability, IngredientMatchingResult } from "@/utils/i
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import RecipeSettingsModal from "@/components/recipes/RecipeSettingsModal";
 import { getNumberOfRecipesToGenerate } from "@/utils/settings";
+import FloatingRecipeGenerationButtons from "@/components/recipes/FloatingRecipeGenerationButtons";
 
 const Dashboard = () => {
     const { logout } = useAuth();
@@ -386,28 +387,10 @@ const Dashboard = () => {
             </div>
 
             {/* Floating AI Buttons */}
-            <div className="fixed bottom-6 right-6 z-50 flex flex-col gap-4 w-45">
-                <Button
-                    disabled={recipeSuggestionsLoading}
-                    variant="default"
-                    className="text-base py-5 rounded-2xl shadow-lg hover:shadow-xl transition"
-                    onClick={() => {
-                        generateRecipes(false);
-                    }}
-                >
-                    🍳 Match My Ingredients
-                </Button>
-                <Button
-                    disabled={recipeSuggestionsLoading}
-                    variant="outline"
-                    className="text-base py-5 rounded-2xl shadow-lg hover:shadow-xl transition"
-                    onClick={() => {
-                        generateRecipes(true);
-                    }}
-                >
-                    🌟 Explorative AI Mode
-                </Button>
-            </div>
+            <FloatingRecipeGenerationButtons
+                recipeSuggestionsLoading={recipeSuggestionsLoading}
+                onGenerateRecipes={generateRecipes}
+            />
 
             {/* Modals */}
             {showAddIngredientModal && (
