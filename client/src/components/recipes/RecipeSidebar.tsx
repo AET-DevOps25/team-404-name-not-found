@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { ReactNode, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Clock, ChefHat, Trash, Bookmark } from "lucide-react";
@@ -15,6 +15,7 @@ interface RecipeSaving {
 }
 
 interface RecipesSidebarProps {
+    children: ReactNode;
     loading: boolean;
     recipes: RecipeWithAvailabilityAndId[];
     onRecipeSelect: (recipe: RecipeWithAvailabilityAndId) => void;
@@ -22,7 +23,14 @@ interface RecipesSidebarProps {
     recipeSaving?: RecipeSaving;
 }
 
-const RecipesSidebar = ({ loading, recipes, onRecipeSelect, onDelete, recipeSaving }: RecipesSidebarProps) => {
+const RecipesSidebar = ({
+    children,
+    loading,
+    recipes,
+    onRecipeSelect,
+    onDelete,
+    recipeSaving,
+}: RecipesSidebarProps) => {
     const { hoveredId, setHoveredId, reevaluateHoveredId } = useHoveredElementId("data-recipe-id");
 
     // Re-evaluate hoveredId when recipes change
@@ -127,9 +135,15 @@ const RecipesSidebar = ({ loading, recipes, onRecipeSelect, onDelete, recipeSavi
         ));
     };
 
+    const emptyPlaceholder = (
+        <div className="flex flex-col items-center justify-center gap-4 h-[calc(100vh-12rem)] text-gray-500 text-center">
+            {children}
+        </div>
+    );
+
     return (
-        <div className="space-y-4 max-h-[calc(100vh-12rem)] overflow-y-auto">
-            {loading ? <RecipesLoadingSpinner /> : getRecipeCards()}
+        <div className="space-y-4 h-[calc(100vh-12rem)] overflow-y-auto">
+            {loading ? <RecipesLoadingSpinner /> : recipes.length == 0 ? emptyPlaceholder : getRecipeCards()}
         </div>
     );
 };
