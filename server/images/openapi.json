@@ -52,8 +52,7 @@
               "schema": {
                 "type": "object",
                 "required": [
-                  "file",
-                  "numRecipes"
+                  "file"
                 ]
               }
             }
@@ -137,8 +136,7 @@
               "schema": {
                 "type": "object",
                 "required": [
-                  "file",
-                  "numRecipes"
+                  "file"
                 ]
               }
             }
@@ -179,6 +177,69 @@
                   "type": "array",
                   "items": {
                     "$ref": "#/components/schemas/RecipeDTO"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/ingredients": {
+      "post": {
+        "tags": [
+          "Images"
+        ],
+        "summary": "Analyze fridge image and return analyzed ingredients",
+        "description": "Accepts a fridge photo as a file and returns a list of identified ingredients",
+        "operationId": "analyzeIngredients",
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "file"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Good",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Ingredient"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Ingredient"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Ingredient"
                   }
                 }
               }

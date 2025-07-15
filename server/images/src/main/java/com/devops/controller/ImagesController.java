@@ -1,5 +1,6 @@
 package com.devops.controller;
 
+import com.devops.dto.Ingredient;
 import com.devops.dto.RecipeDTO;
 import com.devops.service.ImagesService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -32,7 +33,7 @@ public class ImagesController {
     private String mode;
 
     @Operation(summary = "Analyze fridge image and return recipes", description = "Accepts a fridge photo as a file and returns a list of generated recipes based on identified ingredients.", requestBody = @RequestBody(content = @Content(mediaType = "multipart/form-data", schema = @Schema(type = "object", requiredProperties = {
-        "file", "numRecipes"}))), responses = {
+        "file"}))), responses = {
         @ApiResponse(responseCode = "200", description = "List of recipes generated from the image"),
         @ApiResponse(responseCode = "400", description = "Invalid input"),
         @ApiResponse(responseCode = "500", description = "Internal server error")
@@ -49,7 +50,7 @@ public class ImagesController {
     }
 
     @Operation(summary = "Analyze fridge image and return recipes with a creative twist", description = "Accepts a fridge photo as a file and returns a list of generated recipes based on identified ingredients.", requestBody = @RequestBody(content = @Content(mediaType = "multipart/form-data", schema = @Schema(type = "object", requiredProperties = {
-        "file", "numRecipes"}))), responses = {
+        "file"}))), responses = {
         @ApiResponse(responseCode = "200", description = "List of recipes generated from the image"),
         @ApiResponse(responseCode = "400", description = "Invalid input"),
         @ApiResponse(responseCode = "500", description = "Internal server error")
@@ -63,6 +64,20 @@ public class ImagesController {
 
         userId = configureUserId(userId);
         return ResponseEntity.ok(imagesService.analyzeAndFetchRecipes(file, numRecipes, userId, "/explore/"));
+    }
+
+    @Operation(summary = "Analyze fridge image and return analyzed ingredients", description = "Accepts a fridge photo as a file and returns a list of identified ingredients",
+        requestBody = @RequestBody(content = @Content(mediaType = "multipart/form-data", schema = @Schema(type = "object", requiredProperties = {
+        "file"}))), responses = {
+        @ApiResponse(responseCode = "200", description = "Good"),
+        @ApiResponse(responseCode = "400", description = "Invalid input"),
+        @ApiResponse(responseCode = "500", description = "Internal server error")
+    })
+    @PostMapping("/ingredients")
+    public ResponseEntity<List<Ingredient>> analyzeIngredients(
+        @Parameter(description = "Image file of the fridge", required = true, content = @Content(mediaType = "multipart/form-data", schema = @Schema(type = "string", format = "binary"))) @RequestParam("file") MultipartFile file
+    ) {
+        return ResponseEntity.ok(imagesService.analyzeIngredients(file));
     }
 
     private String configureUserId(String userId) {
