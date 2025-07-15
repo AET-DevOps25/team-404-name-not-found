@@ -21,6 +21,7 @@ const Dashboard = () => {
     const { logout } = useAuth();
 
     const [ingredients, setIngredients] = useState<IngredientWithId[]>([]);
+    const [selectedIngredientIds, setSelectedIngredientIds] = useState<string[] | null>(null);
     const [showAddIngredientModal, setShowAddIngredientModal] = useState(false);
     const [editingIngredient, setEditingIngredient] = useState<IngredientWithId | null>(null);
 
@@ -105,8 +106,17 @@ const Dashboard = () => {
 
     const generateRecipes = (explore: boolean) => {
         setRecipeSuggestionsLoading(true);
+        const ingredientsToUse = selectedIngredientIds
+            ? ingredients.filter((ing) => selectedIngredientIds.includes(ing.id))
+            : ingredients;
+
+        if (selectedIngredientIds) {
+            console.log("Generating recipes with ingredients:", ingredientsToUse);
+        } else {
+            console.log("Generating recipes with all ingredients in fridge");
+        }
         recipesService
-            .generateRecipes(getNumberOfRecipesToGenerate(), explore, ingredients)
+            .generateRecipes(getNumberOfRecipesToGenerate(), explore, ingredientsToUse)
             .then((recipes) => {
                 console.log("Recipes generated successfully:", recipes);
                 setRecipeSuggestions(addAvailabilityScoresAndCleanRecipes(recipes));
@@ -258,7 +268,7 @@ const Dashboard = () => {
     }, [ingredients]);
 
     return (
-        <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+        <div className="min-h-screen h-[calc(100vh-12rem)] bg-gray-50 dark:bg-gray-900">
             {/* Header */}
             <header className="bg-white dark:bg-gray-800 shadow-sm border-b dark:border-gray-700">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -307,19 +317,22 @@ const Dashboard = () => {
             </header>
 
             {/* Main Content */}
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 overflow-y-auto]">
                 <div className="flex gap-8">
                     {/* Ingredients Section - 2/3 width */}
                     <div className="flex-1">
-                        <div className="mb-6">
-                            <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Your Ingredients</h2>
-                        </div>
                         <IngredientGrid
                             ingredients={ingredients}
                             onEdit={setEditingIngredient}
                             onDelete={deleteIngredient}
+                            onSelectionChange={(selectedIds) => {
+                                setSelectedIngredientIds(selectedIds);
+                            }}
                         />
                     </div>
+
+                    {/* Vertical Divider */}
+                    <div className="w-px bg-gray-300 dark:bg-gray-700" />
 
                     {/* Recipes Sidebar - 1/3 width */}
                     <div className="w-96">
@@ -350,7 +363,10 @@ const Dashboard = () => {
                                         onToggleSave: toggleRecipeSaved,
                                         savedRecipes: savedRecipes,
                                     }}
-                                />
+                                >
+                                    <p>No recipe suggestions available.</p>
+                                    <p>Click the buttons below to generate recipes based on your ingredients.</p>
+                                </RecipesSidebar>
                             </TabsContent>
 
                             <TabsContent value="saved">
@@ -359,7 +375,10 @@ const Dashboard = () => {
                                     loading={false}
                                     recipes={savedRecipes}
                                     onRecipeSelect={openRecipeDetailModal}
-                                />
+                                >
+                                    <p>No saved recipes found.</p>
+                                    <p>Save recipes from the suggestions tab to see them here.</p>
+                                </RecipesSidebar>
                             </TabsContent>
                         </Tabs>
                     </div>
