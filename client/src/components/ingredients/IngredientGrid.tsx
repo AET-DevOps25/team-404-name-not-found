@@ -85,6 +85,11 @@ const IngredientGrid = ({ ingredients, onEdit, onDelete, onSelectionChange }: In
                 <IconButtonWithTooltip
                     tooltip={selectionModeEnabled ? "Cancel selection" : "Select Ingredients"}
                     onClick={toggleSelectionMode} // Make sure to wire this up
+                    className={`p-2 rounded-full transition-colors duration-200 ${
+                        selectionModeEnabled
+                            ? "bg-red-100 hover:bg-red-200 text-red-600"
+                            : "hover:bg-gray-200 text-gray-600"
+                    }`}
                 >
                     {selectionModeEnabled ? (
                         <XSquare className="h-5 w-5 text-red-600" />
@@ -99,8 +104,8 @@ const IngredientGrid = ({ ingredients, onEdit, onDelete, onSelectionChange }: In
                     {ingredients.map((ingredient) => {
                         const isSelected = selectedIds.includes(ingredient.id);
                         const selectionModeClassName = isSelected
-                            ? "border-green-600 shadow-md cursor-pointer"
-                            : "border-transparent cursor-pointer";
+                            ? "transition-colors duration-200 border-green-600 shadow-md cursor-pointer"
+                            : "transition-colors duration-200 border-transparent cursor-pointer";
 
                         return (
                             <Card
