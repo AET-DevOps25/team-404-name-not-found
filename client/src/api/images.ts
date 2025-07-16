@@ -34,8 +34,8 @@ export interface paths {
         get?: never;
         put?: never;
         /**
-         * Analyze fridge image and return recipes with a creative twist
-         * @description Accepts a fridge photo as a file and returns a list of generated recipes based on identified ingredients.
+         * Analyze fridge image and return analyzed ingredients
+         * @description Accepts a fridge photo as a file and returns a list of identified ingredients
          */
         post: operations["checkImage"];
         delete?: never;
@@ -114,7 +114,10 @@ export interface operations {
         };
         requestBody?: {
             content: {
-                "multipart/form-data": Record<string, never>;
+                "multipart/form-data": {
+                    /** Format: binary */
+                    file: string;
+                };
             };
         };
         responses: {
@@ -124,7 +127,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["RecipeDTO"][];
+                    "application/json": components["schemas"]["RecipeDTO"][];
                 };
             };
             /** @description Invalid input */
@@ -133,7 +136,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["RecipeDTO"][];
+                    "application/json": components["schemas"]["RecipeDTO"][];
                 };
             };
             /** @description Internal server error */
@@ -142,7 +145,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["RecipeDTO"][];
+                    "application/json": components["schemas"]["RecipeDTO"][];
                 };
             };
         };
@@ -164,7 +167,10 @@ export interface operations {
         };
         requestBody?: {
             content: {
-                "multipart/form-data": Record<string, never>;
+                "multipart/form-data": {
+                    /** Format: binary */
+                    file: string;
+                };
             };
         };
         responses: {
@@ -174,7 +180,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["RecipeDTO"][];
+                    "application/json": components["schemas"]["RecipeDTO"][];
                 };
             };
             /** @description Invalid input */
@@ -183,7 +189,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["RecipeDTO"][];
+                    "application/json": components["schemas"]["RecipeDTO"][];
                 };
             };
             /** @description Internal server error */
@@ -192,7 +198,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["RecipeDTO"][];
+                    "application/json": components["schemas"]["RecipeDTO"][];
                 };
             };
         };
@@ -206,17 +212,20 @@ export interface operations {
         };
         requestBody?: {
             content: {
-                "multipart/form-data": Record<string, never>;
+                "multipart/form-data": {
+                    /** Format: binary */
+                    file: string;
+                };
             };
         };
         responses: {
-            /** @description Good */
+            /** @description Successfully analyzed ingredients */
             200: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["Ingredient"][];
+                    "application/json": components["schemas"]["Ingredient"][];
                 };
             };
             /** @description Invalid input */
@@ -225,7 +234,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["Ingredient"][];
+                    "application/json": components["schemas"]["Ingredient"][];
                 };
             };
             /** @description Internal server error */
@@ -234,7 +243,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["Ingredient"][];
+                    "application/json": components["schemas"]["Ingredient"][];
                 };
             };
         };
