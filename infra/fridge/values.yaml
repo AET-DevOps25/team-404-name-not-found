@@ -48,6 +48,3 @@ host: fridge.example
 
 grafanaUser: admin
 grafanaPass: admin
-
-openaiApiKey: sk-5e897d1335dc4ef490b08838acb668dc
-openaiApiBase: https://gpu.aet.cit.tum.de/api
