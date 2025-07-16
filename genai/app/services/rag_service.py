@@ -15,7 +15,7 @@ class RagService:
         embeddings = OpenAIEmbeddings(
             model="tei",  # not checked by the server, any str is fine
             api_key="dummy",  # must be non-empty
-            base_url=f"{embeddings_endpoint}/v1",
+            base_url=f"http://{embeddings_endpoint}/v1",
         )
         pg_vector_url = os.getenv("PG_VECTOR_URL")
         print(f"Using pg_vector url: {pg_vector_url}")
@@ -28,24 +28,21 @@ class RagService:
     def add_recipe(self, recipe: Recipe):
         self.vector_store.add_documents([self.__recipe_to_document(recipe)])
 
-    def find_recipes(self, searchstring: str, k: int = 3) -> list[str]:
-        documents = self.vector_store.similarity_search(searchstring, k=k)
-        return [str(document) for document in documents]
+    def find_recipes(
+        self, searchstring: str, k: int = 3, threshold: float = 0.6
+    ) -> list[Recipe]:
+        documents = self.vector_store.similarity_search_with_score(searchstring, k=k)
+        return [
+            Recipe.model_validate(document.metadata["recipe"])
+            for document, score in documents
+            if score >= threshold
+        ]
 
     @staticmethod
     def __recipe_to_document(recipe: Recipe) -> Document:
         return Document(
-            page_content=(
-                f"""Title: {recipe.title} "
-                Description: {recipe.description} "
-                Ingredients: {recipe.ingredients} \n {recipe.needed_ingredients} "
-                Steps: {recipe.steps}"""
-            ),
-            metadata={
-                "title": recipe.title,
-                "difficulty": recipe.difficulty,
-                "cook_time": recipe.cook_time,
-            },
+            page_content=f"{recipe.title} + {recipe.description}",
+            metadata={"recipe": recipe.model_dump_json()},
         )
 
 
