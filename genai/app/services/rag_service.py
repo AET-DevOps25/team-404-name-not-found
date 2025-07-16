@@ -30,10 +30,10 @@ class RagService:
 
     def find_recipes(
         self, searchstring: str, k: int = 3, threshold: float = 0.6
-    ) -> list[Recipe]:
+    ) -> list[str]:
         documents = self.vector_store.similarity_search_with_score(searchstring, k=k)
         return [
-            Recipe.model_validate(document.metadata["recipe"])
+            str(document)  # Recipe.model_validate(document.metadata["recipe"])
             for document, score in documents
             if score >= threshold
         ]
@@ -41,7 +41,8 @@ class RagService:
     @staticmethod
     def __recipe_to_document(recipe: Recipe) -> Document:
         return Document(
-            page_content=f"{recipe.title} + {recipe.description}",
+            # 1000 char limit (rag max is 512 token) assume 3 chars per token conservatively
+            page_content=f"{recipe.title} + {recipe.description}"[:1000],
             metadata={"recipe": recipe.model_dump_json()},
         )
 

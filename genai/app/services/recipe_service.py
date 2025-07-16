@@ -45,7 +45,7 @@ class RecipeService:
                 "Give one recipe that uses only the ingredients. "
                 "You do not have to use up all the amount of the ingredients. "
                 "You are allowed to split up the units of the ingredients. "
-                "Provide a description and very detailed steps. "
+                "Provide a short description (max 80 characters) and very detailed steps. "
                 "You are not allowed to use any other ingredients than the available ingredients. "
                 "Put ingredients that were already available under ingredients. "
                 "Ingredients that need to be bought go under needed_ingredients. "
@@ -61,7 +61,10 @@ class RecipeService:
         if self.__validate_recipe_uses_only_available_ingredients(
             generated_recipe, ingredients
         ):
-            self.rag_service.add_recipe(generated_recipe)
+            try:
+                self.rag_service.add_recipe(generated_recipe)
+            except Exception as e:
+                logger.error(f"Error adding recipe to RAG service: {e}")
             return generated_recipe
         else:
             if retries < 2:
@@ -98,7 +101,7 @@ class RecipeService:
                 "Give one recipe that uses the ingredients."
                 "You do not have to use up all the amount of the ingredients. "
                 "You are allowed to split up the units of the ingredients."
-                "Provide a description and very detailed steps. "
+                "Provide a short description (max 80 characters) and very detailed steps. "
                 "Be a bit creative for an ingredient that would really enhance the recipe you are allowed to buy it."
                 "Put ingredients that were given under ingredients. "
                 "Ingredients that need to be bought go under needed_ingredients. "
@@ -109,7 +112,10 @@ class RecipeService:
         ]
 
         generated_recipe = self.llm.invoke(messages)
-        self.rag_service.add_recipe(generated_recipe)
+        try:
+            self.rag_service.add_recipe(generated_recipe)
+        except Exception as e:
+            logger.error(f"Error adding recipe to RAG service: {e}")
         return generated_recipe
 
     @staticmethod
