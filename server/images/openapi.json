@@ -51,9 +51,14 @@
             "multipart/form-data": {
               "schema": {
                 "type": "object",
+                "properties": {
+                  "file": {
+                    "type": "string",
+                    "format": "binary"
+                  }
+                },
                 "required": [
-                  "file",
-                  "numRecipes"
+                  "file"
                 ]
               }
             }
@@ -63,7 +68,7 @@
           "200": {
             "description": "List of recipes generated from the image",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
                   "type": "array",
                   "items": {
@@ -76,7 +81,7 @@
           "400": {
             "description": "Invalid input",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
                   "type": "array",
                   "items": {
@@ -89,7 +94,7 @@
           "500": {
             "description": "Internal server error",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
                   "type": "array",
                   "items": {
@@ -107,8 +112,8 @@
         "tags": [
           "Images"
         ],
-        "summary": "Analyze fridge image and return recipes with a creative twist",
-        "description": "Accepts a fridge photo as a file and returns a list of generated recipes based on identified ingredients.",
+        "summary": "Analyze fridge image and return analyzed ingredients",
+        "description": "Accepts a fridge photo as a file and returns a list of identified ingredients",
         "operationId": "checkImage",
         "parameters": [
           {
@@ -136,9 +141,14 @@
             "multipart/form-data": {
               "schema": {
                 "type": "object",
+                "properties": {
+                  "file": {
+                    "type": "string",
+                    "format": "binary"
+                  }
+                },
                 "required": [
-                  "file",
-                  "numRecipes"
+                  "file"
                 ]
               }
             }
@@ -148,7 +158,7 @@
           "200": {
             "description": "List of recipes generated from the image",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
                   "type": "array",
                   "items": {
@@ -161,7 +171,7 @@
           "400": {
             "description": "Invalid input",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
                   "type": "array",
                   "items": {
@@ -174,11 +184,80 @@
           "500": {
             "description": "Internal server error",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
                   "type": "array",
                   "items": {
                     "$ref": "#/components/schemas/RecipeDTO"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/ingredients": {
+      "post": {
+        "tags": [
+          "Images"
+        ],
+        "summary": "Analyze fridge image and return analyzed ingredients",
+        "description": "Accepts a fridge photo as a file and returns a list of identified ingredients",
+        "operationId": "analyzeIngredients",
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "file": {
+                    "type": "string",
+                    "format": "binary"
+                  }
+                },
+                "required": [
+                  "file"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successfully analyzed ingredients",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Ingredient"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Ingredient"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Ingredient"
                   }
                 }
               }
