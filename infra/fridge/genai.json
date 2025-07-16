@@ -2,17 +2,10 @@
   "__inputs": [
     {
       "name": "DS_PROMETHEUS",
-      "label": "Prometheus",
+      "label": "prometheus",
       "type": "datasource",
       "pluginId": "prometheus",
-      "pluginName": "Prometheus"
-    },
-    {
-      "name": "DS_LOKI",
-      "label": "Loki",
-      "type": "datasource",
-      "pluginId": "loki",
-      "pluginName": "Loki"
+      "pluginName": "prometheus"
     }
   ],
   "__requires": [
@@ -39,12 +32,7 @@
     {
       "type": "datasource",
       "id": "prometheus",
-      "name": "Prometheus"
-    },
-    {
-      "type": "datasource",
-      "id": "loki",
-      "name": "Loki"
+      "name": "prometheus"
     },
     {
       "type": "grafana",
@@ -71,7 +59,7 @@
         "type": "query",
         "datasource": {
           "type": "prometheus",
-          "uid": "Prometheus"
+          "uid": "prometheus"
         },
         "query": {
           "query": "label_values(app)",
@@ -106,7 +94,7 @@
       "title": "Total Requests",
       "datasource": {
         "type": "prometheus",
-        "uid": "Prometheus"
+        "uid": "prometheus"
       },
       "targets": [
         {
@@ -114,7 +102,7 @@
           "refId": "A",
           "datasource": {
             "type": "prometheus",
-            "uid": "Prometheus"
+            "uid": "prometheus"
           },
           "instant": true
         }
@@ -163,7 +151,7 @@
       "title": "Requests Count by Path",
       "datasource": {
         "type": "prometheus",
-        "uid": "Prometheus"
+        "uid": "prometheus"
       },
       "targets": [
         {
@@ -171,7 +159,7 @@
           "refId": "A",
           "datasource": {
             "type": "prometheus",
-            "uid": "Prometheus"
+            "uid": "prometheus"
           },
           "instant": true
         }
@@ -220,7 +208,7 @@
       "title": "Average Request Duration",
       "datasource": {
         "type": "prometheus",
-        "uid": "Prometheus"
+        "uid": "prometheus"
       },
       "targets": [
         {
@@ -228,7 +216,7 @@
           "refId": "A",
           "datasource": {
             "type": "prometheus",
-            "uid": "Prometheus"
+            "uid": "prometheus"
           }
         }
       ],
@@ -280,7 +268,7 @@
       "title": "Total Exceptions",
       "datasource": {
         "type": "prometheus",
-        "uid": "Prometheus"
+        "uid": "prometheus"
       },
       "targets": [
         {
@@ -288,7 +276,7 @@
           "refId": "A",
           "datasource": {
             "type": "prometheus",
-            "uid": "Prometheus"
+            "uid": "prometheus"
           },
           "instant": true
         }
@@ -337,7 +325,7 @@
       "title": "Percent of 2xx Requests",
       "datasource": {
         "type": "prometheus",
-        "uid": "Prometheus"
+        "uid": "prometheus"
       },
       "targets": [
         {
@@ -345,7 +333,7 @@
           "refId": "A",
           "datasource": {
             "type": "prometheus",
-            "uid": "Prometheus"
+            "uid": "prometheus"
           }
         }
       ],
@@ -385,7 +373,7 @@
       "title": "Percent of 5xx Requests",
       "datasource": {
         "type": "prometheus",
-        "uid": "Prometheus"
+        "uid": "prometheus"
       },
       "targets": [
         {
@@ -393,7 +381,7 @@
           "refId": "A",
           "datasource": {
             "type": "prometheus",
-            "uid": "Prometheus"
+            "uid": "prometheus"
           }
         }
       ],
@@ -433,7 +421,7 @@
       "title": "P99 Request Duration",
       "datasource": {
         "type": "prometheus",
-        "uid": "Prometheus"
+        "uid": "prometheus"
       },
       "targets": [
         {
@@ -441,7 +429,7 @@
           "refId": "A",
           "datasource": {
             "type": "prometheus",
-            "uid": "Prometheus"
+            "uid": "prometheus"
           }
         }
       ],
@@ -477,7 +465,7 @@
       "title": "P95 Request Duration",
       "datasource": {
         "type": "prometheus",
-        "uid": "Prometheus"
+        "uid": "prometheus"
       },
       "targets": [
         {
@@ -517,7 +505,7 @@
       "title": "Requests Per Second",
       "datasource": {
         "type": "prometheus",
-        "uid": "Prometheus"
+        "uid": "prometheus"
       },
       "targets": [
         {
@@ -557,7 +545,7 @@
       "title": "Tokens Generated Per Second",
       "datasource": {
         "type": "prometheus",
-        "uid": "Prometheus"
+        "uid": "prometheus"
       },
       "targets": [
         {
@@ -597,7 +585,7 @@
       "title": "Total Tokens (24h)",
       "datasource": {
         "type": "prometheus",
-        "uid": "Prometheus"
+        "uid": "prometheus"
       },
       "targets": [
         {
@@ -642,72 +630,6 @@
         "w": 4,
         "x": 12,
         "y": 20
-      }
-    },
-    {
-      "type": "timeseries",
-      "id": 12,
-      "title": "Log Type Rate",
-      "datasource": {
-        "type": "loki",
-        "uid": "${DS_LOKI}"
-      },
-      "targets": [
-        {
-          "expr": "sum by(level)(rate({compose_service=~\"$service_name\"} |= \"$log_keyword\" | json | level != \"\" [1m]))",
-          "refId": "A"
-        }
-      ],
-      "options": {
-        "legend": {
-          "showLegend": true,
-          "displayMode": "list",
-          "placement": "bottom"
-        },
-        "tooltip": {
-          "mode": "single"
-        }
-      },
-      "fieldConfig": {
-        "defaults": {
-          "unit": "short"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 7,
-        "w": 6,
-        "x": 0,
-        "y": 27
-      }
-    },
-    {
-      "type": "logs",
-      "id": 13,
-      "title": "Logs",
-      "datasource": {
-        "type": "loki",
-        "uid": "${DS_LOKI}"
-      },
-      "targets": [
-        {
-          "expr": "{compose_service=~\"$service_name\"} |= \"$log_keyword\"",
-          "refId": "A",
-          "queryType": "range"
-        }
-      ],
-      "options": {
-        "dedupStrategy": "none",
-        "showLabels": false,
-        "showTime": true,
-        "sortOrder": "Descending",
-        "wrapLogMessage": true
-      },
-      "gridPos": {
-        "h": 7,
-        "w": 18,
-        "x": 6,
-        "y": 27
       }
     }
   ]

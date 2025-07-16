@@ -1,18 +1,21 @@
-import { IngredientNoId } from "@/types/ingredientTypes";
+import { Ingredient } from "@/types/ingredientTypes";
 import { AvailabilityScore } from "@/types/availabilityScore";
 
 export type Difficulty = "easy" | "medium" | "advanced";
 
 export interface Recipe {
-    id: string;
     title: string;
     description: string;
     cookingTime: number;
     difficulty: Difficulty;
-    ingredients: IngredientNoId[];
+    ingredients: Ingredient[];
     instructions: string[];
-    availabilityScore: AvailabilityScore;
 }
 
-export type RecipeNoAvailabilityScore = Omit<Recipe, "availabilityScore">;
-export type RecipeNoAvailabilityScoreAndId = Omit<Recipe, "availabilityScore" | "id">;
+export interface RecipeWithId extends Recipe {
+    id: string;
+}
+
+export interface RecipeWithAvailabilityAndId extends RecipeWithId {
+    availabilityScore: AvailabilityScore;
+}

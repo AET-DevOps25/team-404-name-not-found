@@ -2,35 +2,38 @@ import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Camera, LogOut, Plus, Refrigerator, Settings } from "lucide-react";
 import IngredientGrid from "@/components/ingredients/IngredientGrid";
-import { Ingredient, IngredientNoId } from "@/types/ingredientTypes";
+import { IngredientWithId, Ingredient } from "@/types/ingredientTypes";
 import { useAuth } from "@/context/AuthContext";
 import ingredientsService from "@/api/services/ingredientsService";
 import { toast } from "@/hooks/useToast";
 import AddIngredientModal from "@/components/ingredients/AddIngredientModal";
 import EditIngredientModal from "@/components/ingredients/EditIngredientModal";
 import RecipesSidebar from "@/components/recipes/RecipeSidebar";
-import { Recipe, RecipeNoAvailabilityScore } from "@/types/recipeTypes";
+import { RecipeWithAvailabilityAndId, RecipeWithId } from "@/types/recipeTypes";
 import recipesService from "@/api/services/recipesService";
 import RecipeDetailModal from "@/components/recipes/RecipeDetailModal";
-import { calculateRecipeAvailability } from "@/utils/calculateAvailability";
+import { calculateRecipeAvailability, IngredientMatchingResult } from "@/utils/ingredientMatching";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import RecipeSettingsModal from "@/components/recipes/RecipeSettingsModal";
 import { getNumberOfRecipesToGenerate } from "@/utils/settings";
+import FloatingRecipeGenerationButtons from "@/components/recipes/FloatingRecipeGenerationButtons";
 
 const Dashboard = () => {
     const { logout } = useAuth();
 
-    const [ingredients, setIngredients] = useState<Ingredient[]>([]);
+    const [ingredients, setIngredients] = useState<IngredientWithId[]>([]);
+    const [selectedIngredientIds, setSelectedIngredientIds] = useState<string[] | null>(null);
     const [showAddIngredientModal, setShowAddIngredientModal] = useState(false);
-    const [editingIngredient, setEditingIngredient] = useState<Ingredient | null>(null);
+    const [editingIngredient, setEditingIngredient] = useState<IngredientWithId | null>(null);
 
     const [activeRecipeTab, setActiveRecipeTab] = useState("suggestions");
 
-    const [recipeSuggestions, setRecipeSuggestions] = useState<Recipe[]>([]);
+    const [recipeSuggestions, setRecipeSuggestions] = useState<RecipeWithAvailabilityAndId[]>([]);
     const [recipeSuggestionsLoading, setRecipeSuggestionsLoading] = useState(false);
-    const [openedRecipe, setOpenedRecipe] = useState<Recipe | null>(null);
+    const [openedRecipe, setOpenedRecipe] = useState<RecipeWithAvailabilityAndId | null>(null);
+    const [recipeDetailModalIngredients, setRecipeDetailModalIngredients] = useState<IngredientWithId[] | null>([]);
 
-    const [savedRecipes, setSavedRecipes] = useState<Recipe[]>([]);
+    const [savedRecipes, setSavedRecipes] = useState<RecipeWithAvailabilityAndId[]>([]);
     const [showRecipeSettingsModal, setShowRecipeSettingsModal] = useState(false);
 
     const errorHandler = (error: Error) => {
@@ -41,7 +44,7 @@ const Dashboard = () => {
         });
     };
 
-    const addIngredient = (ingredient: IngredientNoId) => {
+    const addIngredient = (ingredient: Ingredient) => {
         setShowAddIngredientModal(false);
 
         ingredientsService
@@ -67,7 +70,7 @@ const Dashboard = () => {
             });
     };
 
-    const editIngredient = (ingredient: Ingredient) => {
+    const editIngredient = (ingredient: IngredientWithId) => {
         setEditingIngredient(null);
 
         ingredientsService
@@ -83,14 +86,14 @@ const Dashboard = () => {
             });
     };
 
-    const removeZeroQuantityIngredients = (recipe: RecipeNoAvailabilityScore): RecipeNoAvailabilityScore => {
+    const removeZeroQuantityIngredients = (recipe: RecipeWithId): RecipeWithId => {
         return {
             ...recipe,
             ingredients: recipe.ingredients.filter((ingredient) => ingredient.quantity > 0),
         };
     };
 
-    const addAvailabilityScore = (recipe: RecipeNoAvailabilityScore): Recipe => {
+    const addAvailabilityScore = (recipe: RecipeWithId): RecipeWithAvailabilityAndId => {
         const availabilityScore = calculateRecipeAvailability(recipe, ingredients);
         return {
             ...recipe,
@@ -98,14 +101,23 @@ const Dashboard = () => {
         };
     };
 
-    const addAvailabilityScoresAndCleanRecipes = (recipes: RecipeNoAvailabilityScore[]): Recipe[] => {
+    const addAvailabilityScoresAndCleanRecipes = (recipes: RecipeWithId[]): RecipeWithAvailabilityAndId[] => {
         return recipes.map(removeZeroQuantityIngredients).map(addAvailabilityScore);
     };
 
     const generateRecipes = (explore: boolean) => {
         setRecipeSuggestionsLoading(true);
+        const ingredientsToUse = selectedIngredientIds
+            ? ingredients.filter((ing) => selectedIngredientIds.includes(ing.id))
+            : ingredients;
+
+        if (selectedIngredientIds) {
+            console.log("Generating recipes with ingredients:", ingredientsToUse);
+        } else {
+            console.log("Generating recipes with all ingredients in fridge");
+        }
         recipesService
-            .generateRecipes(getNumberOfRecipesToGenerate(), explore, ingredients)
+            .generateRecipes(getNumberOfRecipesToGenerate(), explore, ingredientsToUse)
             .then((recipes) => {
                 console.log("Recipes generated successfully:", recipes);
                 setRecipeSuggestions(addAvailabilityScoresAndCleanRecipes(recipes));
@@ -118,7 +130,7 @@ const Dashboard = () => {
             });
     };
 
-    const saveRecipe = (recipe: Recipe) => {
+    const saveRecipe = (recipe: RecipeWithAvailabilityAndId) => {
         return recipesService
             .save(recipe)
             .then((savedRecipe) => {
@@ -145,19 +157,19 @@ const Dashboard = () => {
             });
     };
 
-    const isRecipeSaved = (recipe: Recipe): boolean => {
+    const isRecipeSaved = (recipe: RecipeWithAvailabilityAndId): boolean => {
         return savedRecipes.some((r) => r.id === recipe.id);
     };
 
-    const isRecipeInSuggestions = (recipe: Recipe): boolean => {
+    const isRecipeInSuggestions = (recipe: RecipeWithAvailabilityAndId): boolean => {
         return recipeSuggestions.some((r) => r.id === recipe.id);
     };
 
-    const isRecipeOpened = (recipe: Recipe): boolean => {
+    const isRecipeOpened = (recipe: RecipeWithAvailabilityAndId): boolean => {
         return openedRecipe ? openedRecipe.id === recipe.id : false;
     };
 
-    const toggleRecipeSaved = (recipeToSave: Recipe) => {
+    const toggleRecipeSaved = (recipeToSave: RecipeWithAvailabilityAndId) => {
         if (isRecipeSaved(recipeToSave)) {
             // Recipe is already saved, delete it
             deleteRecipe(recipeToSave.id);
@@ -174,6 +186,28 @@ const Dashboard = () => {
                 }
             });
         }
+    };
+
+    const openRecipeDetailModal = (recipe: RecipeWithAvailabilityAndId) => {
+        setOpenedRecipe(recipe);
+        setRecipeDetailModalIngredients([...ingredients]);
+    };
+
+    const deleteUsedIngredients = (matchingResult: IngredientMatchingResult) => {
+        console.log("Deleting used ingredients:", matchingResult.usedIngredients);
+
+        matchingResult.usedIngredients.forEach((ingredient) => {
+            const fridgeIngredient = ingredients.find((ing) => ing.id === ingredient.id);
+            if (!fridgeIngredient) {
+                console.error(`Ingredient with id ${ingredient.id} not found in fridge ingredients.`);
+                return;
+            }
+            const updatedIngredient = {
+                ...fridgeIngredient,
+                quantity: fridgeIngredient.quantity - ingredient.quantity,
+            };
+            editIngredient(updatedIngredient);
+        });
     };
 
     const fetchIngredients = () => {
@@ -201,7 +235,7 @@ const Dashboard = () => {
             });
     };
 
-    const updateAvailabilityScores = (recipes: Recipe[]): Recipe[] => {
+    const updateAvailabilityScores = (recipes: RecipeWithAvailabilityAndId[]): RecipeWithAvailabilityAndId[] => {
         return recipes.map((recipe) => {
             const updatedAvailabilityScore = calculateRecipeAvailability(recipe, ingredients);
 
@@ -235,7 +269,7 @@ const Dashboard = () => {
     }, [ingredients]);
 
     return (
-        <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+        <div className="min-h-screen h-[calc(100vh-12rem)] bg-gray-50 dark:bg-gray-900">
             {/* Header */}
             <header className="bg-white dark:bg-gray-800 shadow-sm border-b dark:border-gray-700">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -284,19 +318,22 @@ const Dashboard = () => {
             </header>
 
             {/* Main Content */}
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 overflow-y-auto]">
                 <div className="flex gap-8">
                     {/* Ingredients Section - 2/3 width */}
                     <div className="flex-1">
-                        <div className="mb-6">
-                            <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Your Ingredients</h2>
-                        </div>
                         <IngredientGrid
                             ingredients={ingredients}
                             onEdit={setEditingIngredient}
                             onDelete={deleteIngredient}
+                            onSelectionChange={(selectedIds) => {
+                                setSelectedIngredientIds(selectedIds);
+                            }}
                         />
                     </div>
+
+                    {/* Vertical Divider */}
+                    <div className="w-px bg-gray-300 dark:bg-gray-700" />
 
                     {/* Recipes Sidebar - 1/3 width */}
                     <div className="w-96">
@@ -322,12 +359,15 @@ const Dashboard = () => {
                                 <RecipesSidebar
                                     loading={recipeSuggestionsLoading}
                                     recipes={recipeSuggestions}
-                                    onRecipeSelect={setOpenedRecipe}
+                                    onRecipeSelect={openRecipeDetailModal}
                                     recipeSaving={{
                                         onToggleSave: toggleRecipeSaved,
                                         savedRecipes: savedRecipes,
                                     }}
-                                />
+                                >
+                                    <p>No recipe suggestions available.</p>
+                                    <p>Click the buttons below to generate recipes based on your ingredients.</p>
+                                </RecipesSidebar>
                             </TabsContent>
 
                             <TabsContent value="saved">
@@ -335,8 +375,11 @@ const Dashboard = () => {
                                     onDelete={deleteRecipe}
                                     loading={false}
                                     recipes={savedRecipes}
-                                    onRecipeSelect={setOpenedRecipe}
-                                />
+                                    onRecipeSelect={openRecipeDetailModal}
+                                >
+                                    <p>No saved recipes found.</p>
+                                    <p>Save recipes from the suggestions tab to see them here.</p>
+                                </RecipesSidebar>
                             </TabsContent>
                         </Tabs>
                     </div>
@@ -344,28 +387,10 @@ const Dashboard = () => {
             </div>
 
             {/* Floating AI Buttons */}
-            <div className="fixed bottom-6 right-6 z-50 flex flex-col gap-4 w-45">
-                <Button
-                    disabled={recipeSuggestionsLoading}
-                    variant="default"
-                    className="text-base py-5 rounded-2xl shadow-lg hover:shadow-xl transition"
-                    onClick={() => {
-                        generateRecipes(false);
-                    }}
-                >
-                    🍳 Match My Ingredients
-                </Button>
-                <Button
-                    disabled={recipeSuggestionsLoading}
-                    variant="outline"
-                    className="text-base py-5 rounded-2xl shadow-lg hover:shadow-xl transition"
-                    onClick={() => {
-                        generateRecipes(true);
-                    }}
-                >
-                    🌟 Explorative AI Mode
-                </Button>
-            </div>
+            <FloatingRecipeGenerationButtons
+                recipeSuggestionsLoading={recipeSuggestionsLoading}
+                onGenerateRecipes={generateRecipes}
+            />
 
             {/* Modals */}
             {showAddIngredientModal && (
@@ -378,16 +403,14 @@ const Dashboard = () => {
                     onSave={editIngredient}
                 />
             )}
-            {openedRecipe && (
+            {openedRecipe && recipeDetailModalIngredients && (
                 <RecipeDetailModal
                     recipe={openedRecipe}
-                    availableIngredients={ingredients}
+                    availableIngredients={recipeDetailModalIngredients}
                     isSaved={isRecipeSaved(openedRecipe)}
                     onToggleSave={() => toggleRecipeSaved(openedRecipe)}
                     onClose={() => setOpenedRecipe(null)}
-                    onCook={(recipe) => {
-                        console.log("Cooking recipe:", recipe);
-                    }}
+                    onDeleteUsedIngredients={deleteUsedIngredients}
                 />
             )}
             {showRecipeSettingsModal && <RecipeSettingsModal onClose={() => setShowRecipeSettingsModal(false)} />}

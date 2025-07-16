@@ -1,28 +1,36 @@
-import { useEffect } from "react";
+import { ReactNode, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Clock, ChefHat, Trash, Bookmark } from "lucide-react";
 import RecipesLoadingSpinner from "@/components/recipes/RecipesLoadingSpinner";
-import { Recipe } from "@/types/recipeTypes";
+import { RecipeWithAvailabilityAndId } from "@/types/recipeTypes";
 import { AvailabilityScore } from "@/types/availabilityScore";
 import { Button } from "@/components/ui/button";
 import { LucideBookmarkFilled } from "@/components/recipes/LucideBookmarkFilled";
 import { useHoveredElementId } from "@/hooks/useHoveredElementId";
 
 interface RecipeSaving {
-    onToggleSave: (recipe: Recipe) => void;
-    savedRecipes: Recipe[];
+    onToggleSave: (recipe: RecipeWithAvailabilityAndId) => void;
+    savedRecipes: RecipeWithAvailabilityAndId[];
 }
 
 interface RecipesSidebarProps {
+    children: ReactNode;
     loading: boolean;
-    recipes: Recipe[];
-    onRecipeSelect: (recipe: Recipe) => void;
+    recipes: RecipeWithAvailabilityAndId[];
+    onRecipeSelect: (recipe: RecipeWithAvailabilityAndId) => void;
     onDelete?: (id: string) => void;
     recipeSaving?: RecipeSaving;
 }
 
-const RecipesSidebar = ({ loading, recipes, onRecipeSelect, onDelete, recipeSaving }: RecipesSidebarProps) => {
+const RecipesSidebar = ({
+    children,
+    loading,
+    recipes,
+    onRecipeSelect,
+    onDelete,
+    recipeSaving,
+}: RecipesSidebarProps) => {
     const { hoveredId, setHoveredId, reevaluateHoveredId } = useHoveredElementId("data-recipe-id");
 
     // Re-evaluate hoveredId when recipes change
@@ -30,7 +38,7 @@ const RecipesSidebar = ({ loading, recipes, onRecipeSelect, onDelete, recipeSavi
         reevaluateHoveredId();
     }, [recipes, reevaluateHoveredId]);
 
-    const isRecipeSaved = (recipe: Recipe) => {
+    const isRecipeSaved = (recipe: RecipeWithAvailabilityAndId) => {
         return recipeSaving ? recipeSaving.savedRecipes.some((saved) => saved.id === recipe.id) : false;
     };
 
@@ -127,9 +135,15 @@ const RecipesSidebar = ({ loading, recipes, onRecipeSelect, onDelete, recipeSavi
         ));
     };
 
+    const emptyPlaceholder = (
+        <div className="flex flex-col items-center justify-center gap-4 h-[calc(100vh-12rem)] text-gray-500 text-center">
+            {children}
+        </div>
+    );
+
     return (
-        <div className="space-y-4 max-h-[calc(100vh-12rem)] overflow-y-auto">
-            {loading ? <RecipesLoadingSpinner /> : getRecipeCards()}
+        <div className="space-y-4 h-[calc(100vh-12rem)] overflow-y-auto">
+            {loading ? <RecipesLoadingSpinner /> : recipes.length == 0 ? emptyPlaceholder : getRecipeCards()}
         </div>
     );
 };

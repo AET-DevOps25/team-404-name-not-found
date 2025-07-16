@@ -3,7 +3,7 @@
 # Declare variables to be passed into your templates.
 
 namespace: team-404-name-not-found
-currentBranch: client-generate-recipes-2
+currentBranch: select-ingredients
 
 # default login vars for postgres
 postgresUser: postgres
@@ -48,6 +48,3 @@ host: fridge.example
 
 grafanaUser: admin
 grafanaPass: admin
-
-openaiApiKey: sk-5e897d1335dc4ef490b08838acb668dc
-openaiApiBase: https://gpu.aet.cit.tum.de/api

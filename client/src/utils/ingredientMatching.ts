@@ -1,9 +1,10 @@
-import { Ingredient, IngredientNoId } from "@/types/ingredientTypes";
+import { IngredientWithId, Ingredient, IngredientWithUnitMismatch } from "@/types/ingredientTypes";
 import { AvailabilityScore } from "@/types/availabilityScore";
 import stringSimilarity from "string-comparison";
-import { RecipeNoAvailabilityScoreAndId } from "@/types/recipeTypes";
+import { Recipe } from "@/types/recipeTypes";
+import cloneDeep from "lodash.clonedeep";
 
-export const calculateIngredientAvailability = (ingredient: IngredientNoId): AvailabilityScore => {
+export const calculateIngredientAvailability = (ingredient: Ingredient): AvailabilityScore => {
     if (!ingredient.name || !ingredient.quantity || ingredient.quantity <= 0) {
         return "bad"; // Ingredient is missing or has no quantity
     }
@@ -19,8 +20,11 @@ export const calculateIngredientAvailability = (ingredient: IngredientNoId): Ava
     return "good"; // Sufficient quantity
 };
 
-const getBestMatchingIngredient = (ingredient: IngredientNoId, ingredients: Ingredient[]): Ingredient | null => {
-    let bestMatch: Ingredient | null = null;
+export const getBestMatchingIngredient = (
+    ingredient: Ingredient,
+    ingredients: IngredientWithId[]
+): IngredientWithId | null => {
+    let bestMatch: IngredientWithId | null = null;
     let highestScore = 0;
     let highestNameSimilarity = 0;
 
@@ -44,8 +48,8 @@ const getBestMatchingIngredient = (ingredient: IngredientNoId, ingredients: Ingr
 };
 
 export const calculateIngredientAvailabilityForRecipe = (
-    ingredient: IngredientNoId,
-    ingredients: Ingredient[]
+    ingredient: Ingredient,
+    ingredients: IngredientWithId[]
 ): AvailabilityScore => {
     const foundIngredient = getBestMatchingIngredient(ingredient, ingredients);
 
@@ -64,10 +68,7 @@ export const calculateIngredientAvailabilityForRecipe = (
     return "good"; // Sufficient quantity
 };
 
-export const calculateRecipeAvailability = (
-    recipe: RecipeNoAvailabilityScoreAndId,
-    ingredients: Ingredient[]
-): AvailabilityScore => {
+export const calculateRecipeAvailability = (recipe: Recipe, ingredients: IngredientWithId[]): AvailabilityScore => {
     const ingredientsAvailability = recipe.ingredients.map((ingredient) =>
         calculateIngredientAvailabilityForRecipe(ingredient, ingredients)
     );
@@ -87,4 +88,56 @@ export const calculateRecipeAvailability = (
     }
 
     return "bad";
+};
+
+export interface IngredientMatchingResult {
+    usedIngredients: IngredientWithId[];
+    missingIngredients: IngredientWithUnitMismatch[];
+}
+
+export const determineUsedAndMissingIngredients = (
+    recipe: Recipe,
+    availableIngredients: IngredientWithId[]
+): IngredientMatchingResult => {
+    const copiedIngredients = cloneDeep(availableIngredients);
+
+    const usedIngredients: IngredientWithId[] = [];
+    const missingIngredients: IngredientWithUnitMismatch[] = [];
+
+    for (const ingredient of recipe.ingredients) {
+        const foundIngredient = getBestMatchingIngredient(ingredient, copiedIngredients);
+        if (foundIngredient) {
+            if (foundIngredient.unit !== ingredient.unit) {
+                missingIngredients.push({
+                    ...foundIngredient,
+                    unitMismatch: true, // Indicates that the unit does not match
+                });
+            } else {
+                const quantityUsed = Math.min(foundIngredient.quantity, ingredient.quantity);
+                const quantityMissing = ingredient.quantity - quantityUsed;
+                if (quantityUsed > 0) {
+                    usedIngredients.push({
+                        ...foundIngredient,
+                        quantity: quantityUsed,
+                    });
+                }
+                if (quantityMissing > 0) {
+                    missingIngredients.push({
+                        ...foundIngredient,
+                        quantity: quantityMissing,
+                        unitMismatch: false,
+                    });
+                }
+                foundIngredient.quantity -= ingredient.quantity; // Reduce the quantity of the used ingredient
+            }
+        } else {
+            // If no matching ingredient is found, we consider it missing
+            missingIngredients.push({
+                ...ingredient,
+                unitMismatch: false, // No unit mismatch since it's completely missing
+            });
+        }
+    }
+
+    return { usedIngredients, missingIngredients };
 };
