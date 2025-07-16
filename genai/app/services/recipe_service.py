@@ -107,8 +107,9 @@ class RecipeService:
         ai_msg = self.llm.invoke(messages)
         return ai_msg
 
+    @staticmethod
     def __validate_recipe_uses_only_available_ingredients(
-        self, recipe: Recipe, ingredients: Ingredients
+        recipe: Recipe, ingredients: Ingredients
     ):
         if len(recipe.needed_ingredients) > 0:
             return False
