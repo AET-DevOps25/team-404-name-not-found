@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.media.SchemaProperty;
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -14,6 +15,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -32,16 +34,20 @@ public class ImagesController {
     @Value("${vars.mode}")
     private String mode;
 
-    @Operation(summary = "Analyze fridge image and return recipes", description = "Accepts a fridge photo as a file and returns a list of generated recipes based on identified ingredients.", requestBody = @RequestBody(content = @Content(mediaType = "multipart/form-data", schema = @Schema(type = "object", requiredProperties = {
-        "file"}))), responses = {
-        @ApiResponse(responseCode = "200", description = "List of recipes generated from the image"),
-        @ApiResponse(responseCode = "400", description = "Invalid input"),
-        @ApiResponse(responseCode = "500", description = "Internal server error")
+    @Operation(
+        summary = "Analyze fridge image and return recipes",
+        description = "Accepts a fridge photo as a file and returns a list of generated recipes based on identified ingredients.",
+        responses = {
+            @ApiResponse(responseCode = "200", description = "List of recipes generated from the image"),
+            @ApiResponse(responseCode = "400", description = "Invalid input"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
     })
-    @PostMapping("/recipes/match")
+    @PostMapping(path = "/recipes/match",
+        consumes = {MediaType.MULTIPART_FORM_DATA_VALUE},
+        produces = {MediaType.APPLICATION_JSON_VALUE}
+    )
     public ResponseEntity<List<RecipeDTO>> analyzeImage(
-        @Parameter(description = "Image file of the fridge", required = true, content = @Content(mediaType = "multipart/form-data", schema = @Schema(type = "string", format = "binary"))) @RequestParam("file") MultipartFile file,
-
+        @RequestPart("file") MultipartFile file,
         @Parameter(description = "Number of recipes to return", required = true, example = "3", schema = @Schema(type = "integer", format = "int32")) @RequestParam("numRecipes") int numRecipes,
         @RequestHeader(value = "X-User-Id", required = false) String userId) {
 
@@ -49,16 +55,20 @@ public class ImagesController {
         return ResponseEntity.ok(imagesService.analyzeAndFetchRecipes(file, numRecipes, userId, "/match/"));
     }
 
-    @Operation(summary = "Analyze fridge image and return recipes with a creative twist", description = "Accepts a fridge photo as a file and returns a list of generated recipes based on identified ingredients.", requestBody = @RequestBody(content = @Content(mediaType = "multipart/form-data", schema = @Schema(type = "object", requiredProperties = {
-        "file"}))), responses = {
-        @ApiResponse(responseCode = "200", description = "List of recipes generated from the image"),
-        @ApiResponse(responseCode = "400", description = "Invalid input"),
-        @ApiResponse(responseCode = "500", description = "Internal server error")
+    @Operation(
+        summary = "Analyze fridge image and return analyzed ingredients",
+        description = "Accepts a fridge photo as a file and returns a list of identified ingredients",
+        responses = {
+            @ApiResponse(responseCode = "200", description = "List of recipes generated from the image"),
+            @ApiResponse(responseCode = "400", description = "Invalid input"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
     })
-    @PostMapping("/recipes/explore")
+    @PostMapping(path = "/recipes/explore",
+        consumes = {MediaType.MULTIPART_FORM_DATA_VALUE},
+        produces = {MediaType.APPLICATION_JSON_VALUE}
+    )
     public ResponseEntity<List<RecipeDTO>> checkImage(
-        @Parameter(description = "Image file of the fridge", required = true, content = @Content(mediaType = "multipart/form-data", schema = @Schema(type = "string", format = "binary"))) @RequestParam("file") MultipartFile file,
-
+        @RequestPart("file") MultipartFile file,
         @Parameter(description = "Number of recipes to return", required = true, example = "3", schema = @Schema(type = "integer", format = "int32")) @RequestParam("numRecipes") int numRecipes,
         @RequestHeader(value = "X-User-Id", required = false) String userId) {
 
@@ -66,16 +76,20 @@ public class ImagesController {
         return ResponseEntity.ok(imagesService.analyzeAndFetchRecipes(file, numRecipes, userId, "/explore/"));
     }
 
-    @Operation(summary = "Analyze fridge image and return analyzed ingredients", description = "Accepts a fridge photo as a file and returns a list of identified ingredients",
-        requestBody = @RequestBody(content = @Content(mediaType = "multipart/form-data", schema = @Schema(type = "object", requiredProperties = {
-        "file"}))), responses = {
-        @ApiResponse(responseCode = "200", description = "Good"),
-        @ApiResponse(responseCode = "400", description = "Invalid input"),
-        @ApiResponse(responseCode = "500", description = "Internal server error")
+    @Operation(
+        summary = "Analyze fridge image and return analyzed ingredients",
+        description = "Accepts a fridge photo as a file and returns a list of identified ingredients",
+        responses = {
+            @ApiResponse(responseCode = "200", description = "Successfully analyzed ingredients"),
+            @ApiResponse(responseCode = "400", description = "Invalid input"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
     })
-    @PostMapping("/ingredients")
+    @PostMapping(path = "/ingredients",
+        consumes = {MediaType.MULTIPART_FORM_DATA_VALUE},
+        produces = {MediaType.APPLICATION_JSON_VALUE}
+    )
     public ResponseEntity<List<Ingredient>> analyzeIngredients(
-        @Parameter(description = "Image file of the fridge", required = true, content = @Content(mediaType = "multipart/form-data", schema = @Schema(type = "string", format = "binary"))) @RequestParam("file") MultipartFile file
+        @RequestPart(value = "file") MultipartFile file
     ) {
         return ResponseEntity.ok(imagesService.analyzeIngredients(file));
     }
