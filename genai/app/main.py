@@ -3,7 +3,9 @@ from prometheus_fastapi_instrumentator import Instrumentator
 from dotenv import load_dotenv
 
 from app.models.recipes import Recipes
+from app.models.search_request import SearchRequest
 from app.services.image_service import ImageService
+from app.services.rag_service import RagService
 from app.services.recipe_service import RecipeService
 from app.models.ingredients import Ingredients
 
@@ -13,7 +15,8 @@ app = FastAPI(root_path="/api/genai/v1")
 # /metrics endpoint
 Instrumentator().instrument(app).expose(app)
 
-recipe_service = RecipeService()
+rag_service = RagService()
+recipe_service = RecipeService(rag_service)
 image_service = ImageService()
 
 
@@ -81,6 +84,21 @@ async def generate_recipes_exploratory(
     ingredients: Ingredients = Body(description="Available ingredients"),
 ):
     recipes = await recipe_service.get_recipes_exploratory(num_recipes, ingredients)
+    return recipes
+
+
+@app.post(
+    "/recipe/search",
+    summary="Search in all generated recipes",
+    description=(
+        "Search in the recipe title, description, ingredients and steps. "
+        "Returns full recipes up to the number specified in the search request."
+    ),
+)
+async def recipe_search(
+    search_request: SearchRequest = Body(description="Search request"),
+):
+    recipes = rag_service.find_recipes(search_request.query, search_request.matches)
     return recipes
 
 

@@ -10,12 +10,15 @@ from app.models.recipe import Recipe
 class RagService:
 
     def __init__(self):
+        embeddings_endpoint = os.getenv("EMBEDDINGS_ENDPOINT")
+        print(f"Using embeddings endpoint: {embeddings_endpoint}")
         embeddings = OpenAIEmbeddings(
             model="tei",  # not checked by the server, any str is fine
             api_key="dummy",  # must be non-empty
-            base_url=f"{os.getenv("EMBEDDINGS_ENDPOINT")}/v1",
+            base_url=f"{embeddings_endpoint}/v1",
         )
-
+        pg_vector_url = os.getenv("PG_VECTOR_URL")
+        print(f"Using pg_vector url: {pg_vector_url}")
         self.vector_store = PGVector(
             connection=os.getenv("PG_VECTOR_URL"),
             collection_name="my_docs",
