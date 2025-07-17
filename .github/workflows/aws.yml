@@ -1,4 +1,4 @@
-name: Manual AWS Deployment and Testing
+name: Manual AWS Deployment
 
 on:
   workflow_dispatch:
@@ -10,6 +10,12 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+
+      - name: Debug secrets
+        run: |
+          echo "access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}"
+          echo "secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}"
+          echo "session_token: ${{ secrets.AWS_SESSION_TOKEN }}"
 
       - name: Write private key to infra/ec2/priv.pem
         run: |
