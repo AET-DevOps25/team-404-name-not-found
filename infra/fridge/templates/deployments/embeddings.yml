@@ -39,4 +39,9 @@ spec:
           readinessProbe:
 {{ toYaml .Values.embeddingsProbe | indent 12 }}
           resources:
-{{ toYaml .Values.resources | indent 12 }}
+            limits:
+              cpu: 2
+              memory: 2Gi
+            requests:
+              cpu: 1
+              memory: 1Gi
