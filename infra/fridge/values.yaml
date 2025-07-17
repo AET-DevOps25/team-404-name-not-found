@@ -9,6 +9,10 @@ currentBranch: images
 postgresUser: postgres
 postgresPass: postgres
 postgresDB: fridge
+# default login vars for pgvector
+pgvectorUser: langchain
+pgvectorPass: langchain
+pgvectorDB: langchain
 
 replicaCount: 1
 

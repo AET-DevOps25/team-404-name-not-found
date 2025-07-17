@@ -207,7 +207,7 @@ services:
       - genai/.env
     environment:
       EMBEDDINGS_ENDPOINT: embeddings:8001
-      PG_VECTOR_URL: postgresql://langchain:langchain@pgvector:5432/langchain
+      PG_VECTOR_URL: postgresql://langchain:langchain@pgvector:5433/langchain
     networks:
       - web
 
@@ -237,9 +237,10 @@ services:
       interval: 5s
       timeout: 5s
       retries: 5
+    command: ["postgres", "-p", "5433"]
     volumes:
       - pgvector_data:/var/lib/postgresql/data
-    ports: [ "5433:5432" ]
+    ports: [ "5433:5433" ]
     networks:
       - web
 
