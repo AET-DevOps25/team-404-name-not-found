@@ -6,6 +6,7 @@ from langchain_openai import OpenAIEmbeddings
 from langchain_postgres import PGVector
 
 from app.models.recipe import Recipe
+from app.models.recipes import Recipes
 
 logger = logging.getLogger(__name__)
 
@@ -33,7 +34,7 @@ class RagService:
 
     def find_recipes(
         self, searchstring: str, k: int = 3, threshold: float = 0.0
-    ) -> list[Recipe]:
+    ) -> Recipes:
         try:
             documents = self.vector_store.similarity_search_with_score(
                 searchstring, k=k
@@ -42,12 +43,14 @@ class RagService:
             logger.error(
                 f"Error searching most likely no results -> GetTensorMutableData is null: {e}"
             )
-            return []
-        return [
-            Recipe.model_validate_json(document.metadata["recipe"])
-            for document, score in documents
-            if score >= threshold
-        ]
+            return Recipes(recipes=[])
+        return Recipes(
+            recipes=[
+                Recipe.model_validate_json(document.metadata["recipe"])
+                for document, score in documents
+                if score >= threshold
+            ]
+        )
 
     @staticmethod
     def __recipe_to_document(recipe: Recipe) -> Document:

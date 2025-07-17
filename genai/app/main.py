@@ -98,7 +98,7 @@ async def generate_recipes_exploratory(
 async def recipe_search(
     search_request: SearchRequest = Body(description="Search request"),
 ):
-    recipes = rag_service.find_recipes(search_request.query, search_request.matches)
+    recipes = rag_service.find_recipes(search_request.query, search_request.count)
     return recipes
 
 
