@@ -39,6 +39,11 @@
         force_apt_get: true
 
     - name: Login to CR
+      # for this, you need a local file called token.yml with the following content:
+      # ```yml
+      # cr_username: your-github-username
+      # token: your-token-with-read-registry-rights
+      # ```
       community.docker.docker_login:
         registry: "ghcr.io"
         username: "{{ cr_username }}"
@@ -52,7 +57,11 @@
         version: main
 
     - name: Setup genai env
-      # TODO: create this file in the CI!
+      # for this, you need a local file called genai/.env with the following content:
+      # ```env
+      # OPENAI_API_KEY=your-key
+      # OPENAI_API_BASE=https://gpu.aet.cit.tum.de/api
+      # ```
       ansible.builtin.copy:
         src: ../../genai/.env
         dest: /home/{{ vm_user }}/repo/genai/.env
