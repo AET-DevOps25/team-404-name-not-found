@@ -1,11 +1,9 @@
 # What's In My Fridge?
 
-
 ![Build](https://img.shields.io/github/actions/workflow/status/AET-DevOps25/team-404-name-not-found/ci.yml)
 ![License](https://img.shields.io/github/license/AET-DevOps25/team-404-name-not-found)
 ![Mozilla HTTP Observatory Grade](https://img.shields.io/mozilla-observatory/grade-score/fridge.student.k8s.aet.cit.tum.de)
 ![Website](https://img.shields.io/website?url=https%3A%2F%2Ffridge.student.k8s.aet.cit.tum.de%2F)
-
 
 > *"We went looking for a snack and found an error instead."*
 
@@ -16,6 +14,8 @@ A full-stack AI-powered recipe suggestion platform for anyone overwhelmed by dec
 - [Franz](https://github.com/kunzef)
 - [Kristi](https://github.com/kristi-balla)
 - [Marcel](https://github.com/Marcel510)
+
+For the responsibilities of each individual, please have a look at the `CODEOWNERS` file. It contains the root folders and the one with the largest contributions in that area. That is also why that person ought to be marked as reviewer in the PRs targeting those folders.
 
 ## 🧪 Technologies Used
 
@@ -29,7 +29,11 @@ A full-stack AI-powered recipe suggestion platform for anyone overwhelmed by dec
 
 ## 🧱 Architecture Overview
 
-TODO: rework given UMLs and add a sequence diagram to depict a typical flow
+Please look into the following links for the corresponding UML diagram:
+
+- [AOM](https://apollon.ase.in.tum.de/uvM3IXUBNmxOEgEQtCfo?view=COLLABORATE)
+- [UseCase](https://apollon.ase.in.tum.de/HfJyHdLFzQr5510wyMBn?view=COLLABORATE)
+- [Classes](https://apollon.ase.in.tum.de/HfJyHdLFzQr5510wyMBn?view=COLLABORATE)
 
 ## 🚀 Developing Locally
 
@@ -175,8 +179,6 @@ infra/
 ```
 
 ### Server
-
-TODO: describe microservice responsibilities, how they interact, your buildSrc logic and how you build the docker images
 
 The `server` directory contains a multi-project gradle-based spring boot application. The `settings.gradle` file references the underlying applications. To refactor common dependencies and save ourselves some writing efforts, a custom spring boot plugin was written. To have a look into the common dependencies, look into the `buildSrc` folder. The projects themselves however still are in control: they can define other dependencies to include next to the pre-defined ones, or exclude some of the pre-defines ones. Other than this, each service looks and is structured just like any other spring boot project. 
 
