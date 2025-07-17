@@ -75,5 +75,5 @@
       environment:
         BRANCH: main
       ansible.builtin.command:
-        cmd: docker compose -f /home/{{ vm_user }}/repo/compose.yml up
+        cmd: docker compose -f /home/{{ vm_user }}/repo/compose.yml up -d
       changed_when: false
