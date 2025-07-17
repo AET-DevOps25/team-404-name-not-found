@@ -11,16 +11,16 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Debug secrets
-        run: |
-          echo "access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}"
-          echo "secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}"
-          echo "session_token: ${{ secrets.AWS_SESSION_TOKEN }}"
-
       - name: Write private key to infra/ec2/priv.pem
         run: |
           printf "%s" "${{ secrets.AWS_PRIVATE_KEY }}" > infra/ec2/priv.pem
           chmod 400 infra/ec2/priv.pem
+
+      - name: Set up genai env variables
+        run: |
+          echo -e "OPENAI_API_BASE=${{ secrets.OPENAI_API_BASE }}" >> ${{ github.workspace }}/infra/genai/.env
+          echo -e "OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }}" > ${{ github.workspace }}/infra/genai/.env
+        
       - name: Install Terraform
         uses: hashicorp/setup-terraform@v3
         with:
