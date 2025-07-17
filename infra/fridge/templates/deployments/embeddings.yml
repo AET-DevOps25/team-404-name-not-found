@@ -19,7 +19,7 @@ spec:
         - name: ghcr-pull-secret
       containers:
         - name: embeddings
-          image: "ghcr.io/huggingface/text-embeddings-inference:cpu-1.7.4"
+          image: "ghcr.io/huggingface/text-embeddings-inference:cpu-1.7.4@sha256:f1e552b2cecbbcd64ce1b75bdd08885676bbb8de5b8476896ca722a8706c999e"
           imagePullPolicy: Always
           ports:
             - containerPort: 8001
@@ -30,6 +30,8 @@ spec:
               value: "8001"
             - name: NUM_THREADS
               value: "2"
+            - name: PROMETHEUS_PORT
+              value: "9090"
           startupProbe:
 {{ toYaml .Values.embeddingsProbe | indent 12 }}
           livenessProbe:
