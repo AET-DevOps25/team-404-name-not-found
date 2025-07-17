@@ -239,7 +239,7 @@ services:
       retries: 5
     command: ["postgres", "-p", "5433"]
     volumes:
-      - pgvector-data:/var/lib/postgresql/data
+      - pgvector_data:/var/lib/postgresql/data
     ports: [ "5433:5433" ]
     networks:
       - web
@@ -266,7 +266,7 @@ services:
 
 volumes:
   pgdata:
-  pgvector-data:
+  pgvector_data:
   tei_cache:
 
 networks:
