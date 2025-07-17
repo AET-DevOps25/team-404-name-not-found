@@ -18,8 +18,8 @@ jobs:
 
       - name: Set up genai env variables
         run: |
-          echo -e "OPENAI_API_BASE=${{ secrets.OPENAI_API_BASE }}" >> ${{ github.workspace }}/infra/genai/.env
-          echo -e "OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }}" > ${{ github.workspace }}/infra/genai/.env
+          echo -e "OPENAI_API_BASE=${{ secrets.OPENAI_API_BASE }}" >> ${{ github.workspace }}/genai/.env
+          echo -e "OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }}" > ${{ github.workspace }}/genai/.env
         
       - name: Install Terraform
         uses: hashicorp/setup-terraform@v3
