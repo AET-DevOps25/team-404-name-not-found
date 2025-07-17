@@ -36,6 +36,11 @@ public class ImagesService {
         return callRecipesService(ingredients, numRecipes, userId, aiEndpoint);
     }
 
+    public List<Ingredient> analyzeIngredients(MultipartFile file) {
+        String base64Image = encodeToBase64(file);
+        return callGenAi(base64Image);
+    }
+
     private String encodeToBase64(MultipartFile file) {
         try {
             byte[] bytes = file.getBytes();

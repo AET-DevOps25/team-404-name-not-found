@@ -17,6 +17,7 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import RecipeSettingsModal from "@/components/recipes/RecipeSettingsModal";
 import { getNumberOfRecipesToGenerate } from "@/utils/settings";
 import FloatingRecipeGenerationButtons from "@/components/recipes/FloatingRecipeGenerationButtons";
+import ScanImageModal from "@/components/images/ScanImageModal";
 
 const Dashboard = () => {
     const { logout } = useAuth();
@@ -36,6 +37,8 @@ const Dashboard = () => {
     const [savedRecipes, setSavedRecipes] = useState<RecipeWithAvailabilityAndId[]>([]);
     const [showRecipeSettingsModal, setShowRecipeSettingsModal] = useState(false);
 
+    const [showScanImageModal, setShowScanImageModal] = useState(false);
+
     const errorHandler = (error: Error) => {
         toast({
             variant: "destructive",
@@ -44,18 +47,24 @@ const Dashboard = () => {
         });
     };
 
-    const addIngredient = (ingredient: Ingredient) => {
-        setShowAddIngredientModal(false);
-
-        ingredientsService
-            .saveIngredients([ingredient])
+    const addIngredients = (ingredients: Ingredient[]) => {
+        return ingredientsService
+            .saveIngredients(ingredients)
             .then((newIngredients) => {
                 console.log("Ingredients added successfully:", newIngredients);
                 setIngredients((prev) => [...prev, ...newIngredients]);
+                return newIngredients;
             })
             .catch((error: Error) => {
                 errorHandler(error);
+                return [];
             });
+    };
+
+    const addIngredient = (ingredient: Ingredient) => {
+        setShowAddIngredientModal(false);
+
+        addIngredients([ingredient]);
     };
 
     const deleteIngredient = (id: string) => {
@@ -127,6 +136,18 @@ const Dashboard = () => {
             })
             .finally(() => {
                 setRecipeSuggestionsLoading(false);
+            });
+    };
+
+    const addIngredientsAndGenerateRecipes = (ingredients: Ingredient[], explore: boolean) => {
+        addIngredients(ingredients)
+            .then((addedIngredients) => {
+                console.log("Ingredients added, generating recipes...");
+                setSelectedIngredientIds(addedIngredients.map((ing) => ing.id));
+                generateRecipes(explore);
+            })
+            .catch((error: Error) => {
+                errorHandler(error);
             });
     };
 
@@ -297,7 +318,9 @@ const Dashboard = () => {
                             <Button
                                 variant="outline"
                                 size="sm"
-                                onClick={() => {}} // TODO: Show camera modal/view
+                                onClick={() => {
+                                    setShowScanImageModal(true);
+                                }}
                                 className="border-orange-200 text-orange-700 hover:bg-orange-50 dark:border-orange-700 dark:text-orange-400 dark:hover:bg-orange-900"
                             >
                                 <Camera className="w-4 h-4 mr-2" />
@@ -414,6 +437,13 @@ const Dashboard = () => {
                 />
             )}
             {showRecipeSettingsModal && <RecipeSettingsModal onClose={() => setShowRecipeSettingsModal(false)} />}
+            {showScanImageModal && (
+                <ScanImageModal
+                    onClose={() => setShowScanImageModal(false)}
+                    onAddToFridge={addIngredients}
+                    onAddAndGenerateRecipes={addIngredientsAndGenerateRecipes}
+                />
+            )}
         </div>
     );
 };

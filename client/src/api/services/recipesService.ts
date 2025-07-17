@@ -129,5 +129,5 @@ class RecipesService {
     }
 }
 
-const authService = new RecipesService();
-export default authService;
+const recipesService = new RecipesService();
+export default recipesService;

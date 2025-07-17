@@ -18,7 +18,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -49,7 +48,7 @@ public class RecipeController {
     }
 
     @Operation(summary = "Generate a recipe using AI from a list of ingredients. The AI can experiment with your given ingredient list, leading to potential recipes you can't cook right away", requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(content = @Content(mediaType = "application/json")), responses = {
-        @ApiResponse(responseCode = "200", description = "Generated Recipes", content = @Content(array = @ArraySchema(schema = @Schema(implementation = Recipe.class))))
+            @ApiResponse(responseCode = "200", description = "Generated Recipes", content = @Content(array = @ArraySchema(schema = @Schema(implementation = Recipe.class))))
     })
     @PostMapping("/ai/explore/{numRecipes}")
     public ResponseEntity<List<Recipe>> exploreRecipe(@RequestBody List<Ingredient> ingredients,
@@ -114,6 +113,17 @@ public class RecipeController {
         return ResponseEntity.ok(recipes);
     }
 
+    @GetMapping("/query")
+    public ResponseEntity<List<Recipe>> getAllRecipesFromQuery(
+            @RequestHeader(value = "X-User-Id", required = false) String userId, @RequestParam String query,
+            @RequestParam int count) {
+
+        userId = configureUserId(userId);
+
+        List<Recipe> recipes = recipeService.getRecipeByQuery(userId, query, count);
+        return ResponseEntity.ok(recipes);
+    }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteRecipe(@PathVariable String id,
             @RequestHeader(value = "X-User-Id", required = false) String userId) {
@@ -138,7 +148,7 @@ public class RecipeController {
         }
         if (result == null || result.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
-                "The proxy should have set the user id in the X-User-Id header");
+                    "The proxy should have set the user id in the X-User-Id header");
         }
         return userId;
     }
