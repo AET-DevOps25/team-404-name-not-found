@@ -68,12 +68,13 @@
 
     - name: Generate local certificates
       ansible.builtin.command:
-        cmd: ./home/{{ vm_user }}/repo/infra/scripts/generate_key_and_cert.sh
+        cmd: /home/{{ vm_user }}/repo/infra/scripts/generate_key_and_cert.sh
       changed_when: false
 
     - name: Run app
-      environment:
-        BRANCH: main
-      ansible.builtin.command:
-        cmd: docker compose -f /home/{{ vm_user }}/repo/compose.yml up -d
-      changed_when: false
+      community.docker.docker_compose_v2:
+        project_src: /home/{{ vm_user }}/repo
+        pull: always
+        recreate: always
+        state: present
+        wait: true
