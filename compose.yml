@@ -233,7 +233,7 @@ services:
       POSTGRES_PASSWORD: langchain
       POSTGRES_DB: langchain
     healthcheck:
-      test: [ "CMD", "pg_isready", "-U", "langchain", "-d", "langchain" ]
+      test: [ "CMD", "pg_isready", "-U", "langchain", "-d", "langchain", "-p", "5433" ]
       interval: 5s
       timeout: 5s
       retries: 5

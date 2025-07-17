@@ -35,7 +35,7 @@ spec:
               subPath: data
           readinessProbe:
             exec:
-              command: ["pg_isready", "-U", {{ .Values.pgvectorUser | quote }}]
+              command: ["pg_isready", "-U", {{ .Values.pgvectorUser | quote }}, "-d", "langchain", "-p", "5433" ]
             initialDelaySeconds: 10
             periodSeconds: 5
             timeoutSeconds: 5
