@@ -31,7 +31,7 @@ spec:
               value: {{ .Values.pgvectorDB }}
           volumeMounts:
             - mountPath: /var/lib/postgresql/data
-              name: pgvector_data
+              name: pgvector-data
               subPath: data
           readinessProbe:
             exec:
@@ -43,6 +43,6 @@ spec:
           resources:
 {{ toYaml .Values.resources | indent 12 }}
       volumes:
-        - name: pgvector_data
+        - name: pgvector-data
           persistentVolumeClaim:
-            claimName: pgvector_data
+            claimName: pgvector-data
