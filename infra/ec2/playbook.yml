@@ -39,6 +39,11 @@
         force_apt_get: true
 
     - name: Login to CR
+      # for this, you need a local file called token.yml with the following content:
+      # ```yml
+      # cr_username: your-github-username
+      # token: your-token-with-read-registry-rights
+      # ```
       community.docker.docker_login:
         registry: "ghcr.io"
         username: "{{ cr_username }}"
@@ -49,11 +54,27 @@
       ansible.builtin.git:
         repo: https://github.com/AET-DevOps25/team-404-name-not-found.git
         dest: /home/{{ vm_user }}/repo
-        version: deploy-aet-cluster
+        version: main
+
+    - name: Setup genai env
+      # for this, you need a local file called genai/.env with the following content:
+      # ```env
+      # OPENAI_API_KEY=your-key
+      # OPENAI_API_BASE=https://gpu.aet.cit.tum.de/api
+      # ```
+      ansible.builtin.copy:
+        src: ../../genai/.env
+        dest: /home/{{ vm_user }}/repo/genai/.env
+
+    - name: Generate local certificates
+      ansible.builtin.command:
+        cmd: /home/{{ vm_user }}/repo/infra/scripts/generate_key_and_cert.sh
+      changed_when: false
 
     - name: Run app
-      environment:
-        BRANCH: deploy-aet-cluster
-      ansible.builtin.command:
-        cmd: docker compose -f /home/{{ vm_user }}/repo/compose.yml up
-      changed_when: false
+      community.docker.docker_compose_v2:
+        project_src: /home/{{ vm_user }}/repo
+        pull: always
+        recreate: always
+        state: present
+        wait: true

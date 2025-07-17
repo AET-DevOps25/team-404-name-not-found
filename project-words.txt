@@ -19,3 +19,4 @@ spotbugs
 jacoco
 medyagh
 kubeconfig
+branchname

@@ -14,7 +14,7 @@ import { tailwindSyntax } from "@eslint/css/syntax";
 
 export default defineConfig([
     tseslint.config(
-        { ignores: ["dist", "node_modules"] },
+        { ignores: ["dist", "node_modules", "src/components/ui"] },
 
         // TypeScript + React
         {

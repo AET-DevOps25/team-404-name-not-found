@@ -1,10 +1,10 @@
 import { ingredientsClient } from "@/api/fetchClients";
-import { Ingredient, IngredientNoId } from "@/types/ingredientTypes";
+import { IngredientWithId, Ingredient } from "@/types/ingredientTypes";
 import { components } from "@/api/ingredients";
 
 type ApiIngredient = components["schemas"]["Ingredient"];
 
-const mapIngredient = (ingredient: ApiIngredient): Ingredient => {
+const mapIngredient = (ingredient: ApiIngredient): IngredientWithId => {
     if (!ingredient.id) {
         throw new Error("Ingredient must have an id");
     }
@@ -17,7 +17,7 @@ const mapIngredient = (ingredient: ApiIngredient): Ingredient => {
 };
 
 class IngredientsService {
-    async getAll(): Promise<Ingredient[]> {
+    async getAll(): Promise<IngredientWithId[]> {
         const result = await ingredientsClient.GET("/");
 
         const errorMessageHeader = "Failed to fetch ingredients";
@@ -33,7 +33,7 @@ class IngredientsService {
         return result.data.map(mapIngredient);
     }
 
-    async getById(id: string): Promise<Ingredient> {
+    async getById(id: string): Promise<IngredientWithId> {
         const result = await ingredientsClient.GET(`/{id}`, {
             params: {
                 path: { id: id },
@@ -72,7 +72,7 @@ class IngredientsService {
         }
     }
 
-    async updateIngredient(ingredient: Ingredient): Promise<Ingredient> {
+    async updateIngredient(ingredient: IngredientWithId): Promise<IngredientWithId> {
         const result = await ingredientsClient.PUT("/", {
             body: {
                 id: ingredient.id,
@@ -94,7 +94,7 @@ class IngredientsService {
         return mapIngredient(result.data);
     }
 
-    async saveIngredients(ingredients: IngredientNoId[]): Promise<Ingredient[]> {
+    async saveIngredients(ingredients: Ingredient[]): Promise<IngredientWithId[]> {
         const result = await ingredientsClient.POST("/", {
             body: ingredients.map((ingredient) => ({
                 name: ingredient.name,

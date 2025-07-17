@@ -1,5 +1,5 @@
 // src/context/AuthContext.tsx
-import { createContext, useContext, useState, ReactNode } from "react";
+import { createContext, useState, ReactNode, use } from "react";
 import { User } from "@/types/authTypes";
 import authService from "@/api/services/authService";
 import { getAuthToken, isAuthTokenSet, resetAuthToken, setAuthToken } from "@/utils/authToken";
@@ -64,14 +64,14 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     };
 
     return (
-        <AuthContext.Provider value={{ user, loading, loginDevMode, login, tryLoginWithStoredToken, logout }}>
+        <AuthContext value={{ user, loading, loginDevMode, login, tryLoginWithStoredToken, logout }}>
             {children}
-        </AuthContext.Provider>
+        </AuthContext>
     );
 };
 
 export const useAuth = (): AuthContextType => {
-    const context = useContext(AuthContext);
+    const context = use(AuthContext);
     if (!context) {
         throw new Error("useAuth must be used within an AuthProvider");
     }

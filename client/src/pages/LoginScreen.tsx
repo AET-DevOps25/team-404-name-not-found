@@ -4,7 +4,7 @@ import GithubLoginButton from "@/components/login/GithubLoginButton";
 import { usersApiBaseUrl } from "@/api/baseUrl";
 import { useAuth } from "@/context/AuthContext";
 import { useEffect } from "react";
-import { toast } from "@/hooks/use-toast";
+import { toast } from "@/hooks/useToast";
 import { useNavigate } from "react-router-dom";
 
 const LoginScreen = () => {
