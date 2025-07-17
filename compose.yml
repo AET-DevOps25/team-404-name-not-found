@@ -245,7 +245,7 @@ services:
       - web
 
   embeddings:
-    image: ghcr.io/huggingface/text-embeddings-inference:cpu-1.7.4
+    image: ghcr.io/huggingface/text-embeddings-inference:cpu-1.7.4@sha256:f1e552b2cecbbcd64ce1b75bdd08885676bbb8de5b8476896ca722a8706c999e
     container_name: embeddings
     restart: unless-stopped
     environment:
