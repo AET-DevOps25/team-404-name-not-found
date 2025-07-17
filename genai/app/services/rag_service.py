@@ -1,3 +1,4 @@
+import logging
 import os
 
 from langchain_core.documents import Document
@@ -6,6 +7,8 @@ from langchain_postgres import PGVector
 
 from app.models.recipe import Recipe
 
+logger = logging.getLogger(__name__)
+
 
 class RagService:
 
@@ -13,27 +16,35 @@ class RagService:
         embeddings_endpoint = os.getenv("EMBEDDINGS_ENDPOINT")
         print(f"Using embeddings endpoint: {embeddings_endpoint}")
         embeddings = OpenAIEmbeddings(
-            model="tei",  # not checked by the server, any str is fine
+            model="thenlper/gte-small",  # not checked by the server, any str is fine
             api_key="dummy",  # must be non-empty
             base_url=f"http://{embeddings_endpoint}/v1",
         )
         pg_vector_url = os.getenv("PG_VECTOR_URL")
         print(f"Using pg_vector url: {pg_vector_url}")
         self.vector_store = PGVector(
-            connection=os.getenv("PG_VECTOR_URL"),
-            collection_name="my_docs",
+            connection=pg_vector_url,
             embeddings=embeddings,
+            collection_name="docs",
         )
 
     def add_recipe(self, recipe: Recipe):
         self.vector_store.add_documents([self.__recipe_to_document(recipe)])
 
     def find_recipes(
-        self, searchstring: str, k: int = 3, threshold: float = 0.6
-    ) -> list[str]:
-        documents = self.vector_store.similarity_search_with_score(searchstring, k=k)
+        self, searchstring: str, k: int = 3, threshold: float = 0.0
+    ) -> list[Recipe]:
+        try:
+            documents = self.vector_store.similarity_search_with_score(
+                searchstring, k=k
+            )
+        except Exception as e:
+            logger.error(
+                f"Error searching most likely no results -> GetTensorMutableData is null: {e}"
+            )
+            return []
         return [
-            str(document)  # Recipe.model_validate(document.metadata["recipe"])
+            Recipe.model_validate_json(document.metadata["recipe"])
             for document, score in documents
             if score >= threshold
         ]
