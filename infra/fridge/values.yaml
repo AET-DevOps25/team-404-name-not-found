@@ -48,6 +48,14 @@ genaiProbe:
   periodSeconds: 10
   failureThreshold: 30
 
+embeddingsProbe:
+  httpGet:
+    path: /health
+    port: 8001
+  initialDelaySeconds: 15
+  periodSeconds: 10
+  failureThreshold: 30
+
 host: fridge.example
 
 grafanaUser: admin

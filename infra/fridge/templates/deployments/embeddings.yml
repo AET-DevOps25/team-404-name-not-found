@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: embeddings
+  namespace: {{ .Values.namespace }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: embeddings
+  template:
+    metadata:
+      annotations:
+        image-deployment: {{ now | date "Mon, 02/01/06, 03:04PM" }}
+      labels:
+        app: embeddings
+    spec:
+      imagePullSecrets:
+        - name: ghcr-pull-secret
+      containers:
+        - name: embeddings
+          image: "ghcr.io/huggingface/text-embeddings-inference:cpu-1.7.4"
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8001
+          env:
+            - name: MODEL_ID
+              value: "thenlper/gte-small"
+            - name: PORT
+              value: "8001"
+            - name: NUM_THREADS
+              value: "2"
+          startupProbe:
+{{ toYaml .Values.embeddingsProbe | indent 12 }}
+          livenessProbe:
+{{ toYaml .Values.embeddingsProbe | indent 12 }}
+          readinessProbe:
+{{ toYaml .Values.embeddingsProbe | indent 12 }}
+          resources:
+{{ toYaml .Values.resources | indent 12 }}
