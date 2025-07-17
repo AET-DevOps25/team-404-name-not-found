@@ -68,7 +68,7 @@ services:
       POSTGRES_PASSWORD: postgres
       POSTGRES_DB: fridge
     healthcheck:
-      test: ["CMD", "pg_isready", "-U", "${POSTGRES_USER:-postgres}"]
+      test: [ "CMD", "pg_isready", "-U", "${POSTGRES_USER:-postgres}" ]
       interval: 5s
       timeout: 5s
       retries: 5
@@ -86,7 +86,7 @@ services:
       context: server
       dockerfile: users/Dockerfile
     healthcheck:
-      test: ["CMD", "wget", "-q", "--spider", "http://localhost:8080/api/users/actuator/health"]
+      test: [ "CMD", "wget", "-q", "--spider", "http://localhost:8080/api/users/actuator/health" ]
       interval: 10s
       timeout: 15s
       retries: 5
@@ -99,7 +99,7 @@ services:
     environment:
       DB_HOST: db
       HOST: fridge.localhost
-      CLIENT_ID:  Ov23liW7lTaWxDdnscNp
+      CLIENT_ID: Ov23liW7lTaWxDdnscNp
       CLIENT_SECRET: 12072402f08ae298d376b1b28e20823c582d8d93
       MODE: ${MODE:-dev}
     volumes:
@@ -115,7 +115,7 @@ services:
       context: server
       dockerfile: recipes/Dockerfile
     healthcheck:
-      test: ["CMD", "wget", "-q", "--spider", "http://localhost:8080/api/recipes/actuator/health"]
+      test: [ "CMD", "wget", "-q", "--spider", "http://localhost:8080/api/recipes/actuator/health" ]
       interval: 10s
       timeout: 15s
       retries: 5
@@ -141,7 +141,7 @@ services:
       context: server
       dockerfile: ingredients/Dockerfile
     healthcheck:
-      test: ["CMD", "wget", "-q", "--spider", "http://localhost:8080/api/ingredients/v1/actuator/health"]
+      test: [ "CMD", "wget", "-q", "--spider", "http://localhost:8080/api/ingredients/v1/actuator/health" ]
       interval: 10s
       timeout: 15s
       retries: 5
@@ -164,7 +164,7 @@ services:
       context: server
       dockerfile: images/Dockerfile
     healthcheck:
-      test: ["CMD", "wget", "-q", "--spider", "http://localhost:8080/api/images/v1/actuator/health"]
+      test: [ "CMD", "wget", "-q", "--spider", "http://localhost:8080/api/images/v1/actuator/health" ]
       interval: 10s
       timeout: 15s
       retries: 5
@@ -190,15 +190,23 @@ services:
       dockerfile: Dockerfile
     healthcheck:
       # wget performs a HEAD request before, which fastapi seems not to like
-      test: ["CMD", "curl", "-s", "-o", "/dev/null", "http://localhost:8000/api/genai/v1/health"]
+      test: [ "CMD", "curl", "-s", "-o", "/dev/null", "http://localhost:8000/api/genai/v1/health" ]
       interval: 10s
       timeout: 15s
       retries: 5
       start_period: 10s
     ports:
       - "8000:8000"
+    depends_on:
+      pgvector:
+        condition: service_healthy
+      embeddings:
+        condition: service_healthy
     env_file:
       - genai/.env
+    environment:
+      EMBEDDINGS_ENDPOINT: embeddings:8001
+      PG_VECTOR_URL: postgresql://langchain:langchain@pgvector:5432/langchain
     networks:
       - web
 
@@ -216,8 +224,48 @@ services:
     networks:
       - web
 
+  pgvector:
+    container_name: pgvector
+    image: pgvector/pgvector:pg16
+    environment:
+      POSTGRES_USER: langchain
+      POSTGRES_PASSWORD: langchain
+      POSTGRES_DB: langchain
+    healthcheck:
+      test: [ "CMD", "pg_isready", "-U", "langchain", "-d", "langchain" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    volumes:
+      - pgvector_data:/var/lib/postgresql/data
+    ports: [ "5433:5432" ]
+    networks:
+      - web
+
+  embeddings:
+    image: ghcr.io/huggingface/text-embeddings-inference:cpu-1.7.4
+    container_name: embeddings
+    restart: unless-stopped
+    environment:
+      MODEL_ID: thenlper/gte-small
+      PORT: 8001
+      NUM_THREADS: 2
+    volumes:
+      - tei_cache:/data
+    ports:
+      - "8001:8001"
+    healthcheck:
+      test: ["CMD", "curl", "-fs", "http://localhost:8001/health"]
+      interval: 30s
+      retries: 3
+    networks:
+        - web
+
+
 volumes:
   pgdata:
+  pgvector_data:
+  tei_cache:
 
 networks:
   web:
