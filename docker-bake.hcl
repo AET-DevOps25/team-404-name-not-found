@@ -22,6 +22,7 @@ target "server" {
     dockerfile = "${ctx}/Dockerfile"
     context = "server"
     tags = ["${IMAGE_NAME}/${ctx}:${IMAGE_TAG}"]
+    platforms = ["linux/amd64", "linux/arm64"]
     cache-from = [ "type=registry,ref=${IMAGE_NAME}/${ctx}:buildcache" ]
     cache-to = [ "type=registry,ref=${IMAGE_NAME}/${ctx}:buildcache,mode=max" ]
 }
@@ -35,6 +36,7 @@ target "normal" {
     dockerfile = "Dockerfile"
     context = "${ctx}"
     tags = ["${IMAGE_NAME}/${ctx}:${IMAGE_TAG}"]
+    platforms = ["linux/amd64", "linux/arm64"]
     cache-from = [ "type=registry,ref=${IMAGE_NAME}/${ctx}:buildcache" ]
     cache-to = [ "type=registry,ref=${IMAGE_NAME}/${ctx}:buildcache,mode=max" ]
 }
