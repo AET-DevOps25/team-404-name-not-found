@@ -136,6 +136,20 @@ Make sure you are logged into the ghcr and your token has the correct permission
 helm upgrade --install fridge ./infra/fridge --namespace team-404-name-not-found --create-namespace --atomic -f infra/fridge/values.local.yaml
 ```
 
+## Deployment on AWS
+
+There are 2 workflows that need to be triggered manually to deploy on AWS. This was chosen due to the [learning lab](https://awsacademy.instructure.com/courses/122750/modules/items/11621630) being ephemeral and only persisting for 4h. You can find the aforementioned actions in the [actions](https://github.com/AET-DevOps25/team-404-name-not-found/actions) tab, labeled as "manual".
+
+You will need the following secrets for those jobs:
+
+- `AWS_ACCESS_KEY_ID` --> retrievable by the same-named variable on the learning lab page
+- `AWS_SECRET_ACCESS_KEY` --> retrievable by the same-named variable on the learning lab page
+- `AWS_SESSION_TOKEN` --> retrievable by the same-named variable on the learning lab page
+- `AWS_PRIVATE_KEY` --> this is the ssh key from the learning page
+- `DOCKER_CONFIG` --> a base64 encoded representation of a `~/.docker/config.json` with read permissions on packages for ghcr.io. We recommend you create this via `cat ~/.docker/config.json | base64 -w0`
+
+After that, the deploy job ought to run without issues. During it, the `tfstate` is uploaded as an artifact. This is needed for the teardown job. It obviously needs to know the state to be able to destroy the built resources. However, since it's another workflow, you would also need to tell it the `run-id` of the deployment workflow. You can find this in the browser from the link: `https://github.com/AET-DevOps25/team-404-name-not-found/actions/runs/16350870391` <-- the number after `/runs` is the id the job needs.
+
 ## 📈 Metrics & Monitoring
 
 Prometheus scrapes data from all microservices of the server, as well as genai. The data is aggregated in 3 grafana dashboards, depicting the state of each application, the JVM and genai-specific stats. You can view the dashboards by appending `/grafana` to whatever host you are running the app on. 
