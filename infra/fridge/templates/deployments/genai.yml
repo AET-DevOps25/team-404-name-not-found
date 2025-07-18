@@ -35,6 +35,10 @@ spec:
                 secretKeyRef:
                   name: genai-env-variables
                   key: OPENAI_API_KEY
+            - name: EMBEDDINGS_ENDPOINT
+              value: embeddings:8001
+            - name: PG_VECTOR_URL
+              value: postgresql://langchain:langchain@pgvector:5433/langchain
           startupProbe:
 {{ toYaml .Values.genaiProbe | indent 12 }}
           livenessProbe:

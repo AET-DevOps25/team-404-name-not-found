@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pgvector
+  namespace: {{ .Values.namespace }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: pgvector
+  template:
+    metadata:
+      labels:
+        app: pgvector
+    spec:
+      containers:
+        - name: pgvector
+          image: pgvector/pgvector:pg16
+          args:
+            - "postgres"
+            - "-p"
+            - "5433"
+          ports:
+            - containerPort: 5433
+          env:
+            - name: POSTGRES_USER
+              value: {{ .Values.pgvectorUser }}
+            - name: POSTGRES_PASSWORD
+              value: {{ .Values.pgvectorPass }}
+            - name: POSTGRES_DB
+              value: {{ .Values.pgvectorDB }}
+          volumeMounts:
+            - mountPath: /var/lib/postgresql/data
+              name: pgvector-data
+              subPath: data
+          readinessProbe:
+            exec:
+              command: ["pg_isready", "-U", {{ .Values.pgvectorUser | quote }}, "-d", "langchain", "-p", "5433" ]
+            initialDelaySeconds: 10
+            periodSeconds: 5
+            timeoutSeconds: 5
+            failureThreshold: 5
+          resources:
+{{ toYaml .Values.resources | indent 12 }}
+      volumes:
+        - name: pgvector-data
+          persistentVolumeClaim:
+            claimName: pgvector-data
