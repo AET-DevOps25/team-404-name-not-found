@@ -1,3 +1,4 @@
+import sys
 import unittest
 from unittest.mock import AsyncMock, MagicMock, patch
 import pytest
@@ -8,15 +9,25 @@ from app.models.ingredient import Ingredient, Unit
 from app.models.ingredients import Ingredients
 from app.models.recipe import Recipe, Difficulty
 from app.models.recipes import Recipes
-from app.services.recipe_service import RecipeService
+
+# Mock the RAG service at module level to avoid import issues
+sys.modules["app.services.rag_service"] = MagicMock()
 
 
 class TestRecipeService(unittest.TestCase):
-
     def setUp(self):
         load_dotenv()
 
-        self.recipe_service = RecipeService()
+        # Mock the RAG service to avoid database calls
+        self.mock_rag_service = MagicMock()
+        self.mock_rag_service.add_recipe = MagicMock()
+
+        # Import RecipeService after mocking dependencies
+        from app.services.recipe_service import RecipeService
+
+        self.RecipeService = RecipeService
+
+        self.recipe_service = self.RecipeService(self.mock_rag_service)
         # Mock the LLM to avoid actual API calls
         self.recipe_service.llm = MagicMock()
 
@@ -60,9 +71,11 @@ class TestRecipeService(unittest.TestCase):
         )
 
     @patch("app.services.recipe_service.ChatOpenAI")
-    def test_init(self, mock_chat_openai):
-        # Test that the ChatOpenAI is initialized correctly
-        RecipeService()
+    @patch("app.services.recipe_service.RagService")
+    def test_init(self, mock_rag_service_class, mock_chat_openai):
+        # Test that the ChatOpenAI is initialized correctly with RAG service
+        mock_rag_service = MagicMock()
+        self.RecipeService(mock_rag_service)
         mock_chat_openai.assert_called_once()
 
     @pytest.mark.asyncio
@@ -78,6 +91,8 @@ class TestRecipeService(unittest.TestCase):
         # Assert results
         self.assertEqual(result, self.test_recipe)
         self.assertEqual(result.title, "Apple Pancakes")
+        # Verify that RAG service add_recipe was called
+        self.mock_rag_service.add_recipe.assert_called_once_with(self.test_recipe)
 
     @pytest.mark.asyncio
     async def test_get_recipe_matching_validation_error(self):
@@ -182,37 +197,32 @@ class TestRecipeService(unittest.TestCase):
         self.assertEqual(result, self.test_exploratory_recipe)
         self.assertEqual(len(result.needed_ingredients), 2)
         self.assertEqual(result.needed_ingredients[0].name, "Cinnamon")
+        # Verify that RAG service add_recipe was called
+        self.mock_rag_service.add_recipe.assert_called_once_with(
+            self.test_exploratory_recipe
+        )
 
     @pytest.mark.asyncio
-    async def test_get_recipes_exploratory(self):
-        # Create additional exploratory recipe
-        exploratory_recipe2 = Recipe(
-            title="Milk Shake",
-            description="Refreshing milk shake",
-            difficulty=Difficulty.EASY,
-            cook_time=10,
-            ingredients=[Ingredient(name="Milk", amount=400, unit=Unit.ML)],
-            needed_ingredients=[
-                Ingredient(name="Vanilla Extract", amount=5, unit=Unit.ML)
-            ],
-            steps=["Blend ingredients", "Serve cold"],
-        )
-
-        # Configure mock to return different recipes
+    async def test_get_recipe_exploratory_rag_service_error(self):
+        # Configure mock to return exploratory recipe
         self.recipe_service.llm.invoke = AsyncMock(
-            side_effect=[self.test_exploratory_recipe, exploratory_recipe2]
+            return_value=self.test_exploratory_recipe
+        )
+        # Configure RAG service to raise an exception
+        self.mock_rag_service.add_recipe.side_effect = Exception("Database error")
+
+        # Call method - should still return recipe even if RAG service fails
+        result = await self.recipe_service.get_recipe_exploratory(
+            [], self.test_ingredients
         )
 
-        # Call method
-        result = await self.recipe_service.get_recipes_exploratory(
-            2, self.test_ingredients
+        # Verify results - recipe should still be returned
+        self.assertEqual(result, self.test_exploratory_recipe)
+        self.assertEqual(len(result.needed_ingredients), 2)
+        # Verify that RAG service add_recipe was called
+        self.mock_rag_service.add_recipe.assert_called_once_with(
+            self.test_exploratory_recipe
         )
-
-        # Verify results
-        self.assertIsInstance(result, Recipes)
-        self.assertEqual(len(result.recipes), 2)
-        self.assertEqual(result.recipes[0].title, "Apple Cake")
-        self.assertEqual(result.recipes[1].title, "Milk Shake")
 
     def test_validate_recipe_uses_only_available_ingredients(self):
         # Valid recipe - all ingredients available and amounts are sufficient
@@ -225,6 +235,8 @@ class TestRecipeService(unittest.TestCase):
         invalid_recipe = Recipe(
             title="Invalid Recipe",
             description="Recipe with unavailable ingredient",
+            difficulty=Difficulty.EASY,
+            cook_time=15,
             ingredients=[Ingredient(name="Banana", amount=1, unit=Unit.PCS)],
             needed_ingredients=[],
             steps=["Step 1"],
@@ -238,6 +250,8 @@ class TestRecipeService(unittest.TestCase):
         invalid_recipe2 = Recipe(
             title="Invalid Recipe 2",
             description="Recipe with too much of an ingredient",
+            difficulty=Difficulty.EASY,
+            cook_time=15,
             ingredients=[
                 Ingredient(name="Apple", amount=5, unit=Unit.PCS)
             ],  # Only 2 available
@@ -253,6 +267,8 @@ class TestRecipeService(unittest.TestCase):
         invalid_recipe3 = Recipe(
             title="Invalid Recipe 3",
             description="Recipe with wrong unit",
+            difficulty=Difficulty.EASY,
+            cook_time=15,
             ingredients=[Ingredient(name="Apple", amount=1, unit=Unit.ML)],
             needed_ingredients=[],
             steps=["Step 1"],
@@ -266,6 +282,8 @@ class TestRecipeService(unittest.TestCase):
         invalid_recipe4 = Recipe(
             title="Invalid Recipe 4",
             description="Recipe with needed ingredients",
+            difficulty=Difficulty.EASY,
+            cook_time=15,
             ingredients=[Ingredient(name="Apple", amount=1, unit=Unit.PCS)],
             needed_ingredients=[Ingredient(name="Sugar", amount=10, unit=Unit.G)],
             steps=["Step 1"],
@@ -274,6 +292,24 @@ class TestRecipeService(unittest.TestCase):
             invalid_recipe4, self.test_ingredients
         )
         self.assertFalse(invalid4)
+
+    @pytest.mark.asyncio
+    async def test_get_recipe_matching_rag_service_error(self):
+        # Configure the mock to return our test recipe
+        self.recipe_service.llm.invoke = AsyncMock(return_value=self.test_recipe)
+        # Configure RAG service to raise an exception
+        self.mock_rag_service.add_recipe.side_effect = Exception("Database error")
+
+        # Call the method - should still return recipe even if RAG service fails
+        result = await self.recipe_service.get_recipe_matching(
+            [], self.test_ingredients
+        )
+
+        # Assert results - recipe should still be returned
+        self.assertEqual(result, self.test_recipe)
+        self.assertEqual(result.title, "Apple Pancakes")
+        # Verify that RAG service add_recipe was called
+        self.mock_rag_service.add_recipe.assert_called_once_with(self.test_recipe)
 
 
 if __name__ == "__main__":
