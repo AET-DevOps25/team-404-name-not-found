@@ -2,6 +2,7 @@ import sys
 import unittest
 from unittest.mock import AsyncMock, MagicMock, patch
 import pytest
+import os
 from dotenv import load_dotenv
 from fastapi import HTTPException
 
@@ -10,8 +11,15 @@ from app.models.ingredients import Ingredients
 from app.models.recipe import Recipe, Difficulty
 from app.models.recipes import Recipes
 
+# Set dummy OpenAI API key for testing
+os.environ["OPENAI_API_KEY"] = "test-key-for-testing"
+
 # Mock the RAG service at module level to avoid import issues
 sys.modules["app.services.rag_service"] = MagicMock()
+
+# Mock ChatOpenAI at module level before any imports
+with patch("langchain_openai.ChatOpenAI"):
+    from app.services.recipe_service import RecipeService
 
 
 class TestRecipeService(unittest.TestCase):
@@ -22,14 +30,17 @@ class TestRecipeService(unittest.TestCase):
         self.mock_rag_service = MagicMock()
         self.mock_rag_service.add_recipe = MagicMock()
 
-        # Import RecipeService after mocking dependencies
-        from app.services.recipe_service import RecipeService
-
         self.RecipeService = RecipeService
 
-        self.recipe_service = self.RecipeService(self.mock_rag_service)
-        # Mock the LLM to avoid actual API calls
-        self.recipe_service.llm = MagicMock()
+        # Create RecipeService with mocked dependencies
+        with patch("app.services.recipe_service.ChatOpenAI") as mock_chat_openai:
+            mock_llm = MagicMock()
+            mock_chat_openai.return_value = mock_llm
+            mock_llm.with_structured_output.return_value = mock_llm
+
+            self.recipe_service = self.RecipeService(self.mock_rag_service)
+            # Mock the LLM to avoid actual API calls
+            self.recipe_service.llm = MagicMock()
 
         # Test data
         self.test_ingredients = Ingredients(
