@@ -45,5 +45,5 @@ jobs:
         name: Add coverage comment to PR
         uses: MishaKav/pytest-coverage-comment@main
         with:
-          pytest-coverage-path: ./genai/coverage.xml
+          pytest-coverage-path: ../genai/coverage.xml
           title: GenAI Test Coverage Report
