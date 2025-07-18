@@ -39,7 +39,7 @@ jobs:
       - if: steps.changes.outputs.genai == 'true'
         name: Run tests
         run: |
-          pytest genai/ tests/ --cov=genai --cov-report=xml
+          pytest genai/tests/ --cov=genai --cov-report=xml
 
       - if: steps.changes.outputs.genai == 'true'
         name: Upload coverage to Codecov
