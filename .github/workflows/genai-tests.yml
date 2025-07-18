@@ -45,10 +45,13 @@ jobs:
         name: Test dir
         run: |
           ls
+          cd /
+          ls -lR
+
 
       - if: steps.changes.outputs.genai == 'true' && github.event_name == 'pull_request'
         name: Add coverage comment to PR
         uses: MishaKav/pytest-coverage-comment@main
         with:
-          pytest-coverage-path: ./genai/coverage.xml
+          pytest-coverage-path: genai/coverage.xml
           title: GenAI Test Coverage Report
