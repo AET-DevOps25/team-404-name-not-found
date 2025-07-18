@@ -19,6 +19,9 @@ jobs:
   python-formatting:
     name: python-formatting
     uses: ./.github/workflows/python-black-formatting.yml
+  genai-tests:
+    name: genai-tests
+    uses: ./.github/workflows/genai-tests.yml
   typescript:
     name: typescript
     uses: ./.github/workflows/typescript.yml
