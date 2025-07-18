@@ -19,6 +19,8 @@ rag_service = RagService()
 recipe_service = RecipeService(rag_service)
 image_service = ImageService()
 
+# todo remove trigger tests
+
 
 @app.get("/health", summary="Health Check", description="Health Check")
 def health():
