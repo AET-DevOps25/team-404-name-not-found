@@ -128,7 +128,7 @@ class RecipesService {
         return result.data.map(mapToRecipe);
     }
 
-    async searchRecipes(query: string, count: number): Promise<Recipe[]> {
+    async searchRecipes(query: string, count: number): Promise<RecipeWithId[]> {
         const result = await recipesClient.GET("/query", {
             params: {
                 query: {

@@ -18,6 +18,7 @@ import RecipeSettingsModal from "@/components/recipes/RecipeSettingsModal";
 import { getNumberOfRecipesToGenerate } from "@/utils/settings";
 import FloatingRecipeGenerationButtons from "@/components/recipes/FloatingRecipeGenerationButtons";
 import ScanImageModal from "@/components/images/ScanImageModal";
+import RecipeSearch from "@/components/recipes/RecipeSearch";
 
 const Dashboard = () => {
     const { logout } = useAuth();
@@ -116,6 +117,8 @@ const Dashboard = () => {
 
     const generateRecipes = (explore: boolean) => {
         setRecipeSuggestionsLoading(true);
+        setActiveRecipeTab("suggestions");
+
         const ingredientsToUse = selectedIngredientIds
             ? ingredients.filter((ing) => selectedIngredientIds.includes(ing.id))
             : ingredients;
@@ -294,22 +297,30 @@ const Dashboard = () => {
             {/* Header */}
             <header className="bg-white dark:bg-gray-800 shadow-sm border-b dark:border-gray-700">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="flex justify-between items-center h-16">
-                        <div className="flex items-center">
-                            <div className="flex items-center">
-                                <Refrigerator className="w-8 h-8 text-green-600 mr-3" />
-                                <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
-                                    What's In My Fridge
-                                </h1>
-                            </div>
+                    <div className="flex items-center h-16 space-x-6">
+                        {/* Logo + Title */}
+                        <div className="flex items-center space-x-3 flex-shrink-0">
+                            <Refrigerator className="w-8 h-8 text-green-600" />
+                            <h1 className="text-2xl font-bold text-gray-900 dark:text-white whitespace-nowrap">
+                                What's In My Fridge
+                            </h1>
                         </div>
-                        <div className="flex items-center space-x-4">
+
+                        {/* Search bar expands to fill available space */}
+                        <div className="flex-1">
+                            <RecipeSearch
+                                ingredients={ingredients}
+                                openedRecipe={openedRecipe}
+                                onResultClicked={openRecipeDetailModal}
+                            />
+                        </div>
+
+                        {/* Action Buttons */}
+                        <div className="flex items-center space-x-4 flex-shrink-0">
                             <Button
                                 variant="outline"
                                 size="sm"
-                                onClick={() => {
-                                    setShowAddIngredientModal(true);
-                                }}
+                                onClick={() => setShowAddIngredientModal(true)}
                                 className="border-green-200 text-green-700 hover:bg-green-50 dark:border-green-700 dark:text-green-400 dark:hover:bg-green-900"
                             >
                                 <Plus className="w-4 h-4 mr-2" />
@@ -318,9 +329,7 @@ const Dashboard = () => {
                             <Button
                                 variant="outline"
                                 size="sm"
-                                onClick={() => {
-                                    setShowScanImageModal(true);
-                                }}
+                                onClick={() => setShowScanImageModal(true)}
                                 className="border-orange-200 text-orange-700 hover:bg-orange-50 dark:border-orange-700 dark:text-orange-400 dark:hover:bg-orange-900"
                             >
                                 <Camera className="w-4 h-4 mr-2" />
