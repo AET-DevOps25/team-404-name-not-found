@@ -44,8 +44,6 @@ jobs:
       - if: steps.changes.outputs.genai == 'true'
         name: Test dir
         run: |
-          ls
-          cd /
           ls -lR
 
 
