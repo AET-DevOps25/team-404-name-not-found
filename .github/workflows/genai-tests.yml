@@ -40,13 +40,6 @@ jobs:
         run: |
           pytest genai/tests/ --cov=genai --cov-report=xml
 
-      - if: steps.changes.outputs.genai == 'true'
-        name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v3
-        with:
-          file: ./coverage.xml
-          fail_ci_if_error: true
-
       - if: steps.changes.outputs.genai == 'true' && github.event_name == 'pull_request'
         name: Add coverage comment to PR
         uses: MishaKav/pytest-coverage-comment@main
