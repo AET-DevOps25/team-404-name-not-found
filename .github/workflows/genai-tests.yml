@@ -37,8 +37,9 @@ jobs:
 
       - if: steps.changes.outputs.genai == 'true'
         name: Run tests
+        working-directory: genai
         run: |
-          pytest genai/tests/ --cov=genai --cov-report=xml:genai/coverage.xml
+          pytest tests/ --cov=app --cov-report=xml:coverage.xml
 
       - if: steps.changes.outputs.genai == 'true' && github.event_name == 'pull_request'
         name: Add coverage comment to PR
