@@ -36,8 +36,7 @@ jobs:
         working-directory: client
         run: npm run lint
 
-      # TODO: Uncomment when addings tests
-      #- if: steps.changes.outputs.client == 'true'
-      #  name: Test
-      #  working-directory: client
-      #  run: npm test
+      - if: steps.changes.outputs.client == 'true'
+        name: Test
+        working-directory: client
+        run: npm run test
