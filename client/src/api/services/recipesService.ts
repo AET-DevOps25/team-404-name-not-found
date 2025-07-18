@@ -127,6 +127,29 @@ class RecipesService {
 
         return result.data.map(mapToRecipe);
     }
+
+    async searchRecipes(query: string, count: number): Promise<RecipeWithId[]> {
+        const result = await recipesClient.GET("/query", {
+            params: {
+                query: {
+                    query: query,
+                    count: count,
+                },
+            },
+        });
+
+        const errorMessageHeader = "Failed to search recipes";
+        if (!result.response.ok) {
+            const errorMessage = `${errorMessageHeader}: response is not OK: ${result.response.status} ${result.response.statusText}`;
+            console.error(errorMessage, result.data);
+            throw new Error(errorMessage);
+        }
+        if (!result.data) {
+            throw new Error(`${errorMessageHeader}: response has no data`);
+        }
+
+        return result.data.map(mapToRecipe);
+    }
 }
 
 const recipesService = new RecipesService();

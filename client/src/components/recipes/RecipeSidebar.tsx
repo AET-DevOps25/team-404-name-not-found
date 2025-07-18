@@ -1,13 +1,12 @@
 import { ReactNode, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { Clock, ChefHat, Trash, Bookmark } from "lucide-react";
 import RecipesLoadingSpinner from "@/components/recipes/RecipesLoadingSpinner";
 import { RecipeWithAvailabilityAndId } from "@/types/recipeTypes";
-import { AvailabilityScore } from "@/types/availabilityScore";
 import { Button } from "@/components/ui/button";
 import { LucideBookmarkFilled } from "@/components/recipes/LucideBookmarkFilled";
 import { useHoveredElementId } from "@/hooks/useHoveredElementId";
+import AvailabilityBadge from "@/components/recipes/AvailabilityBadge";
 
 interface RecipeSaving {
     onToggleSave: (recipe: RecipeWithAvailabilityAndId) => void;
@@ -40,28 +39,6 @@ const RecipesSidebar = ({
 
     const isRecipeSaved = (recipe: RecipeWithAvailabilityAndId) => {
         return recipeSaving ? recipeSaving.savedRecipes.some((saved) => saved.id === recipe.id) : false;
-    };
-
-    const getAvailabilityBadge = (score?: AvailabilityScore) => {
-        if (!score) return null;
-
-        const colors = {
-            good: "bg-green-100 text-green-800 border-green-200",
-            medium: "bg-yellow-100 text-yellow-800 border-yellow-200",
-            bad: "bg-red-100 text-red-800 border-red-200",
-        };
-
-        const labels = {
-            good: "All ingredients",
-            medium: "Most ingredients",
-            bad: "Missing ingredients",
-        };
-
-        return (
-            <Badge variant="outline" className={colors[score as keyof typeof colors]}>
-                {labels[score as keyof typeof labels]}
-            </Badge>
-        );
     };
 
     const getRecipeCards = () => {
@@ -128,7 +105,9 @@ const RecipesSidebar = ({
                                 {recipe.difficulty}
                             </div>
                         </div>
-                        <div className="flex items-center">{getAvailabilityBadge(recipe.availabilityScore)}</div>
+                        <div className="flex items-center">
+                            <AvailabilityBadge score={recipe.availabilityScore} />
+                        </div>
                     </div>
                 </CardContent>
             </Card>
