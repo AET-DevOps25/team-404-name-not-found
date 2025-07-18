@@ -26,6 +26,7 @@ React client for the "What's In My Fridge" project! 🚀
 - `npm run preview` – Serves the built project for local preview
 - `npm run lint` – Runs ESLint + Prettier on the project
 - `npm run lint:fix` – Fixes formatting issues using Prettier
+- `npm run test` – Runs the tests using Vitest
 
 ## ⚙️ Available Environment Variables
 - `VITE_API_BASE_URL` – Base URL of the server to use for API requests (default: `/api` -> uses the current host/port and appends `/api`)

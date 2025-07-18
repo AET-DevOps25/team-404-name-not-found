@@ -10,6 +10,11 @@ export default defineConfig(({}) => ({
         port: 8080,
     },
     plugins: [runtimeEnv(), react()].filter(Boolean),
+    test: {
+        environment: "jsdom",
+        globals: true,
+        setupFiles: "./src/setupTests.ts",
+    },
     resolve: {
         alias: {
             "@": path.resolve(__dirname, "./src"),
