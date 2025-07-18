@@ -32,8 +32,7 @@ jobs:
         name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          if [ -f requirements-dev.txt ]; then pip install -r requirements-dev.txt; fi
-          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+          if [ -f genai/requirements.txt ]; then pip install -r genai/requirements.txt; fi
           pip install pytest pytest-cov
 
       - if: steps.changes.outputs.genai == 'true'
