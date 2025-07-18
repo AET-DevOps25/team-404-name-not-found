@@ -20,6 +20,12 @@
 - `npm run lint` – Runs ESLint + Prettier on the project
 - `npm run lint:fix` – Fixes formatting issues using Prettier
 
+## Available env vars
+- `VITE_API_BASE_URL` – Base URL of the server to use for API requests (default: `/api` -> uses the current host/port and appends `/api`)
+- `VITE_MODE` – Mode of the client, can be `dev` or `prod` (default: `prod`).  
+  When set to `dev`, the client will use a mocked login flow and will not require a real login. This is useful for local
+  development with the Vite dev server.
+
 ## Available Scripts
 
 - `./scripts/generate-openapi-typescript.sh` – Generates TypeScript types from the OpenAPI specification of the server

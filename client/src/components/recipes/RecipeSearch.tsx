@@ -46,7 +46,6 @@ const RecipeSearch = ({ onResultClicked, openedRecipe, ingredients }: RecipeSear
         console.log("RecipeSearch mounted or modal changed, openedRecipe:", openedRecipe);
         if (!openedRecipe) {
             const timeout = setTimeout(() => {
-                console.log("Added listeners");
                 addEventListeners();
             }, 300); // Delay to ensure modal is closed before adding listeners
             return () => {
@@ -54,7 +53,6 @@ const RecipeSearch = ({ onResultClicked, openedRecipe, ingredients }: RecipeSear
                 removeEventListeners();
             };
         } else {
-            console.log("Removed listeners");
             removeEventListeners();
         }
     }, [openedRecipe]);

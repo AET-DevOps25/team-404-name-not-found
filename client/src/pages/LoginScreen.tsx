@@ -8,7 +8,6 @@ import { toast } from "@/hooks/useToast";
 import { useNavigate } from "react-router-dom";
 
 const LoginScreen = () => {
-    // @ts-ignore
     const { user, loginDevMode, tryLoginWithStoredToken } = useAuth();
     const navigate = useNavigate();
 

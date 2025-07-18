@@ -1,24 +1,24 @@
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Camera, LogOut, Plus, Refrigerator, Settings } from "lucide-react";
-import IngredientGrid from "@/components/ingredients/IngredientGrid";
-import { IngredientWithId, Ingredient } from "@/types/ingredientTypes";
 import { useAuth } from "@/context/AuthContext";
-import ingredientsService from "@/api/services/ingredientsService";
 import { toast } from "@/hooks/useToast";
+import IngredientGrid from "@/components/ingredients/IngredientGrid";
 import AddIngredientModal from "@/components/ingredients/AddIngredientModal";
 import EditIngredientModal from "@/components/ingredients/EditIngredientModal";
-import RecipesSidebar from "@/components/recipes/RecipeSidebar";
-import { RecipeWithAvailabilityAndId, RecipeWithId } from "@/types/recipeTypes";
-import recipesService from "@/api/services/recipesService";
+import RecipeSidebar from "@/components/recipes/RecipeSidebar";
 import RecipeDetailModal from "@/components/recipes/RecipeDetailModal";
-import { calculateRecipeAvailability, IngredientMatchingResult } from "@/utils/ingredientMatching";
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import RecipeSettingsModal from "@/components/recipes/RecipeSettingsModal";
-import { getNumberOfRecipesToGenerate } from "@/utils/settings";
 import FloatingRecipeGenerationButtons from "@/components/recipes/FloatingRecipeGenerationButtons";
 import ScanImageModal from "@/components/images/ScanImageModal";
 import RecipeSearch from "@/components/recipes/RecipeSearch";
+import ingredientsService from "@/api/services/ingredientsService";
+import recipesService from "@/api/services/recipesService";
+import { calculateRecipeAvailability, IngredientMatchingResult } from "@/utils/ingredientMatching";
+import { getNumberOfRecipesToGenerate } from "@/utils/settings";
+import { IngredientWithId, Ingredient } from "@/types/ingredientTypes";
+import { RecipeWithAvailabilityAndId, RecipeWithId } from "@/types/recipeTypes";
 
 const Dashboard = () => {
     const { logout } = useAuth();
@@ -259,7 +259,7 @@ const Dashboard = () => {
             });
     };
 
-    const updateAvailabilityScores = (recipes: RecipeWithAvailabilityAndId[]): RecipeWithAvailabilityAndId[] => {
+    const getUpdatedAvailabilityScores = (recipes: RecipeWithAvailabilityAndId[]): RecipeWithAvailabilityAndId[] => {
         return recipes.map((recipe) => {
             const updatedAvailabilityScore = calculateRecipeAvailability(recipe, ingredients);
 
@@ -288,8 +288,8 @@ const Dashboard = () => {
     // Update recipe availability scores whenever ingredients change
     useEffect(() => {
         console.log("Ingredients changed, updating recipe availability scores...");
-        setRecipeSuggestions((prev) => updateAvailabilityScores(prev));
-        setSavedRecipes((prev) => updateAvailabilityScores(prev));
+        setRecipeSuggestions((prev) => getUpdatedAvailabilityScores(prev));
+        setSavedRecipes((prev) => getUpdatedAvailabilityScores(prev));
     }, [ingredients]);
 
     return (
@@ -388,7 +388,7 @@ const Dashboard = () => {
                             </div>
 
                             <TabsContent value="suggestions">
-                                <RecipesSidebar
+                                <RecipeSidebar
                                     loading={recipeSuggestionsLoading}
                                     recipes={recipeSuggestions}
                                     onRecipeSelect={openRecipeDetailModal}
@@ -399,11 +399,11 @@ const Dashboard = () => {
                                 >
                                     <p>No recipe suggestions available.</p>
                                     <p>Click the buttons below to generate recipes based on your ingredients.</p>
-                                </RecipesSidebar>
+                                </RecipeSidebar>
                             </TabsContent>
 
                             <TabsContent value="saved">
-                                <RecipesSidebar
+                                <RecipeSidebar
                                     onDelete={deleteRecipe}
                                     loading={false}
                                     recipes={savedRecipes}
@@ -411,7 +411,7 @@ const Dashboard = () => {
                                 >
                                     <p>No saved recipes found.</p>
                                     <p>Save recipes from the suggestions tab to see them here.</p>
-                                </RecipesSidebar>
+                                </RecipeSidebar>
                             </TabsContent>
                         </Tabs>
                     </div>
