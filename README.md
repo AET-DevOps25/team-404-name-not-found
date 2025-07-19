@@ -204,7 +204,7 @@ After it receives the ingredient list from the AI service, it saves those ingred
 
 ### Client
 
-TODO: do the thing
+For this, have a look into the [client directory](./client/README.md).
 
 ### GenAI
 

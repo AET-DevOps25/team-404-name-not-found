@@ -20,3 +20,5 @@ jacoco
 medyagh
 kubeconfig
 branchname
+CODEOWNERS
+tfstate
