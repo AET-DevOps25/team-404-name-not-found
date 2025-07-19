@@ -20,7 +20,7 @@ For the responsibilities of each individual, please have a look at the `CODEOWNE
 ## 🧪 Technologies Used
 
 * **Frontend:** React
-* **Backend:** Spring Boot (Java 21)
+* **Server:** Spring Boot (Java 21)
 * **GenAI**: FastAPI + Langchain
 * **Containerization:** Docker
 * **Observability:** Prometheus, Grafana
@@ -204,7 +204,11 @@ After it receives the ingredient list from the AI service, it saves those ingred
 
 ### Client
 
-For this, have a look into the [client directory](./client/README.md).
+The client directory contains a React application built with Vite and Tailwind CSS. It serves as the user interface for the application, allowing users to interact with the server services.  
+The client handles user authentication, ingredient management, recipe management, image uploads, and displays recipe suggestions based on the ingredients provided by the user.  
+The production build is a simple docker image with nginx serving the static files, mapping the `/` prefix to `index.html`. 
+
+More detailed information can be found in the [client README](./client/README.md).
 
 ### GenAI
 
@@ -239,6 +243,9 @@ We go big on reusable workflows! The whole point is to write code once and reuse
 #### Java
 
 This workflow heavily relies on [burrunan/gradle-cache-action@v3](https://github.com/burrunan/gradle-cache-action). It creates a layered gradle cache using github's artifacts to speed up pipeline runs of gradle-based projects. We lint the java files and the gradle files themselves with [checkstyle](https://checkstyle.org/index.html), check for common bugs using [spotbugs](https://spotbugs.github.io/), run the tests and upload a [jacoco](https://www.jacoco.org/jacoco/trunk/doc/) test report.
+
+#### Typescript
+This actions sets up a node environment, installs the npm dependencies with automatic caching, runs ESLint for typescript linting and Prettier to check the code formatting, and runs the tests using vitest.
 
 #### Docker
 
