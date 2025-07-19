@@ -19,7 +19,7 @@ For the responsibilities of each individual, please have a look at the `CODEOWNE
 
 ## 🧪 Technologies Used
 
-* **Frontend:** React
+* **Client:** React
 * **Server:** Spring Boot (Java 21)
 * **GenAI**: FastAPI + Langchain
 * **Containerization:** Docker

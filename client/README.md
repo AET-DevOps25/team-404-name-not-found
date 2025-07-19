@@ -95,7 +95,7 @@ the OAuth login flow because the callback URL that the
 server uses for the OAuth, will be on the HOST (e.g. `fridge.localhost`) of the docker compose and not localhost. Keep in mind that
 the server services must be run with `MODE=dev` for this to work.
 
-### 🧑‍💻 Local Development with dev server for client and backend services from docker compose
+### 🧑‍💻 Local Development with dev server for client and server services from docker compose
 
 - Create a `.env` file in the root of the client directory and set the environment variables as needed.
   See `.env.template` for an example.
@@ -104,15 +104,15 @@ the server services must be run with `MODE=dev` for this to work.
     npm run install
     npm run dev
     ```
-- Start the backend services in dev mode with docker compose:
+- Start the server services in dev mode with docker compose:
     ```shell
     # From root of the project
     BRANCH=<branchname> MODE=dev docker compose -f compose.yml up
     ```
-    Note: `MODE=dev` is needed to enable the mocked login flow in the backend services, so that the client can use the `dev-user`.
+    Note: `MODE=dev` is needed to enable the mocked login flow in the server services, so that the client can use the `dev-user`.
 - This will also start a client container but we just ignore it and access the server via the Vite dev server on `localhost:8080`.
-- You have to open the browser with the URL `https://fridge.localhost` and accept the self-signed certificate first, otherwise the calls to the backend services from the dev server may fail due to certificate errors.
-- Now you can develop the client with hot reloading on `localhost:8080` and the backend services running in docker compose.
+- You have to open the browser with the URL `https://fridge.localhost` and accept the self-signed certificate first, otherwise the calls to the server services from the dev server may fail due to certificate errors.
+- Now you can develop the client with hot reloading on `localhost:8080` and the server services running in docker compose.
 
 ---
 

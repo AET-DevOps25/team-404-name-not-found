@@ -2,7 +2,7 @@
 
 ---
 
-## Backend Endpoints
+## Server Endpoints
 
 ### Users Service (`:8080`)
 
