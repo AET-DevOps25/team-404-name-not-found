@@ -1,23 +1,24 @@
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Camera, LogOut, Plus, Refrigerator, Settings } from "lucide-react";
-import IngredientGrid from "@/components/ingredients/IngredientGrid";
-import { IngredientWithId, Ingredient } from "@/types/ingredientTypes";
 import { useAuth } from "@/context/AuthContext";
-import ingredientsService from "@/api/services/ingredientsService";
 import { toast } from "@/hooks/useToast";
+import IngredientGrid from "@/components/ingredients/IngredientGrid";
 import AddIngredientModal from "@/components/ingredients/AddIngredientModal";
 import EditIngredientModal from "@/components/ingredients/EditIngredientModal";
-import RecipesSidebar from "@/components/recipes/RecipeSidebar";
-import { RecipeWithAvailabilityAndId, RecipeWithId } from "@/types/recipeTypes";
-import recipesService from "@/api/services/recipesService";
+import RecipeSidebar from "@/components/recipes/RecipeSidebar";
 import RecipeDetailModal from "@/components/recipes/RecipeDetailModal";
-import { calculateRecipeAvailability, IngredientMatchingResult } from "@/utils/ingredientMatching";
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import RecipeSettingsModal from "@/components/recipes/RecipeSettingsModal";
-import { getNumberOfRecipesToGenerate } from "@/utils/settings";
 import FloatingRecipeGenerationButtons from "@/components/recipes/FloatingRecipeGenerationButtons";
 import ScanImageModal from "@/components/images/ScanImageModal";
+import RecipeSearch from "@/components/recipes/RecipeSearch";
+import ingredientsService from "@/api/services/ingredientsService";
+import recipesService from "@/api/services/recipesService";
+import { calculateRecipeAvailability, IngredientMatchingResult } from "@/utils/ingredientMatching";
+import { getNumberOfRecipesToGenerate } from "@/utils/settings";
+import { IngredientWithId, Ingredient } from "@/types/ingredientTypes";
+import { RecipeWithAvailabilityAndId, RecipeWithId } from "@/types/recipeTypes";
 
 const Dashboard = () => {
     const { logout } = useAuth();
@@ -116,6 +117,8 @@ const Dashboard = () => {
 
     const generateRecipes = (explore: boolean) => {
         setRecipeSuggestionsLoading(true);
+        setActiveRecipeTab("suggestions");
+
         const ingredientsToUse = selectedIngredientIds
             ? ingredients.filter((ing) => selectedIngredientIds.includes(ing.id))
             : ingredients;
@@ -256,7 +259,7 @@ const Dashboard = () => {
             });
     };
 
-    const updateAvailabilityScores = (recipes: RecipeWithAvailabilityAndId[]): RecipeWithAvailabilityAndId[] => {
+    const getUpdatedAvailabilityScores = (recipes: RecipeWithAvailabilityAndId[]): RecipeWithAvailabilityAndId[] => {
         return recipes.map((recipe) => {
             const updatedAvailabilityScore = calculateRecipeAvailability(recipe, ingredients);
 
@@ -285,8 +288,8 @@ const Dashboard = () => {
     // Update recipe availability scores whenever ingredients change
     useEffect(() => {
         console.log("Ingredients changed, updating recipe availability scores...");
-        setRecipeSuggestions((prev) => updateAvailabilityScores(prev));
-        setSavedRecipes((prev) => updateAvailabilityScores(prev));
+        setRecipeSuggestions((prev) => getUpdatedAvailabilityScores(prev));
+        setSavedRecipes((prev) => getUpdatedAvailabilityScores(prev));
     }, [ingredients]);
 
     return (
@@ -294,22 +297,30 @@ const Dashboard = () => {
             {/* Header */}
             <header className="bg-white dark:bg-gray-800 shadow-sm border-b dark:border-gray-700">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="flex justify-between items-center h-16">
-                        <div className="flex items-center">
-                            <div className="flex items-center">
-                                <Refrigerator className="w-8 h-8 text-green-600 mr-3" />
-                                <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
-                                    What's In My Fridge
-                                </h1>
-                            </div>
+                    <div className="flex items-center h-16 space-x-6">
+                        {/* Logo + Title */}
+                        <div className="flex items-center space-x-3 flex-shrink-0">
+                            <Refrigerator className="w-8 h-8 text-green-600" />
+                            <h1 className="text-2xl font-bold text-gray-900 dark:text-white whitespace-nowrap">
+                                What's In My Fridge
+                            </h1>
                         </div>
-                        <div className="flex items-center space-x-4">
+
+                        {/* Search bar expands to fill available space */}
+                        <div className="flex-1">
+                            <RecipeSearch
+                                ingredients={ingredients}
+                                openedRecipe={openedRecipe}
+                                onResultClicked={openRecipeDetailModal}
+                            />
+                        </div>
+
+                        {/* Action Buttons */}
+                        <div className="flex items-center space-x-4 flex-shrink-0">
                             <Button
                                 variant="outline"
                                 size="sm"
-                                onClick={() => {
-                                    setShowAddIngredientModal(true);
-                                }}
+                                onClick={() => setShowAddIngredientModal(true)}
                                 className="border-green-200 text-green-700 hover:bg-green-50 dark:border-green-700 dark:text-green-400 dark:hover:bg-green-900"
                             >
                                 <Plus className="w-4 h-4 mr-2" />
@@ -318,9 +329,7 @@ const Dashboard = () => {
                             <Button
                                 variant="outline"
                                 size="sm"
-                                onClick={() => {
-                                    setShowScanImageModal(true);
-                                }}
+                                onClick={() => setShowScanImageModal(true)}
                                 className="border-orange-200 text-orange-700 hover:bg-orange-50 dark:border-orange-700 dark:text-orange-400 dark:hover:bg-orange-900"
                             >
                                 <Camera className="w-4 h-4 mr-2" />
@@ -379,7 +388,7 @@ const Dashboard = () => {
                             </div>
 
                             <TabsContent value="suggestions">
-                                <RecipesSidebar
+                                <RecipeSidebar
                                     loading={recipeSuggestionsLoading}
                                     recipes={recipeSuggestions}
                                     onRecipeSelect={openRecipeDetailModal}
@@ -390,11 +399,11 @@ const Dashboard = () => {
                                 >
                                     <p>No recipe suggestions available.</p>
                                     <p>Click the buttons below to generate recipes based on your ingredients.</p>
-                                </RecipesSidebar>
+                                </RecipeSidebar>
                             </TabsContent>
 
                             <TabsContent value="saved">
-                                <RecipesSidebar
+                                <RecipeSidebar
                                     onDelete={deleteRecipe}
                                     loading={false}
                                     recipes={savedRecipes}
@@ -402,7 +411,7 @@ const Dashboard = () => {
                                 >
                                     <p>No saved recipes found.</p>
                                     <p>Save recipes from the suggestions tab to see them here.</p>
-                                </RecipesSidebar>
+                                </RecipeSidebar>
                             </TabsContent>
                         </Tabs>
                     </div>

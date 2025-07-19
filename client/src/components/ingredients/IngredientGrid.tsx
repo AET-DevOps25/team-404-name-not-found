@@ -111,14 +111,14 @@ const IngredientGrid = ({ ingredients, onEdit, onDelete, onSelectionChange }: In
                             <Card
                                 key={ingredient.id}
                                 data-ingredient-id={ingredient.id}
-                                className={`overflow-hidden transition-shadow duration-200 relative bg-white border-2 ${
+                                className={`overflow-hidden transition-shadow duration-200 relative z-0 bg-white border-2 ${
                                     selectionModeEnabled && selectionModeClassName
                                 }`}
                                 onClick={() => toggleIngredientSelection(ingredient.id)}
                                 onMouseEnter={() => setHoveredId(ingredient.id)}
                                 onMouseLeave={() => setHoveredId(null)}
                             >
-                                <div className="aspect-square flex items-center justify-center bg-gray-100 relative text-5xl font-bold text-gray-400">
+                                <div className="aspect-square flex items-center justify-center bg-gray-100 relative z-0 text-5xl font-bold text-gray-400">
                                     {ingredient.name.charAt(0).toUpperCase()}
                                     {!selectionModeEnabled && hoveredId === ingredient.id && (
                                         <div className="absolute top-2 right-2 flex gap-1">

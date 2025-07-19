@@ -7,6 +7,7 @@ from langchain_openai import ChatOpenAI
 from app.models.ingredients import Ingredients
 from app.models.recipe import Recipe
 from app.models.recipes import Recipes
+from app.services.rag_service import RagService
 from app.utils.prometheus_token_callback import PrometheusTokenCallback
 
 logger = logging.getLogger(__name__)
@@ -14,11 +15,13 @@ logger = logging.getLogger(__name__)
 
 class RecipeService:
 
-    def __init__(self):
+    def __init__(self, rag_service: RagService):
         self.llm = ChatOpenAI(
             model="gemma3:27b", temperature=0.1, callbacks=[PrometheusTokenCallback()]
         )
         self.llm = self.llm.with_structured_output(Recipe, strict=True)
+
+        self.rag_service = rag_service
 
     async def get_recipes_matching(self, num_recipes: int, ingredients: Ingredients):
         first_recipe: Recipe = await self.get_recipe_matching([], ingredients)
@@ -42,7 +45,7 @@ class RecipeService:
                 "Give one recipe that uses only the ingredients. "
                 "You do not have to use up all the amount of the ingredients. "
                 "You are allowed to split up the units of the ingredients. "
-                "Provide a description and very detailed steps. "
+                "Provide a short description (max 80 characters) and very detailed steps. "
                 "You are not allowed to use any other ingredients than the available ingredients. "
                 "Put ingredients that were already available under ingredients. "
                 "Ingredients that need to be bought go under needed_ingredients. "
@@ -58,6 +61,10 @@ class RecipeService:
         if self.__validate_recipe_uses_only_available_ingredients(
             generated_recipe, ingredients
         ):
+            try:
+                self.rag_service.add_recipe(generated_recipe)
+            except Exception as e:
+                logger.error(f"Error adding recipe to RAG service: {e}")
             return generated_recipe
         else:
             if retries < 2:
@@ -94,7 +101,7 @@ class RecipeService:
                 "Give one recipe that uses the ingredients."
                 "You do not have to use up all the amount of the ingredients. "
                 "You are allowed to split up the units of the ingredients."
-                "Provide a description and very detailed steps. "
+                "Provide a short description (max 80 characters) and very detailed steps. "
                 "Be a bit creative for an ingredient that would really enhance the recipe you are allowed to buy it."
                 "Put ingredients that were given under ingredients. "
                 "Ingredients that need to be bought go under needed_ingredients. "
@@ -104,11 +111,16 @@ class RecipeService:
             HumanMessage(f"Available ingredients {ingredients}"),
         ]
 
-        ai_msg = self.llm.invoke(messages)
-        return ai_msg
+        generated_recipe = self.llm.invoke(messages)
+        try:
+            self.rag_service.add_recipe(generated_recipe)
+        except Exception as e:
+            logger.error(f"Error adding recipe to RAG service: {e}")
+        return generated_recipe
 
+    @staticmethod
     def __validate_recipe_uses_only_available_ingredients(
-        self, recipe: Recipe, ingredients: Ingredients
+        recipe: Recipe, ingredients: Ingredients
     ):
         if len(recipe.needed_ingredients) > 0:
             return False
