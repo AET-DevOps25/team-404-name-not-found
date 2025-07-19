@@ -83,6 +83,7 @@ services:
   users:
     container_name: users
     image: ghcr.io/aet-devops25/team-404-name-not-found/users:${BRANCH:-main}
+    platform: linux/amd64
     build:
       context: server
       dockerfile: users/Dockerfile
@@ -112,6 +113,7 @@ services:
   recipes:
     container_name: recipes
     image: ghcr.io/aet-devops25/team-404-name-not-found/recipes:${BRANCH:-main}
+    platform: linux/amd64
     build:
       context: server
       dockerfile: recipes/Dockerfile
@@ -138,6 +140,7 @@ services:
   ingredients:
     container_name: ingredients
     image: ghcr.io/aet-devops25/team-404-name-not-found/ingredients:${BRANCH:-main}
+    platform: linux/amd64
     build:
       context: server
       dockerfile: ingredients/Dockerfile
@@ -161,6 +164,7 @@ services:
   images:
     container_name: images
     image: ghcr.io/aet-devops25/team-404-name-not-found/images:${BRANCH:-main}
+    platform: linux/amd64
     build:
       context: server
       dockerfile: images/Dockerfile
@@ -186,6 +190,7 @@ services:
   genai:
     container_name: genai
     image: ghcr.io/aet-devops25/team-404-name-not-found/genai:${BRANCH:-main}
+    platform: linux/amd64
     build:
       context: genai
       dockerfile: Dockerfile
@@ -214,6 +219,7 @@ services:
   client:
     container_name: client
     image: ghcr.io/aet-devops25/team-404-name-not-found/client:${BRANCH:-main}
+    platform: linux/amd64
     build:
       context: client
       dockerfile: Dockerfile
