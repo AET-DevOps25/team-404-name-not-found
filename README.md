@@ -33,7 +33,7 @@ Please look into the following links for the corresponding UML diagram:
 
 - [AOM](https://apollon.ase.in.tum.de/uvM3IXUBNmxOEgEQtCfo?view=COLLABORATE)
 - [UseCase](https://apollon.ase.in.tum.de/HfJyHdLFzQr5510wyMBn?view=COLLABORATE)
-- [Classes](https://apollon.ase.in.tum.de/HfJyHdLFzQr5510wyMBn?view=COLLABORATE)
+- [Classes](https://apollon.ase.in.tum.de/kKEuL8WLVCOCrpba64ri?view=COLLABORATE)
 
 ## 🚀 Developing Locally
 
