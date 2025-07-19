@@ -1,4 +1,3 @@
-// src/context/AuthContext.tsx
 import { createContext, useState, ReactNode, use } from "react";
 import { User } from "@/types/authTypes";
 import authService from "@/api/services/authService";
@@ -43,7 +42,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
     const loginDevMode = async () => {
         console.log("AuthProvider: login");
-        // We don't need to set the token in dev mode, they auth backend accepts it without it
+        // We don't need to set the token in dev mode, the auth backend accepts it without it
         setLoading(true);
         return checkToken().finally(() => setLoading(false));
     };

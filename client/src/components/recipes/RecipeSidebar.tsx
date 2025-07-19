@@ -13,7 +13,7 @@ interface RecipeSaving {
     savedRecipes: RecipeWithAvailabilityAndId[];
 }
 
-interface RecipesSidebarProps {
+interface RecipeSidebarProps {
     children: ReactNode;
     loading: boolean;
     recipes: RecipeWithAvailabilityAndId[];
@@ -22,14 +22,7 @@ interface RecipesSidebarProps {
     recipeSaving?: RecipeSaving;
 }
 
-const RecipesSidebar = ({
-    children,
-    loading,
-    recipes,
-    onRecipeSelect,
-    onDelete,
-    recipeSaving,
-}: RecipesSidebarProps) => {
+const RecipeSidebar = ({ children, loading, recipes, onRecipeSelect, onDelete, recipeSaving }: RecipeSidebarProps) => {
     const { hoveredId, setHoveredId, reevaluateHoveredId } = useHoveredElementId("data-recipe-id");
 
     // Re-evaluate hoveredId when recipes change
@@ -127,4 +120,4 @@ const RecipesSidebar = ({
     );
 };
 
-export default RecipesSidebar;
+export default RecipeSidebar;
