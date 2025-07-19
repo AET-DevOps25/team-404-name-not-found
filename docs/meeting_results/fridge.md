@@ -36,7 +36,7 @@ A React application with the mantine component library. Marcel will be mainly re
 
 A Spring Boot application with all bells and whistles. Kristi will be mainly responsible for this.
 
-The microservices comprising the backend will be:
+The microservices comprising the server will be:
 
 - storage (a wrapper for the database)
 - suggestions (a wrapper for the ai-gen-features)
