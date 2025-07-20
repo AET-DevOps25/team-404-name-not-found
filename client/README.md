@@ -15,11 +15,24 @@ React client for the "What's In My Fridge" project! 🚀
     - Components are statically saved to `src/components/ui`
 - **Tailwind CSS** for styling
 - **Vite:** fast build tool and development server with hot reloading
+- **Vitest** for testing
 - **NGINX** for serving the client. The built client only consists of static files.
 
 ---
 
-## 🛠️ Available NPM Scripts
+## 🔍 Overview
+
+### 📦 Project Structure
+- `src/` – Contains the source code of the client
+  - `api/` – Contains the generated TypeScript types and API clients from the OpenAPI specifications of the server services
+    - `services/` - Contains client services encapsulating the API calls to the server services
+  - `components/` – Contains the React components of the client
+    - `ui/` – Contains the Shadcn UI components
+  - `hooks/` – Contains custom React hooks
+  - `pages/` – Contains the pages of the client, which are rendered by React Router
+  - `utils/` – Contains utility functions and constants
+
+### 🛠️ Available NPM Scripts
 
 - `npm run dev` – Starts the Vite development server, listening on port 8080
 - `npm run build` – Compiles TypeScript and builds the project with Vite
@@ -29,20 +42,33 @@ React client for the "What's In My Fridge" project! 🚀
 - `npm run test` – Runs the tests using Vitest
 - `npm run test:watch` – Runs the tests in watch mode
 
-## ⚙️ Available Environment Variables
+### ⚙️ Available Environment Variables
 - `VITE_API_BASE_URL` – Base URL of the server to use for API requests (default: `/api` -> uses the current host/port and appends `/api`)
 - `VITE_MODE` – Mode of the client, can be `dev` or `prod` (default: `prod`).
   When set to `dev`, the client will use a mocked login flow and will not require a real login. This is useful for local
   development with the Vite dev server.
 
-## 🧰 Available Scripts
+### 🧰 Available Scripts
 
 - `./scripts/generate-openapi-typescript.sh` – Generates TypeScript types from the OpenAPI specification of the server
   services to `src/api/`.
 
+### 🐳 Docker image
+`Dockerfile` is used to build a Docker image for the client. The Dockerfile first builds the client using Vite, then serves the static files using NGINX.
+For this purpose a simple `nginx.conf` is used, which serves the static files from the `dist` directory and redirects all requests to the `index.html` file, so that the client can handle routing using `react-router`.
+
+### ✨ Provided Features 
+- **Login**: The client supports login via GitHub OAuth provided by the `users` service. On login, the client redirects the user to the login page of the `users` service, which handles the OAuth flow. After successful login, the user is redirected back to the client to `/ui/v1/callback` with a valid JWT token, which is then saved and a client-side session is created.
+- **Ingredient Management**: The client allows users to manage their ingredients, including adding, editing, and deleting ingredients. It uses the `ingredients` service for this functionality.
+- **Recipe Management**: The client allows users to manage their recipes, including generating, saving, and deleting recipes. It uses the `recipes` service for this functionality.
+- **Image Scanning**: The client allows users to scan images of ingredients using the `images` service. It uses the `images` service to process the images and extract the ingredients.
+- **Settings**: The client allows users to manage settings for the recipe generation. Currently, this is only the number of recipes to generate at once, which is saved in local storage.
+
 ---
 
-## 🌐 Setting the Base URL of the Server
+## 📘 Development Guides
+
+### 🌐 Setting the Base URL of the Server
 
 The client needs to know the base URL of the server to make API requests.
 This is configured with the environment variable `VITE_API_BASE_URL`.
@@ -58,7 +84,7 @@ To redirect this to something else:
     docker run -e VITE_API_BASE_URL=https://fridge.example/api image-name
     ```
 
-## 🧑‍💻 Dev Mode with mocked login
+### ‍🔐 Dev Mode with mocked login
 
 You can run the client in development mode by setting the environment variable `VITE_MODE` to `dev`.
 This will enable the mocked login flow, which allows you to test the client without actually logging in.
@@ -69,7 +95,7 @@ the OAuth login flow because the callback URL that the
 server uses for the OAuth, will be on the HOST (e.g. `fridge.localhost`) of the docker compose and not localhost. Keep in mind that
 the server services must be run with `MODE=dev` for this to work.
 
-##  Local Development with dev server for client and backend services from docker compose
+### 🧑‍💻 Local Development with dev server for client and server services from docker compose
 
 - Create a `.env` file in the root of the client directory and set the environment variables as needed.
   See `.env.template` for an example.
@@ -78,15 +104,15 @@ the server services must be run with `MODE=dev` for this to work.
     npm run install
     npm run dev
     ```
-- Start the backend services in dev mode with docker compose:
+- Start the server services in dev mode with docker compose:
     ```shell
     # From root of the project
     BRANCH=<branchname> MODE=dev docker compose -f compose.yml up
     ```
-    Note: `MODE=dev` is needed to enable the mocked login flow in the backend services, so that the client can use the `dev-user`.
+    Note: `MODE=dev` is needed to enable the mocked login flow in the server services, so that the client can use the `dev-user`.
 - This will also start a client container but we just ignore it and access the server via the Vite dev server on `localhost:8080`.
-- You have to open the browser with the URL `https://fridge.localhost` and accept the self-signed certificate first, otherwise the calls to the backend services from the dev server may fail due to certificate errors.
-- Now you can develop the client with hot reloading on `localhost:8080` and the backend services running in docker compose.
+- You have to open the browser with the URL `https://fridge.localhost` and accept the self-signed certificate first, otherwise the calls to the server services from the dev server may fail due to certificate errors.
+- Now you can develop the client with hot reloading on `localhost:8080` and the server services running in docker compose.
 
 ---
 

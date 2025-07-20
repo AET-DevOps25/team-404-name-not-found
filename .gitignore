@@ -397,6 +397,7 @@ hosts.ini
 
 # do not push pictures to git!
 *.png
+!main_ci.png
 *.jpg
 *.jpeg
 
