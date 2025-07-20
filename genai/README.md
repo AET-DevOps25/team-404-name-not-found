@@ -44,8 +44,8 @@ The GenAI functionality is provided by a FastAPI-based microservice that runs in
 
 ## ⚙️ Important Environment Variables
 
-- `OPENAI_API_KEY` – Api-Key for OpenAI compatible LLM Service
-- `OPENAI_API_BASE` – Base URL for the OpenAI compatible LLM Service
+- `OPENAI_API_KEY` – Api-Key for OpenAI API compatible LLM Service
+- `OPENAI_API_BASE` – Base URL for the OpenAI API compatible LLM Service
 
 ---
 
