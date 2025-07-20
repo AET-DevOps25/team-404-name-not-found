@@ -3,7 +3,7 @@
 # Declare variables to be passed into your templates.
 
 namespace: team-404-name-not-found
-currentBranch: add-search-bar
+currentBranch: main
 
 # default login vars for postgres
 postgresUser: postgres
