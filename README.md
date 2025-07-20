@@ -212,7 +212,12 @@ More detailed information can be found in the [client README](./client/README.md
 
 ### GenAI
 
-TODO: do the thing
+The GenAI Microservice is a FastAPI application that provides AI-powered recipe generation and image analysis capabilities. 
+It uses an LLM for generating recipes based on ingredients and analyzing images to extract visible ingredients. 
+The service also integrates with a RAG (Retrieval-Augmented Generation) service to store and retrieve recipes through a similarity search on the title and description.
+The service is run in a Docker container and can be deployed independently of the other services only needing the pgvector db and an embedding service.
+
+More detailed information can be found in the [genai README](./genai/README.md).
 
 ### Infra
 
