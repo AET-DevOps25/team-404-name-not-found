@@ -22,3 +22,9 @@ kubeconfig
 branchname
 CODEOWNERS
 tfstate
+pgvector
+Instrumentator
+Pydantic
+fastapi
+pytest
+multimodal
