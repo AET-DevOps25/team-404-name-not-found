@@ -59,10 +59,3 @@ class RagService:
             page_content=f"{recipe.title} + {recipe.description}"[:1000],
             metadata={"recipe": recipe.model_dump_json()},
         )
-
-
-# vector_store.add_documents(
-#     [Document("Cats live near ponds", metadata={"topic": "animals"})]
-# )
-#
-# print(vector_store.similarity_search("pond cats", k=2))

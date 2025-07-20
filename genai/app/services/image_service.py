@@ -53,9 +53,3 @@ def image_to_base64(path: str) -> str:
         # encode to base64 bytes, then decode to str
         base64_str = base64.b64encode(img_bytes).decode("utf-8")
     return base64_str
-
-
-# image = image_to_base64("AdobeStock_362239242-min.jpeg")
-# load_dotenv()
-# image_service = ImageService()
-# image_service.analyze_fridge(image)
