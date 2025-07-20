@@ -35,6 +35,60 @@ Please look into the following links for the corresponding UML diagram:
 - [Use Cases](https://apollon.ase.in.tum.de/HfJyHdLFzQr5510wyMBn?view=COLLABORATE)
 - [Analysis Object Model](https://apollon.ase.in.tum.de/kKEuL8WLVCOCrpba64ri?view=COLLABORATE)
 
+## 📝 Requirements
+
+### Functional Requirements
+
+#### Login
+- Users can log in using GitHub OAuth
+- JWT tokens are issued upon successful login
+- Users can logout
+
+#### Ingredient management
+- Users can add, edit, and delete ingredients in their fridge
+- Users can select ingredients from the fridge to generate recipes
+
+#### Recipe management
+- Users can save and delete recipes
+- Users can generate recipes from the ingredients in their fridge
+- Users can generate recipes from selected ingredients
+
+#### Image upload
+- Users can upload images of their fridge and scan the ingredients
+- They can add these ingredients to their fridge or directly generate recipes from them
+
+#### Search recipes
+- Users can search for recipes based on a text query
+
+### Non-Functional Requirements
+
+#### Performance
+- Proxy handles routing without significant latency
+- Services respond to requests within 1 second for most operations (except GenAI calls)
+
+#### Scalability
+- Microservices architecture enables independent scaling
+- Docker containerization for platform independence
+- Kubernetes-ready for cloud deployment
+- Separate database tables per service for reduced coupling
+
+#### Security
+- GitHub OAuth for secure authentication
+- JWT tokens for secure API access
+- Centralized user management service and token validation with proxy
+- Mocked login in development mode
+
+#### Observability
+- Prometheus for metrics collection
+- Grafana for monitoring and alerting
+
+#### Maintainability
+- Modular microservices architecture
+- Consistent coding standards and documentation
+- CI/CD pipelines for automated testing and deployment
+- Comprehensive API documentation using OpenAPI
+- Docker Compose for local development
+
 ## 🚀 Developing Locally
 
 ### Prerequisites
