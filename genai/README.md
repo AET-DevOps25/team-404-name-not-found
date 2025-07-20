@@ -52,16 +52,7 @@ Backend service for the "What's In My Fridge" project! 🚀
 - **Image-to-Ingredients**: `/image/scan` endpoint detects ingredients from uploaded images
 - **Prometheus Metrics**: `/metrics` endpoint for monitoring and observability
 
----
-
-## 🔗 API Endpoints (Excerpt)
-
-- `GET /health` – Health check
-- `POST /recipe/matching` – Generates a suitable recipe
-- `POST /image/scan` – Detects ingredients from an image
-- `GET /metrics` – Prometheus metrics
-
-The complete API specification is documented in `openapi.json` and is automatically provided by FastAPI.
+The complete API specification is documented in `genai/openapi.json`.
 
 ---
 
